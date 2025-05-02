@@ -65,7 +65,7 @@ async def handle_message_with_caption(message: types.Message):
 @dp.message(F.document | F.video, F.caption)
 async def handle_message_any_media(message: types.Message):
     await message.reply(
-        f"{message.caption.lower()!r} {message.from_user.id} Some Video Or Photo"
+        f"{message.caption.lower()!r} {message.from_user.id} Video Or Photo"
     )
 
 
