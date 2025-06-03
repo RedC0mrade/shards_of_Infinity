@@ -100,7 +100,10 @@ async def handel_command_file(message: types.Message):
     )  # id для сохранения в базе и отправки повторно
 
 
-@dp.message(F.photo, ~F.caption)
+@dp.message(
+    F.photo,
+    ~F.caption,
+)
 async def handle_message_no_caption(message: types.Message):
     caption = "i can't see photo"
     await message.bot.send_chat_action(
@@ -113,7 +116,10 @@ async def handle_message_no_caption(message: types.Message):
     )
 
 
-@dp.message(F.photo, F.caption.contains("please"))
+@dp.message(
+    F.photo,
+    F.caption.contains("please"),
+)
 async def handle_message_with_caption_please(message: types.Message):
     await message.bot.send_chat_action(
         chat_id=message.chat.id,
