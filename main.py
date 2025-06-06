@@ -1,4 +1,5 @@
 import asyncio
+import csv
 import io
 import logging
 from re import Match
@@ -14,16 +15,103 @@ from config import settings
 dp = Dispatcher()
 
 
-@dp.message(Command("test"))
-async def send_text_file(message: types.Message):
-    file = io.StringIO()
-    message.bot.send_document(
-        chat_id=message.chat.id,
-        document=types.BufferedInputFile(
-            file=...,
-            filename="text.txt",
-        ),
+@dp.message(
+    F.text.lower().regexp(
+        r"too",
+        mode=RegexpMode.SEARCH,
     )
+)
+async def echo_message_too(message: types.Message):
+    await message.bot.send_chat_action(
+        chat_id=message.chat.id,
+        action=ChatAction.TYPING,
+    )
+    try:
+        await message.forward(chat_id=message.chat.id)  # Пересылка сообщение
+        # await message.copy_to(chat_id=message.chat.id) # Отправка копии
+        # await message.send_copy(chat_id=message.chat.id)
+    except TypeError:
+        await message.reply(text="Something new")
+
+
+@dp.message(
+    F.text.lower().regexp(
+        r"foo",
+        mode=RegexpMode.SEARCH,
+    )
+)
+async def echo_message_foo(message: types.Message):
+    await message.bot.send_chat_action(
+        chat_id=message.chat.id,
+        action=ChatAction.TYPING,
+    )
+    text = "No FoO"
+    await message.bot.send_message(  # Просто отправка сообщения без ответа или форварда
+        chat_id=message.chat.id,
+        text=text,
+    )
+
+
+@dp.message(
+    F.text.regexp(
+        r"Bar",
+        mode=RegexpMode.SEARCH,
+    )
+)
+async def echo_message_bar(message: types.Message):
+    await message.bot.send_chat_action(
+        chat_id=message.chat.id,
+        action=ChatAction.TYPING,
+    )
+    try:
+        await message.forward(chat_id=message.chat.id)  # Пересылка сообщение
+        # await message.copy_to(chat_id=message.chat.id) # Отправка копии
+        # await message.send_copy(chat_id=message.chat.id)
+    except TypeError:
+        await message.reply(text="Something new")
+
+
+@dp.message(F.text)
+async def echo_message(message: types.Message):
+    await message.copy_to(chat_id=message.chat.id)
+
+
+# @dp.message(Command("test", prefix="!"))  # Не работает
+# async def send_text_file(message: types.Message):
+#     file = io.StringIO()  # Создание текстового файла
+#     file.write("Hellow world\n")  # Запись в текстовый файл
+#     file.write("World, hellow\n")
+#     await message.bot.send_document(
+#         chat_id=message.chat.id,
+#         document=types.BufferedInputFile(  # Берем фаил из буфера
+#             file=file.getvalue().encode("utf-8"),  # file изменяется в байт
+#             filename="text.txt",  # Название файла
+#         ),
+#     )
+
+
+# @dp.message(Command("csv"))
+# async def send_csv_file(message: types.Message):
+#     await message.bot.send_chat_action(
+#         chat_id=message.chat.id,
+#         action=ChatAction.TYPING,
+#     )
+#     file = io.StringIO()
+#     csv_writer = csv.writer(file)
+#     csv_writer.writerows(
+#         [
+#             ["Name", "Age", "City"],
+#             ["John Smith", "28", "New York"],
+#             ["Jane Doe", "32", "Los Angeles"],
+#             ["Mike Johnson", "40", "Chicago"],
+#         ]
+#     )
+#     await message.reply_document(
+#         document=types.BufferedInputFile(
+#             file=file.getvalue().encode("utf-8"),
+#             filename="people.csv",
+#         ),
+#     )
 
 
 @dp.message(CommandStart())  # CommandStart() Команда /start
@@ -42,9 +130,13 @@ async def handle_start(message: types.Message):
     )
 
 
-@dp.message(Command("help"))  # Команда /help
+@dp.message(
+    Command("help", prefix="!?+")
+)  # Команда help может начинаться с "!" или "?" или "+"
 async def handle_help(message: types.Message):
-    text = "<b>I'm an echo bot.</b>\n" "<i><b>Send me many!</b></i>"
+    text = (
+        "<b>I'm an echo bot.</b>\n" "<i><b>Send me any!</b></i>"
+    )  # Жирный текст и италик
 
     await message.answer(text=text)  # отправка ответа на текст, команду
 
@@ -56,7 +148,7 @@ async def handel_command_pic(message: types.Message):
         "cartoon-character_1308-135596.jpg?semt=ais_hybrid&w=740"
     )
     await message.bot.send_chat_action(  # используется, чтобы показать пользователю, что бот "печатает" или выполняет действие (например, загружает фото, записывает голосовое или ищет данные).
-        chat_id=message.chat.id,  # для отправки указывается id чата
+        chat_id=message.chat.id,  # для отправки указывается id чата через мессадж
         action=ChatAction.UPLOAD_PHOTO,  # Показываем, что загружается фото
     )
     await message.reply_photo(
@@ -66,9 +158,7 @@ async def handel_command_pic(message: types.Message):
 
 
 @dp.message(
-    Command(
-        "home_pic"
-    )  # Команда /home_pic вводится вручную, если нужна регистрация
+    Command("home_pic")  # Команда /home_pic вводится вручную, если нужна регистрация
 )  # в панеле команд делается через botFather /setcommand
 async def handel_command_home_pic(message: types.Message):
     file_path = "C:/Users/e2e4e/Pictures/IMG_20240802_183555[1].jpg"
@@ -95,13 +185,11 @@ async def handel_command_file(message: types.Message):
         document=types.FSInputFile(path=file_path, filename="antizapret"),
         caption="Antizapret",
     )
-    print(
-        message_send.document.file_id
-    )  # id для сохранения в базе и отправки повторно
+    print(message_send.document.file_id)  # id для сохранения в базе и отправки повторно
 
 
 @dp.message(
-    F.photo,  # Ручка куда попадают только отправленные фото
+    F.photo,  # попадают только отправленные фото
     ~F.caption,  # Без подписи
 )
 async def handle_message_no_caption(message: types.Message):
@@ -120,7 +208,7 @@ async def handle_message_no_caption(message: types.Message):
     F.photo,  # Принимает фото
     F.caption.contains(
         "please"
-    ),  # Где в тексте есть слово "please" строгий регистр
+    ),  # Где в описании фото есть слово "please" строгий регистр
 )
 async def handle_message_with_caption_please(message: types.Message):
     await message.bot.send_chat_action(
@@ -133,6 +221,7 @@ async def handle_message_with_caption_please(message: types.Message):
 @dp.message(
     F.photo,
     F.caption,  # Есть подпись
+    # ~F.caption, # ~ означает, что описания нет
 )
 async def handle_message_with_caption(message: types.Message):
     await message.bot.send_chat_action(
@@ -142,7 +231,7 @@ async def handle_message_with_caption(message: types.Message):
     await message.reply(f"{str(message.caption)} contains some text!")
 
 
-@dp.message(F.document | F.video)  # Принимает документы или видео
+@dp.message(F.document | F.video)  # Принимает документы ИЛИ видео
 async def handle_message_any_media(message: types.Message):
     await message.bot.send_chat_action(
         chat_id=message.chat.id,
@@ -187,16 +276,6 @@ async def tel_message(message: types.Message, numder: Match[str]):
         action=ChatAction.TYPING,
     )
     await message.reply(f"hellow, admin, {numder.group()}")
-
-
-@dp.message()
-async def echo_message(message: types.Message):
-    try:
-        await message.forward(chat_id=message.chat.id)
-        # await message.copy_to(chat_id=message.chat.id)
-        # await message.send_copy(chat_id=message.chat.id)
-    except TypeError:
-        await message.reply(text="Something new")
 
 
 async def main():
