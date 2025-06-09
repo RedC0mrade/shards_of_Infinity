@@ -13,7 +13,7 @@ from aiogram.enums import ChatAction, ParseMode
 from magic_filter import RegexpMode
 
 
-router = Router()
+router = Router(name=__name__)
 
 
 @router.message(CommandStart())  # CommandStart() Команда /start

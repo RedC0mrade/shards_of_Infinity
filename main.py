@@ -16,16 +16,10 @@ from config import settings
 from app.routers import router
 
 
-dp = Dispatcher()
-dp.include_router(router)
-
-# @dp.message()
-# async def echo_message(message: types.Message):
-#     await message.copy_to(chat_id=message.chat.id)
-
-
 async def main():
     logging.basicConfig(level=logging.INFO)
+    dp = Dispatcher()
+    dp.include_router(router)
     bot = Bot(
         token=settings.bot_token,
         default=DefaultBotProperties(parse_mode=ParseMode.HTML),

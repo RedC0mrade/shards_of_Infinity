@@ -11,9 +11,9 @@ from aiogram import F, Bot, Dispatcher, Router, types
 from aiogram.filters import CommandStart, Command
 from aiogram.enums import ChatAction, ParseMode
 from magic_filter import RegexpMode
+from config import settings
 
-
-router = Router()
+router = Router(name=__name__)
 
 
 @router.message(
@@ -139,7 +139,7 @@ async def handle_message_any_media(message: types.Message):
 
 
 @router.message(
-    F.from_user.id.in_({1756123777}),
+    F.from_user.id.in_(settings.admin_ids),
     F.text.lower() == "secret",
 )  # from_user.id.in_({1756123777}) - передается список пользователей,
 # для которых доступна команда secret не чувствительна к регистру
