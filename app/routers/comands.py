@@ -1,13 +1,10 @@
-import asyncio
 import csv
 import io
-import logging
 import aiohttp
-from re import Match
 
 from aiogram.utils.chat_action import ChatActionSender
-from aiogram.client.default import DefaultBotProperties
-from aiogram import F, Bot, Dispatcher, Router, types
+from aiogram import Router, types
+from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
 from aiogram.filters import CommandStart, Command
 from aiogram.enums import ChatAction, ParseMode
 from magic_filter import RegexpMode
@@ -24,11 +21,15 @@ async def handle_start(message: types.Message):
         "img/5cxdPGDSaEhGGm1lLkFGKt3-2iE=/fit-in/1200x900/filters:no_upscale():"
         "strip_icc()/pic4064509.png"
     )
+    button=KeyboardButton(text="Hello!")
+    buttons_row = []
+    markup = ReplyKeyboardMarkup(keyboard=[buttons_row])
     await message.answer(
         text=(
             f'<a href="{url}">&#8205;</a>'  # скрытая ссылка через zero-width space
             f"Hello, <b>{message.from_user.full_name}</b>!"
         ),
+        reply_markup=markup,
     )
 
 
