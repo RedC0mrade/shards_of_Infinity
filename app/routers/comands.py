@@ -13,6 +13,23 @@ from magic_filter import RegexpMode
 router = Router(name=__name__)
 
 
+def start_keyboard():
+    button = KeyboardButton(text="Hello!")
+    button_start = KeyboardButton(text="start!")
+    button_2 = KeyboardButton(text="Hello!_2")
+    button_start_2 = KeyboardButton(text="start!_2")
+
+    buttons_row = [button, button_start]
+    buttons_row_2 = [button_2, button_start_2]
+    markup = ReplyKeyboardMarkup(
+        keyboard=[
+            buttons_row,
+            buttons_row_2,
+        ]
+    )
+    return markup
+
+
 @router.message(CommandStart())  # CommandStart() Команда /start
 async def handle_start(message: types.Message):
     """Команда /start передает картинку"""
@@ -21,20 +38,20 @@ async def handle_start(message: types.Message):
         "img/5cxdPGDSaEhGGm1lLkFGKt3-2iE=/fit-in/1200x900/filters:no_upscale():"
         "strip_icc()/pic4064509.png"
     )
-    button=KeyboardButton(text="Hello!")
-    buttons_row = []
+    button = KeyboardButton(text="Hello!")
+    buttons_row = [button]
     markup = ReplyKeyboardMarkup(keyboard=[buttons_row])
     await message.answer(
         text=(
             f'<a href="{url}">&#8205;</a>'  # скрытая ссылка через zero-width space
             f"Hello, <b>{message.from_user.full_name}</b>!"
         ),
-        reply_markup=markup,
+        reply_markup=start_keyboard(),
     )
 
 
 @router.message(
-    Command("help", prefix="!?+")
+    Command("help", prefix="/!?+")
 )  # Команда help может начинаться с "!" или "?" или "+"
 async def handle_help(message: types.Message):
     text = (
@@ -144,6 +161,7 @@ async def handel_command_file(message: types.Message):
         caption="Antizapret",
     )
     print(message_send.document.file_id)  # id для сохранения в базе и отправки повторно
+
 
 @router.message(Command("csv"))
 async def send_csv_file(message: types.Message):
