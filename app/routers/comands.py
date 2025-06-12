@@ -30,7 +30,7 @@ def start_keyboard():
     return markup
 
 
-@router.message(CommandStart())  # CommandStart() Команда /start
+@router.message(CommandStart())  #CommandStart() Команда /start
 async def handle_start(message: types.Message):
     """Команда /start передает картинку"""
     url = (
