@@ -11,7 +11,9 @@ from app.keyboards.common_keyboards import start_keyboard, ButtonText
 
 router = Router(name=__name__)
 
-
+@router.message(Command("take_a_card"))
+async def handle_take_f_card(message: types.Message):
+    
 @router.message(CommandStart())  # CommandStart() Команда /start
 async def handle_start(message: types.Message):
     """Команда /start передает картинку"""
