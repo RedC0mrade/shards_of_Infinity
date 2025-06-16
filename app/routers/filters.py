@@ -1,8 +1,3 @@
-import asyncio
-import csv
-import io
-import logging
-import aiohttp
 from re import Match
 
 from aiogram.utils.chat_action import ChatActionSender
@@ -10,11 +5,20 @@ from aiogram.client.default import DefaultBotProperties
 from aiogram import F, Bot, Dispatcher, Router, types
 from aiogram.filters import CommandStart, Command
 from aiogram.enums import ChatAction, ParseMode
+from aiogram.types import ReplyKeyboardRemove
 from magic_filter import RegexpMode
 from config import settings
+from app.keyboards.common_keyboards import ButtonText
 
 router = Router(name=__name__)
 
+@router.message(F.text == ButtonText.BYE)
+async def handle_bye(message: types.Message):
+    await message.bot.send_message(
+        chat_id=message.chat.id,
+        text=f"Bye {message.from_user.first_name}",
+        reply_markup=ReplyKeyboardRemove()   # Удаление клавиатуры у клиента
+    )
 
 @router.message(
     F.text.lower().regexp(

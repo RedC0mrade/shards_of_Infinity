@@ -5,28 +5,33 @@ from aiogram.types import (
 )
 from aiogram.utils.keyboard import ReplyKeyboardBuilder
 
+
 class ButtonText:
     HELLO = "Hellow!"
     START = "Start"
+    BYE = "Bye"
 
 
 def start_keyboard():
     button = KeyboardButton(text=ButtonText.HELLO)
     button_start = KeyboardButton(text=ButtonText.START)
+    button_bye = KeyboardButton(text=ButtonText.BYE)
     button_2 = KeyboardButton(text=ButtonText.HELLO + "_2")
     button_start_2 = KeyboardButton(text=ButtonText.START + "_2")
     button_3 = KeyboardButton(text=ButtonText.HELLO + "_3")
     button_start_3 = KeyboardButton(text=ButtonText.START + "_3")
-    
 
-    buttons_row = [button, button_start]
+    buttons_row = [button, button_start, button_bye]
     buttons_row_2 = [button_2, button_start_2]
+    buttons_row_3 = [button_3, button_start_3]
     markup = ReplyKeyboardMarkup(
         keyboard=[
             buttons_row,
             buttons_row_2,
+            buttons_row_3,
         ],
-        resize_keyboard=True,
+        resize_keyboard=True, # делает кнопки размером с клавиатуру
+        one_time_keyboard=True,  # Отвечает за сокрытие кнопок после первого нажатия, но оставляет кнопки активными
     )
     return markup
 

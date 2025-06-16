@@ -11,8 +11,8 @@ from app.keyboards.common_keyboards import start_keyboard, ButtonText
 
 router = Router(name=__name__)
 
-@router.message(Command("take_a_card"))
-async def handle_take_f_card(message: types.Message):
+# @router.message(Command("take_a_card"))
+# async def handle_take_f_card(message: types.Message):
     
 
     
@@ -32,13 +32,6 @@ async def handle_start(message: types.Message):
         reply_markup=start_keyboard(),
     )
 
-
-# @router.message(F.text == ButtonText.HELLO)
-# async def handle_hello(message: types.Message):
-#     await message.bot.send_message(
-#         chat_id=message.chat.id,
-#         text="<b>it's button Hellow!>",
-#     )
 
 @router.message(F.text == ButtonText.HELLO)
 @router.message(
