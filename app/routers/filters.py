@@ -12,71 +12,14 @@ from app.keyboards.common_keyboards import ButtonText
 
 router = Router(name=__name__)
 
+
 @router.message(F.text == ButtonText.BYE)
 async def handle_bye(message: types.Message):
     await message.bot.send_message(
         chat_id=message.chat.id,
         text=f"Bye {message.from_user.first_name}",
-        reply_markup=ReplyKeyboardRemove()   # Удаление клавиатуры у клиента
+        reply_markup=ReplyKeyboardRemove(),  # Удаление клавиатуры у клиента
     )
-
-@router.message(
-    F.text.lower().regexp(
-        r"too",
-        mode=RegexpMode.SEARCH,
-    )
-)
-async def echo_message_too(message: types.Message):
-    await message.bot.send_chat_action(
-        chat_id=message.chat.id,
-        action=ChatAction.TYPING,
-    )
-    try:
-        await message.forward(chat_id=message.chat.id)  # Пересылка сообщение
-        # await message.copy_to(chat_id=message.chat.id) # Отправка копии
-        # await message.send_copy(chat_id=message.chat.id)
-    except TypeError:
-        await message.reply(text="Something new")
-
-
-@router.message(
-    F.text.lower().regexp(
-        r"foo",
-        mode=RegexpMode.SEARCH,
-    )
-)
-async def echo_message_foo(message: types.Message):
-    await message.bot.send_chat_action(
-        chat_id=message.chat.id,
-        action=ChatAction.TYPING,
-    )
-    text = "No FoO"
-    await message.bot.send_message(  # Просто отправка сообщения без ответа или форварда
-        chat_id=message.chat.id,
-        text=text,
-    )
-
-
-@router.message(
-    F.text.regexp(
-        r"Bar",
-        mode=RegexpMode.SEARCH,
-    )
-)
-async def echo_message_bar(message: types.Message):
-    await message.bot.send_chat_action(
-        chat_id=message.chat.id,
-        action=ChatAction.TYPING,
-    )
-    try:
-        await message.forward(chat_id=message.chat.id)  # Пересылка сообщение
-        # await message.copy_to(chat_id=message.chat.id) # Отправка копии
-        # await message.send_copy(chat_id=message.chat.id)
-    except TypeError:
-        await message.reply(text="Something new")
-
-
-
 
 
 @router.message(
@@ -154,16 +97,3 @@ async def secret_admin_message(message: types.Message):
     )
     await message.reply("hellow, admin")
 
-
-@router.message(
-    F.text.regexp(
-        r"\+7\(\d{3}\)(-\d{3})(-\d{2}){2}",
-        mode=RegexpMode.SEARCH,
-    ).as_("numder")
-)
-async def tel_message(message: types.Message, numder: Match[str]):
-    await message.bot.send_chat_action(
-        chat_id=message.chat.id,
-        action=ChatAction.TYPING,
-    )
-    await message.reply(f"hellow, admin, {numder.group()}")

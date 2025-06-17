@@ -38,16 +38,12 @@ def start_keyboard():
 
 def get_on_help_kb() -> ReplyKeyboardMarkup:
     numbers = [
-        "1️⃣",
-        "2️⃣",
-        "3️⃣",
-        "4️⃣",
-        "5️⃣",
-        "6️⃣",
-        "7️⃣",
-        "8️⃣",
-        "9️⃣",
-        "0️⃣",
+        "Card #1️",
+        "Card #2️",
+        "Card #3️",
+        "Card #4️",
+        "Card #5️",
+        "Card #6️",
     ]
     buttons_row = [KeyboardButton(text=num) for num in numbers]
     # buttons_row.append(buttons_row[0])
@@ -65,7 +61,7 @@ def get_on_help_kb() -> ReplyKeyboardMarkup:
         # builder.button(text=num)
         builder.add(KeyboardButton(text=num))
     # builder.adjust(3, 3, 4)
-    builder.adjust(3)
-    builder.row(buttons_row[3], buttons_row[1])
-    builder.add(buttons_row[-1])
+    builder.adjust(2)
+    # builder.row(buttons_row[3], buttons_row[1])
+    # builder.add(buttons_row[-1])
     return builder.as_markup(resize_keyboard=False)
