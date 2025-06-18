@@ -12,12 +12,12 @@ from app.keyboards.common_keyboards import ButtonText
 
 router = Router(name=__name__)
 
-@router.message(F.text().regexp(
-        r"Card #[1-6]",
+@router.message(F.text.regexp(
+        r"Card\s#[1-6]",
         mode=RegexpMode.SEARCH,
-        )
+        ).as_("card_id")
 )
-async def send_foto(message: types.Message):
+async def send_card(message: types.Message, card_id: Match[str]):
     async with ChatActionSender(  # ChatActionSender чат экшен работает все время пока отправляется фаил
         bot=message.bot,
         chat_id=message.chat.id,
@@ -25,8 +25,10 @@ async def send_foto(message: types.Message):
     ):
         await message.bot.send_photo(
             chat_id=message.chat.id,
-
-        )11
+            photo=types.FSInputFile(
+                path=f"C:/Users/PC/Downloads/shards_{card_id.group()[-1]}.jpg"
+            )
+        )
 
 
 @router.message(

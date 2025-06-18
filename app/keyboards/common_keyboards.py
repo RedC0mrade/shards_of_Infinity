@@ -45,23 +45,12 @@ def get_on_help_kb() -> ReplyKeyboardMarkup:
         "Card #5️",
         "Card #6️",
     ]
-    buttons_row = [KeyboardButton(text=num) for num in numbers]
-    # buttons_row.append(buttons_row[0])
-    # buttons_row.append(buttons_row[1])
-    # # buttons_row.append(buttons_row[2])
-    # # buttons_row.pop(0)
-    #
-    # markup = ReplyKeyboardMarkup(
-    #     keyboard=[buttons_row, buttons_row],
-    #     resize_keyboard=True,
-    # )
-    # return markup
+    # buttons_row = [KeyboardButton(text=num) for num in numbers]
     builder = ReplyKeyboardBuilder()
     for num in numbers:
         # builder.button(text=num)
         builder.add(KeyboardButton(text=num))
-    # builder.adjust(3, 3, 4)
-    builder.adjust(2)
-    # builder.row(buttons_row[3], buttons_row[1])
-    # builder.add(buttons_row[-1])
+    builder.adjust(1, 2, 3) # Количество кнопок в ряду
+    # builder.row(buttons_row[3], buttons_row[1]) # Добавляет в конец 2 кнопки
+    # builder.add(buttons_row[-1]) # Добавляет в конец ещё 1 кнопку
     return builder.as_markup(resize_keyboard=False)
