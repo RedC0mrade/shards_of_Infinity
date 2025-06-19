@@ -23,11 +23,13 @@ async def send_card(message: types.Message, card_id: Match[str]):
         chat_id=message.chat.id,
         action=ChatAction.UPLOAD_PHOTO,
     ):
+        cart_number = card_id.group()[-1]
         await message.bot.send_photo(
             chat_id=message.chat.id,
             photo=types.FSInputFile(
-                path=f"C:/Users/PC/Downloads/shards_{card_id.group()[-1]}.jpg"
-            )
+                path=f"C:/Users/PC/Downloads/shards_{cart_number}.jpg"
+            ),
+            caption=f"Описание карты номер {cart_number}"
         )
 
 
