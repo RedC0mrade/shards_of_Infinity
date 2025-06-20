@@ -8,7 +8,11 @@ from aiogram.filters import CommandStart, Command
 from aiogram.enums import ChatAction, ParseMode
 from aiogram.types import FSInputFile, InputMediaPhoto
 
-from app.keyboards.common_keyboards import get_on_help_kb, start_keyboard, ButtonText
+from app.keyboards.common_keyboards import (
+    get_on_help_kb,
+    start_keyboard,
+    ButtonText,
+)
 
 router = Router(name=__name__)
 
@@ -22,7 +26,7 @@ async def handle_take_f_card(message: types.Message):
     ):
         photos = [
             InputMediaPhoto(
-                media=FSInputFile(f"C:/Users/PC/Downloads/shards_{i}.jpg"),
+                media=FSInputFile(f"C:/telegram/shards_{i}.jpg"),
                 caption=f"Card #{i}",
             )
             for i in range(1, 7)
@@ -83,10 +87,14 @@ async def handel_command_pic(message: types.Message):
 
 
 @router.message(
-    Command("home_pic")  # Команда /home_pic вводится вручную, если нужна регистрация
+    Command(
+        "home_pic"
+    )  # Команда /home_pic вводится вручную, если нужна регистрация
 )  # в панеле команд делается через botFather /setcommand
 async def handel_command_home_pic(message: types.Message):
-    file_path = "C:/Users/PC/Pictures/Screenshots/Снимок_экрана_2024-09-10_194528.png"
+    file_path = (
+        "C:/Users/PC/Pictures/Screenshots/Снимок_экрана_2024-09-10_194528.png"
+    )
     await message.bot.send_chat_action(
         chat_id=message.chat.id,
         action=ChatAction.UPLOAD_PHOTO,
@@ -165,7 +173,9 @@ async def handel_command_file(message: types.Message):
         document=types.FSInputFile(path=file_path, filename="antizapret"),
         caption="Antizapret",
     )
-    print(message_send.document.file_id)  # id для сохранения в базе и отправки повторно
+    print(
+        message_send.document.file_id
+    )  # id для сохранения в базе и отправки повторно
 
 
 @router.message(Command("csv"))
@@ -186,7 +196,9 @@ async def send_csv_file(message: types.Message):
     )
     await message.reply_document(
         document=types.BufferedInputFile(
-            file=file.getvalue().encode("utf-8"),  # необходимо перевести в байты
+            file=file.getvalue().encode(
+                "utf-8"
+            ),  # необходимо перевести в байты
             filename="people.csv",  # Название файла
         ),
     )

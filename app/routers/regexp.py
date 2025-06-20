@@ -5,10 +5,7 @@ from aiogram.client.default import DefaultBotProperties
 from aiogram import F, Bot, Dispatcher, Router, types
 from aiogram.filters import CommandStart, Command
 from aiogram.enums import ChatAction, ParseMode
-from aiogram.types import ReplyKeyboardRemove
 from magic_filter import RegexpMode
-from config import settings
-from app.keyboards.common_keyboards import ButtonText
 
 router = Router(name=__name__)
 
@@ -27,7 +24,7 @@ async def send_card(message: types.Message, card_id: Match[str]):
         await message.bot.send_photo(
             chat_id=message.chat.id,
             photo=types.FSInputFile(
-                path=f"C:/Users/PC/Downloads/shards_{cart_number}.jpg"
+                path=f"C:/telegram/shards_{cart_number}.jpg"
             ),
             caption=f"Описание карты номер {cart_number}"
         )
