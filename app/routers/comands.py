@@ -49,6 +49,7 @@ async def handle_start(message: types.Message):
         "img/5cxdPGDSaEhGGm1lLkFGKt3-2iE=/fit-in/1200x900/filters:no_upscale():"
         "strip_icc()/pic4064509.png"
     )
+    print(repr(message.text))
     await message.answer(
         text=(
             f'<a href="{url}">&#8205;</a>'  # скрытая ссылка через zero-width space
