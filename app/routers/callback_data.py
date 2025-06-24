@@ -13,6 +13,7 @@ from app.keyboards.inline_keyboards import buld_info_kd
 from app.keyboards.inline_keyboards import (
     random_num_updated_cb_data,
     random_num_start_desctop,
+    random_num_start,
     random_int,
     random_int_1,
     random_int_2,
@@ -20,6 +21,14 @@ from app.keyboards.inline_keyboards import (
 )
 
 router = Router(name=__name__)
+
+
+@router.callback_query(F.data == random_num_start)
+async def handel_random_site_callback(callback_query: CallbackQuery):
+    bot_me = await callback_query.bot.me()  # Информация о боте
+    await callback_query.answer(
+        url=f"t.me/{bot_me.username}?start={randint(1,100)}",  # В команду start передаем случайное число
+    )
 
 
 @router.callback_query(F.data == random_num_updated_cb_data)
@@ -45,7 +54,7 @@ async def handel_random_start_desktop(callback_query: CallbackQuery):
 async def handel_randon_ineger(callback_query: CallbackQuery):
     random_integer = randint(1, 100)
     await callback_query.answer(  # Внимание такой способ передает не сообщение, а всплывающее окно
-        text=f"Ваше случайное число рано {random_integer}",
+        text=f"Ваше случайное число рано {random_integer} cache_time=5",
         cache_time=5,  # Кэшируем ответ на 5 секунд от слишком частого нажатия
     )
 
@@ -62,7 +71,7 @@ async def handel_randon_ineger_1(callback_query: CallbackQuery):
 async def handel_randon_ineger_2(callback_query: CallbackQuery):
     random_integer = randint(1, 100)
     await callback_query.answer(
-        text=f"Ваше случайное число рано {random_integer}",
+        text=f"Ваше случайное число рано {random_integer} show_alert=True",
         show_alert=True,
     )
 
@@ -70,6 +79,5 @@ async def handel_randon_ineger_2(callback_query: CallbackQuery):
 @router.callback_query(F.data == random_int_3)
 async def handel_randon_ineger_3(callback_query: CallbackQuery):
     random_integer = randint(1, 100)
-    await callback_query.message.answer(
-        text=f"Ваше случайное число рано {random_integer}",
-    )
+    await callback_query.answer()
+    await callback_query.message.edit_text(text=f"edit_text {random_integer}")
