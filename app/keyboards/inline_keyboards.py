@@ -50,10 +50,10 @@ def buld_info_kd() -> InlineKeyboardMarkup:
     return markup
 
 
-def actions_kb_bulder() -> InlineKeyboardMarkup:
+def actions_kb_bulder(random_number_text="Rundom number_3") -> InlineKeyboardMarkup:
     bulder = InlineKeyboardBuilder()
     bulder.button(
-        text = "Rundom number_3",
+        text = random_number_text,
         callback_data=random_int_3,
     )
     return bulder.as_markup()

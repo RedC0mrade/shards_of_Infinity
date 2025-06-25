@@ -9,7 +9,7 @@ from aiogram.types import (
 from aiogram.utils.chat_action import ChatActionSender
 from aiogram.enums import ChatAction
 
-from app.keyboards.inline_keyboards import buld_info_kd
+from app.keyboards.inline_keyboards import actions_kb_bulder, buld_info_kd
 from app.keyboards.inline_keyboards import (
     random_num_updated_cb_data,
     random_num_start_desctop,
@@ -72,12 +72,16 @@ async def handel_randon_ineger_2(callback_query: CallbackQuery):
     random_integer = randint(1, 100)
     await callback_query.answer(
         text=f"Ваше случайное число рано {random_integer} show_alert=True",
-        show_alert=True,
+        show_alert=True,  # Выводит окно с кнопкой ok
     )
 
 
 @router.callback_query(F.data == random_int_3)
 async def handel_randon_ineger_3(callback_query: CallbackQuery):
+    """Получается динамическая кнопка"""
     random_integer = randint(1, 100)
-    await callback_query.answer()
-    await callback_query.message.edit_text(text=f"edit_text {random_integer}")
+    await callback_query.answer()  # отмечаем, что кнопка обработана, хотя ничего не происходит
+    await callback_query.message.edit_text(  # Изменяем кнопку 
+        text=f"edit_text {random_integer}", # Текст сообщения над новой кнопки
+        reply_markup=actions_kb_bulder("New random int_3"), # Передаем параметр в обработчик кнопки
+    )
