@@ -4,8 +4,8 @@ from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from aiogram.utils.chat_action import ChatActionSender
 from aiogram.enums import ChatAction
 
-from app.keyboards.inline_keyboards import buld_info_kd, actions_kb_bulder
-
+from app.keyboards.inline_keyboards import buld_info_kd
+from app.keyboards.actions_keyboards import actions_kb_bulder
 
 router = Router(name=__name__)
 

@@ -6,16 +6,34 @@ from aiogram.types import (
     InlineKeyboardButton,
     CallbackQuery,
 )
-from aiogram.utils.chat_action import ChatActionSender
-from aiogram.enums import ChatAction
 
-from app.keyboards.inline_keyboards import actions_kb_bulder, buld_info_kd
-from app.keyboards.inline_keyboards import Commands
+
+from app.keyboards.actions_keyboards import (
+    actions_kb_bulder,
+    random_int_3,
+    RandomNumCbData,
+)
+from app.keyboards.inline_keyboards import InlineButtonText
 
 router = Router(name=__name__)
 
 
-@router.callback_query(F.data == Commands.random_num_start)
+@router.callback_query(RandomNumCbData.filter())
+async def handle_random_callback_data(
+    callback_query: CallbackQuery,
+    callback_data: RandomNumCbData,
+):
+    await callback_query.answer(
+        text=(
+            f"Your randon number {callback_data.number}\n"
+            f"Callback_data {callback_data}\n"
+            f"Callback_data wt !r {callback_data!r}"
+        ),
+        show_alert=True,
+    )
+
+
+@router.callback_query(F.data == InlineButtonText.random_num_start)
 async def handel_random_site_callback(callback_query: CallbackQuery):
     bot_me = await callback_query.bot.me()  # Информация о боте
     await callback_query.answer(
@@ -23,7 +41,7 @@ async def handel_random_site_callback(callback_query: CallbackQuery):
     )
 
 
-@router.callback_query(F.data == Commands.random_num_updated_cb_data)
+@router.callback_query(F.data == InlineButtonText.random_num_updated_cb_data)
 async def handel_random_site_callback(callback_query: CallbackQuery):
     bot_me = await callback_query.bot.me()  # Информация о боте
     await callback_query.bot.answer_callback_query(
@@ -32,7 +50,7 @@ async def handel_random_site_callback(callback_query: CallbackQuery):
     )
 
 
-@router.callback_query(F.data == Commands.random_num_start_desctop)
+@router.callback_query(F.data == InlineButtonText.random_num_start_desctop)
 async def handel_random_start_desktop(callback_query: CallbackQuery):
     bot_me = await callback_query.bot.me()
     random = randint(1, 100)
@@ -42,7 +60,7 @@ async def handel_random_start_desktop(callback_query: CallbackQuery):
     )
 
 
-@router.callback_query(F.data == Commands.random_int)
+@router.callback_query(F.data == InlineButtonText.random_int)
 async def handel_randon_ineger(callback_query: CallbackQuery):
     random_integer = randint(1, 100)
     await callback_query.answer(  # Внимание такой способ передает не сообщение, а всплывающее окно
@@ -51,7 +69,7 @@ async def handel_randon_ineger(callback_query: CallbackQuery):
     )
 
 
-@router.callback_query(F.data == Commands.random_int_1)
+@router.callback_query(F.data == InlineButtonText.random_int_1)
 async def handel_randon_ineger_1(callback_query: CallbackQuery):
     random_integer = randint(1, 100)
     await callback_query.message.answer(  # Внимание такой способ передает сообщение в чат
@@ -59,7 +77,7 @@ async def handel_randon_ineger_1(callback_query: CallbackQuery):
     )
 
 
-@router.callback_query(F.data == Commands.random_int_2)
+@router.callback_query(F.data == InlineButtonText.random_int_2)
 async def handel_randon_ineger_2(callback_query: CallbackQuery):
     random_integer = randint(1, 100)
     await callback_query.answer(
@@ -68,12 +86,14 @@ async def handel_randon_ineger_2(callback_query: CallbackQuery):
     )
 
 
-@router.callback_query(F.data == Commands.random_int_3)
+@router.callback_query(F.data == random_int_3)
 async def handel_randon_ineger_3(callback_query: CallbackQuery):
     """Получается динамическая кнопка"""
     random_integer = randint(1, 100)
     await callback_query.answer()  # отмечаем, что кнопка обработана, хотя ничего не происходит
-    await callback_query.message.edit_text(  # Изменяем кнопку 
-        text=f"edit_text {random_integer}", # Текст сообщения над новой кнопки
-        reply_markup=actions_kb_bulder("New random int_3"), # Передаем параметр в обработчик кнопки
+    await callback_query.message.edit_text(  # Изменяем кнопку
+        text=f"edit_text {random_integer}",  # Текст сообщения над новой кнопки
+        reply_markup=actions_kb_bulder(
+            "New random int_3"
+        ),  # Передаем параметр в обработчик кнопки
     )
