@@ -42,7 +42,7 @@ def buld_info_kd() -> InlineKeyboardMarkup:
     )
     btn_random_num = InlineKeyboardButton(
         text="random number",
-        callback_data=InlineRandomNumCbData(
+        callback_data=InlineRandomNumCbData( # Передаем не просто текст, а объует
             actions=InlineButtonText.random_int,
         ).pack(),
     )
