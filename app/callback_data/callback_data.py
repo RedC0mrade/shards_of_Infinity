@@ -18,6 +18,19 @@ from app.keyboards.inline_keyboards import InlineButtonText
 router = Router(name=__name__)
 
 
+@router.callback_query(RandomNumCbData.filter(F.number % 2 == 0))
+async def handle_random_callback_data(
+    callback_query: CallbackQuery,
+    callback_data: RandomNumCbData,
+):
+    await callback_query.answer(
+        text=(
+            f"Четное число {callback_data.number}",
+        ),
+        show_alert=True,
+    )
+
+
 @router.callback_query(RandomNumCbData.filter())
 async def handle_random_callback_data(
     callback_query: CallbackQuery,

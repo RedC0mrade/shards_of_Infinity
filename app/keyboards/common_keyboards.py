@@ -1,7 +1,6 @@
 from aiogram.types import (
     KeyboardButton,
     ReplyKeyboardMarkup,
-    KeyboardButtonPollType,
 )
 from aiogram.utils.keyboard import ReplyKeyboardBuilder
 

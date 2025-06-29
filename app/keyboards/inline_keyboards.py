@@ -1,7 +1,9 @@
+from enum import Enum
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
+from aiogram.filters.callback_data import CallbackData
 
 
-class InlineButtonText:
+class InlineButtonText(Enum):
     random_num_updated_cb_data = "random_num_updated_cb_data"
     random_num_start_desctop = "random_num_start_desctop"
     random_num_start = "random_num_start"
@@ -9,6 +11,13 @@ class InlineButtonText:
     random_int_1 = "random_int_1"
     random_int_2 = "random_int_2"
     random_int_3 = "random_int_3"
+
+
+class InlineRandomNumCbData(
+    CallbackData,
+    prefix="inlane_random_num",
+):
+    actions = InlineButtonText
 
 
 def buld_info_kd() -> InlineKeyboardMarkup:
@@ -33,7 +42,9 @@ def buld_info_kd() -> InlineKeyboardMarkup:
     )
     btn_random_num = InlineKeyboardButton(
         text="random number",
-        callback_data=InlineButtonText.random_int,
+        callback_data=InlineRandomNumCbData(
+            actions=InlineButtonText.random_int,
+        ).pack(),
     )
     btn_random_num_1 = InlineKeyboardButton(
         text="random number_1",
