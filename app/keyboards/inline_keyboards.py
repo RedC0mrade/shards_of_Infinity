@@ -1,8 +1,9 @@
+from enum import Enum
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
-from aiogram.utils.keyboard import InlineKeyboardBuilder
+from aiogram.filters.callback_data import CallbackData
 
 
-class Commands:
+class InlineButtonText(Enum):
     random_num_updated_cb_data = "random_num_updated_cb_data"
     random_num_start_desctop = "random_num_start_desctop"
     random_num_start = "random_num_start"
@@ -10,6 +11,13 @@ class Commands:
     random_int_1 = "random_int_1"
     random_int_2 = "random_int_2"
     random_int_3 = "random_int_3"
+
+
+class InlineRandomNumCbData(
+    CallbackData,
+    prefix="inlane_random_num",
+):
+    actions = InlineButtonText
 
 
 def buld_info_kd() -> InlineKeyboardMarkup:
@@ -22,27 +30,29 @@ def buld_info_kd() -> InlineKeyboardMarkup:
     )
     btn_random_start = InlineKeyboardButton(
         text="Start data",
-        callback_data=Commands.random_num_updated_cb_data,
+        callback_data=InlineButtonText.random_num_updated_cb_data,
     )
     btn_random_start_desktop = InlineKeyboardButton(
         text="Desctop start",
-        callback_data=Commands.random_num_start_desctop,
+        callback_data=InlineButtonText.random_num_start_desctop,
     )
     btn_random_start_button = InlineKeyboardButton(
         text="random_num_start",
-        callback_data=Commands.random_num_start,
+        callback_data=InlineButtonText.random_num_start,
     )
     btn_random_num = InlineKeyboardButton(
         text="random number",
-        callback_data=Commands.random_int,
+        callback_data=InlineRandomNumCbData( # Передаем не просто текст, а объует
+            actions=InlineButtonText.random_int,
+        ).pack(),
     )
     btn_random_num_1 = InlineKeyboardButton(
         text="random number_1",
-        callback_data=Commands.random_int_1,
+        callback_data=InlineButtonText.random_int_1,
     )
     btn_random_num_2 = InlineKeyboardButton(
         text="random number_2",
-        callback_data=Commands.random_int_2,
+        callback_data=InlineButtonText.random_int_2,
     )
     row = [tg_channel_bt, btn_random_start, btn_random_num]
     row_1 = [pic, btn_random_start_desktop, btn_random_num_1]
@@ -50,14 +60,3 @@ def buld_info_kd() -> InlineKeyboardMarkup:
     rows = [row, row_1, row_2]
     markup = InlineKeyboardMarkup(inline_keyboard=rows)
     return markup
-
-
-def actions_kb_bulder(
-    random_number_text="Rundom number_3",
-) -> InlineKeyboardMarkup:
-    bulder = InlineKeyboardBuilder()
-    bulder.button(
-        text=random_number_text,
-        callback_data=Commands.random_int_3,
-    )
-    return bulder.as_markup()
