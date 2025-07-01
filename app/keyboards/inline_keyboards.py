@@ -17,8 +17,7 @@ class InlineRandomNumCbData(
     CallbackData,
     prefix="inlane_random_num",
 ):
-    actions = InlineButtonText
-
+    actions: InlineButtonText
 
 def buld_info_kd() -> InlineKeyboardMarkup:
     tg_channel_bt = InlineKeyboardButton(

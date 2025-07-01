@@ -7,13 +7,13 @@ from aiogram.types import (
     CallbackQuery,
 )
 
-
 from app.keyboards.actions_keyboards import (
     actions_kb_bulder,
     random_int_3,
     RandomNumCbData,
 )
 from app.keyboards.inline_keyboards import InlineButtonText
+
 
 router = Router(name=__name__)
 
@@ -24,9 +24,7 @@ async def handle_random_callback_data(
     callback_data: RandomNumCbData,
 ):
     await callback_query.answer(
-        text=(
-            f"Четное число {callback_data.number}",
-        ),
+        text=f"Четное число {callback_data.number}",
         show_alert=True,
     )
 
