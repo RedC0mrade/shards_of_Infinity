@@ -1,8 +1,8 @@
-from aiogram import Router
+from aiogram import F, Router
 from aiogram.filters import Command
 from aiogram import types
 
-from app.keyboards.shop_keyboards import build_shop_kb
+from app.keyboards.shop_keyboards import ShopCbData, build_shop_kb
 
 router = Router(name=__name__)
 

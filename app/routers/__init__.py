@@ -7,6 +7,7 @@ from .regexp import router as regexp_router
 from .commands_for_inline_keyboard import router as inline_router
 from .callback_data_router import router as callback_data_router
 from .shop_commands import router as shop_router
+from .shop_kb_callback_handlers import router as shop_kb_router
 
 router = Router()
 
@@ -17,4 +18,5 @@ router.include_routers(
     comand_router,
     regexp_router,
     shop_router,
+    shop_kb_router,
 )
