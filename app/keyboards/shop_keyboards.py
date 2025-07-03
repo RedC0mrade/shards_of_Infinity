@@ -82,8 +82,8 @@ def product_details_kb(product_cb_data: ProductCdData) -> InlineKeyboardMarkup:
             text=lable,
             callback_data=ProductCdData(
                 action=action,
-                **product_cb_data.model_dump( # Не явный вариант
-                    include={ # передаем те поля, которые хотим включить в ответ
+                **product_cb_data.model_dump(  # Не явный вариант
+                    include={  # передаем те поля, которые хотим включить в ответ
                         "id",
                         "name",
                         "price",
@@ -96,4 +96,29 @@ def product_details_kb(product_cb_data: ProductCdData) -> InlineKeyboardMarkup:
             ),
         )
     builder.adjust(1, 2)
+    return builder.as_markup()
+
+
+def build_update_product_kb(
+    product_cb_data: ProductCdData,
+) -> InlineKeyboardMarkup:
+    builder = InlineKeyboardBuilder()
+    builder.button(
+        text=f"Back to product {product_cb_data.name}",
+        callback_data=ProductCdData(
+            action=ProductActions.details,
+            id=product_cb_data.id,
+            name=product_cb_data.name,
+            price=product_cb_data.price,
+        ),
+    )
+    builder.button(
+        text=f"update {product_cb_data.name}",
+        callback_data=ProductCdData(
+            action=ProductActions.details,
+            id=product_cb_data.id,
+            name=product_cb_data.name,
+            price=product_cb_data.price,
+        ),
+    )
     return builder.as_markup()

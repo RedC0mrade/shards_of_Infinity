@@ -9,6 +9,7 @@ from app.keyboards.shop_keyboards import (
     ProductActions,
     build_products_kb,
     build_shop_kb,
+    build_update_product_kb,
     product_details_kb,
 )
 
@@ -58,3 +59,21 @@ async def handel_product_details_button(
         text=message_text,
         reply_markup=product_details_kb(callback_data),
     )
+
+
+@router.callback_query(ProductCdData.filter(F.action == ProductActions.update))
+async def handel_product_update_button(
+    callback_quere: CallbackQuery,
+    callback_data: ProductCdData,
+):
+    await callback_quere.answer()
+    await callback_quere.message.edit_reply_markup( # Редактируем клавиатуру
+        reply_markup=build_update_product_kb(callback_data),
+    )
+
+
+@router.callback_query(ProductCdData.filter(F.action == ProductActions.delete))
+async def handel_product_delete_button(
+    callback_quere: CallbackQuery,
+):
+    await callback_quere.answer(text="Delete in progress")
