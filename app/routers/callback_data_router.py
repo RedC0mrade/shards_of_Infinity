@@ -1,9 +1,6 @@
 from random import randint
 from aiogram import Bot, F, Router, types
-from aiogram.filters import CommandStart, Command
 from aiogram.types import (
-    InlineKeyboardMarkup,
-    InlineKeyboardButton,
     CallbackQuery,
 )
 
