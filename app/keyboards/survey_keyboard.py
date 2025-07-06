@@ -1,14 +1,14 @@
-from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
-from aiogram.utils.keyboard import InlineKeyboardBuilder
+from aiogram.types import ReplyKeyboardMarkup, InlineKeyboardButton
+from aiogram.utils.keyboard import ReplyKeyboardBuilder
 
 
 
-def build_yes_or_no_kb() -> InlineKeyboardMarkup:
-    builder = InlineKeyboardBuilder()
-    builder.button = InlineKeyboardButton(
+def build_yes_or_no_kb() -> ReplyKeyboardMarkup:
+    builder = ReplyKeyboardBuilder()
+    builder.button(
         text="Yes"
     )
-    builder.button = InlineKeyboardButton(
+    builder.button(
         text="No"
     )
     builder.adjust(1)

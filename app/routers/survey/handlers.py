@@ -32,7 +32,7 @@ async def handle_servey_user_full_name(
     await state.set_state(Survey.email)
     await message.answer(
         text=f"Hellow {markdown.hbold(message.text)}, what's your email?",
-        reply_markup=types.ReplyKeyboardRemove(), # Сбрасываем клавиатуру, если вдруг что осталось
+        reply_markup=types.ReplyKeyboardRemove(),  # Сбрасываем клавиатуру, если вдруг что осталось
     )
 
 
@@ -45,7 +45,7 @@ async def handle_servey_user_email(
     email: str,
 ):
     await state.update_data(email=message.text)  # Сохраняем состояние
-    await state.get_state(Survey.email_newsletter)
+    await state.set_state(Survey.email_newsletter)
     await message.answer(
         text=(
             f"Your email {markdown.hbold(email)}."
@@ -60,8 +60,15 @@ async def handel_servey_email_newslettr_yes(
     message: types.Message,
     state: FSMContext,
 ):
-    message.answer(
-    )
+    message.answer(text="Thank for your choose! =)")
+
+
+@router.message(Survey.email_newsletter, F.text.casefold() == "No")
+async def handel_servey_email_newslettr_no(
+    message: types.Message,
+    state: FSMContext,
+):
+    message.answer(text="Thank for your choose! =(")
 
 
 @router.message(
