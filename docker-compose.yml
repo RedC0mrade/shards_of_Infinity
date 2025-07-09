@@ -1,0 +1,10 @@
+services:
+
+  pg:
+    image: postgres
+    environment:
+      POSTGRES_DB: shards_of_infinity
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"

@@ -1,19 +1,26 @@
 import asyncio
-import csv
-import io
 import logging
-import aiohttp
-from re import Match
+import uvicorn
 
-from aiogram.utils.chat_action import ChatActionSender
+from fastapi import FastAPI
+
 from aiogram.client.default import DefaultBotProperties
-from aiogram import F, Bot, Dispatcher, types
-from aiogram.filters import CommandStart, Command
-from aiogram.enums import ChatAction, ParseMode
-from magic_filter import RegexpMode
+from aiogram import Bot, Dispatcher
+from aiogram.enums import ParseMode
+from fastapi.concurrency import asynccontextmanager
 
 from config import settings
 from app.routers import router
+from app.backend.factories.database import db_helper
+
+
+@asynccontextmanager
+async def lifepan(app: FastAPI):
+    yield
+    await db_helper.dispose()
+
+
+main_app = FastAPI(lifespan=lifepan)
 
 
 async def main():
@@ -29,3 +36,9 @@ async def main():
 
 if __name__ == "__main__":
     asyncio.run(main())
+    uvicorn.run(
+        "main:main_app",
+        host=settings.run.host,
+        port=settings.run.port,
+        reload=True,
+    )
