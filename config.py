@@ -6,7 +6,6 @@ from pydantic import BaseModel, PostgresDsn
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
-
 BASE_DIR = Path(__file__).parent
 load_dotenv(dotenv_path=BASE_DIR / ".env", override=True)
 
@@ -22,7 +21,7 @@ class DatabaseConfig(BaseModel):
     echo_pool: bool = False
     pool_size: int = 50
     max_overflow: int = 10
-    
+
     naming_convention: dict[str, str] = {
         "ix": "ix_%(column_0_label)s",
         "uq": "uq_%(table_name)s_%(column_0_N_name)s",
@@ -43,6 +42,11 @@ class Settings(BaseSettings):
     run: RunConfig = RunConfig()
     db: DatabaseConfig
     bot_token: str
-    admin_ids: frozenset[int] = frozenset({1756123777, })
+    admin_ids: frozenset[int] = frozenset(
+        {
+            1756123777,
+        }
+    )
+
 
 settings = Settings()
