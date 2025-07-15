@@ -5,7 +5,7 @@ from .base_model import Base
 
 
 class TelegrammUser(Base):
-    tablename = "users"
+    __tablename__ = "users"
 
     telegramm_id: Mapped[int] = mapped_column(Integer)
     first_name: Mapped[str] = mapped_column(String(20))
