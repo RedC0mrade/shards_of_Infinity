@@ -2,7 +2,6 @@ import enum
 
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import (
-    Boolean,
     CheckConstraint,
     ForeignKey,
     Integer,
@@ -29,17 +28,30 @@ class CardType(str, enum.Enum):
 
 
 class CardAction(str, enum.Enum):
-    GET_CARD = "get_card"
+    CARD = "card"
     CARD_DESTROY = "card_destroy"
     ATTACK = "attack"
     HEALING = "healing"
-    GET_CRYSTAL = "get_crystal"
-    CET_MIGHT = "get_might"
+    CRYSTAL = "crystal"
+    MIGHT = "might"
+    SPECiAL = "special"
+    TAKE_MERCENARY = "take_mercenary"
+    IMMUNITY = "immunity"
+    COPY_EFFECT = "copy_effect"
+    DOUBLE_CHOISE = "double_choice"
 
 
 class EffectType(str, enum.Enum):
     BASE = "base"
     CONDITIONAL = "conditional"
+
+
+class ConditionType(str, enum.Enum):
+    MASTERY = "mastery"
+    PLAYER_HEALTH = "player_health"
+    ENEMY_HAS_CHAMPION = "enemy_has_champion"
+    YOU_HAVE_CARD_IN_RESET = "you_have_card"
+    CARD_ON_TABLE = "card_on_table"
 
 
 class Card(Base):
@@ -52,8 +64,8 @@ class Card(Base):
         ),
     )
     name: Mapped[str] = mapped_column(String(20), nullable=False)
-    cristals_cost: Mapped[int] = mapped_column(Integer, nullable=False)
-    description: Mapped[str] = mapped_column(String(500), nullable=True)
+    crystals_cost: Mapped[int] = mapped_column(Integer, nullable=False)
+    description: Mapped[str] = mapped_column(String(500), nullable=False)
     shield: Mapped[int] = mapped_column(Integer, nullable=False)
     champion_health: Mapped[int] = mapped_column(
         Integer,
@@ -71,12 +83,16 @@ class Card(Base):
 
 
 class CardEffect(Base):
-    __tablename__ = "card_base_effects"
+    __tablename__ = "card_effects"
     card_id: Mapped[int] = mapped_column(ForeignKey("cards.id"))
-    card: Mapped[Card] = relationship(back_populates="base_effect")
+    card: Mapped[Card] = relationship(back_populates="effects")
     action: Mapped["CardAction"] = mapped_column(Enum(CardAction))
-    value: Mapped[int] = mapped_column(Integer, nullable=False)
+    value: Mapped[int] = mapped_column(Integer, nullable=True)
     effect_type: Mapped[EffectType] = mapped_column(
         Enum(EffectType), nullable=False
     )
-    condition: Mapped[str | None] = mapped_column(String(200), nullable=True)
+    condition_type: Mapped[ConditionType | None] = mapped_column(
+        Enum(ConditionType),
+        nullable=True,
+    )
+    condition_value: Mapped[int | None] = mapped_column(Integer, nullable=True)
