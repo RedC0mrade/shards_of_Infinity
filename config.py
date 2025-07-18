@@ -30,6 +30,10 @@ class DatabaseConfig(BaseModel):
         "pk": "pk_%(table_name)s",
     }
 
+class ApiPrefix(BaseModel):
+    prefix: str = "/sof"
+    cards: str = "/cards"
+
 
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(

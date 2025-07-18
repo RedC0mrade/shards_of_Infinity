@@ -1,8 +1,9 @@
 import enum
 from datetime import datetime
-from sqlalchemy import DateTime, Enum, func, ForeignKey, Integer
+from sqlalchemy import Boolean, DateTime, Enum, func, ForeignKey, Integer
 from .base_model import Base
 from .user import TelegrammUser
+from .player_state import PlayerState
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 
@@ -21,19 +22,15 @@ class Game(Base):
         Enum(GameStatus), default=GameStatus.WAITING
     )
 
-    player_one_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
-    player_two_id: Mapped[int | None] = mapped_column(
-        ForeignKey("users.id"), nullable=True
-    )
-
-    player_one: Mapped["TelegrammUser"] = relationship(
-        foreign_keys=[player_one_id]
-    )
-    player_two: Mapped["TelegrammUser"] = relationship(
-        foreign_keys=[player_two_id]
-    )
-
+    player1_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
+    player2_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
     turns: Mapped[list["Turn"]] = relationship(
+        back_populates="game", cascade="all, delete-orphan"
+    )
+    current_turn: Mapped[int] = mapped_column(default=1)
+    is_finished: Mapped[bool] = mapped_column(Boolean, default=False)
+    active_player_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
+    player_states: Mapped[list["PlayerState"]] = relationship(
         back_populates="game", cascade="all, delete-orphan"
     )
 
@@ -43,6 +40,5 @@ class Turn(Base):
 
     game_id: Mapped[int] = mapped_column(ForeignKey("games.id"))
     game: Mapped["Game"] = relationship(back_populates="turns")
-
-    number: Mapped[int] = mapped_column(Integer)
     active_player_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
+    turn_number: Mapped[int] = mapped_column(Integer)
