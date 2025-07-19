@@ -57,10 +57,17 @@ class ConditionType(str, enum.Enum):
 class Card(Base):
     __tablename__ = "cards"
     __table_args__ = (
-        CheckConstraint("cost >= 0", name="cost_non_negative"),
-        CheckConstraint("shield >= 0", name="shield_non_negative"),
         CheckConstraint(
-            "champion_health >= 0", name="champion_health_non_negative"
+            "crystals_cost >= 0",
+            name="cost_non_negative",
+        ),
+        CheckConstraint(
+            "shield >= 0",
+            name="shield_non_negative",
+        ),
+        CheckConstraint(
+            "champion_health >= 0",
+            name="champion_health_non_negative",
         ),
     )
     name: Mapped[str] = mapped_column(String(20), nullable=False)
