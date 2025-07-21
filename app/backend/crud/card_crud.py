@@ -16,3 +16,5 @@ class CardServices:
         result: Result = await self.session.execute(stmt)
         cards = result.scalar().all()
         return list(cards)
+
+    

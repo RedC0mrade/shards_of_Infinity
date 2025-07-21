@@ -15,4 +15,4 @@ router = APIRouter(tags=["Card"])
 async def get_deck_of_cards(
     card_service: CardServices = Depends(get_card_service),
 ):
-    return await card_service.
+    return await card_service.get_all_cards_in_the_deck()
