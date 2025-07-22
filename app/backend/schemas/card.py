@@ -29,3 +29,8 @@ class CreateCardSchema(BaseModel):
     faction: CardFaction
     icon: str
     effects: List[CreateCardEffectSchema]
+
+
+class CardSchema(CreateCardSchema):
+
+    id: int
