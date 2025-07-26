@@ -43,6 +43,7 @@ class Settings(BaseSettings):
         env_file=(BASE_DIR / ".env",),
     )
 
+    api_prefix: ApiPrefix = ApiPrefix()
     run: RunConfig = RunConfig()
     db: DatabaseConfig
     bot_token: str

@@ -26,3 +26,4 @@
 # ruff check .  # проверка кода
 # ruff format .  # форматирование (как black)
 # ruff --fix .  # автоматическое исправление ошибок
+# python /d/Dev/telegramm/shards_of_Infinity/main.py
