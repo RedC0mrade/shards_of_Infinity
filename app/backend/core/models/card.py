@@ -39,6 +39,7 @@ class CardAction(str, enum.Enum):
     IMMUNITY = "immunity"
     COPY_EFFECT = "copy_effect"
     DOUBLE_CHOISE = "double_choice"
+    NONE = "none"
 
 
 class EffectType(str, enum.Enum):
@@ -52,6 +53,7 @@ class ConditionType(str, enum.Enum):
     ENEMY_HAS_CHAMPION = "enemy_has_champion"
     YOU_HAVE_CARD_IN_RESET = "you_have_card"
     CARD_ON_TABLE = "card_on_table"
+    NONE = "none"
 
 
 class Card(Base):
@@ -81,11 +83,15 @@ class Card(Base):
     )
     faction: Mapped["CardFaction"] = mapped_column(
         Enum(CardFaction),
-        default=CardFaction.NEUTRAL,
+    )
+    card_type: Mapped["CardType"] = mapped_column(
+        Enum(CardType),
     )
     icon: Mapped[str] = mapped_column(String(100), nullable=False)
     effects: Mapped[list["CardEffect"]] = relationship(
-        back_populates="card", cascade="all, delete-orphan"
+        back_populates="card",
+        cascade="all, delete-orphan",
+        lazy="joined",
     )
 
 

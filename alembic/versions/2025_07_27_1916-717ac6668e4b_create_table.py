@@ -1,8 +1,8 @@
 """Create table
 
-Revision ID: f6595d34e9c3
+Revision ID: 717ac6668e4b
 Revises:
-Create Date: 2025-07-19 19:11:03.438385
+Create Date: 2025-07-27 19:16:52.087554
 
 """
 
@@ -13,7 +13,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = "f6595d34e9c3"
+revision: str = "717ac6668e4b"
 down_revision: Union[str, Sequence[str], None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -39,6 +39,11 @@ def upgrade() -> None:
                 "NEUTRAL",
                 name="cardfaction",
             ),
+            nullable=False,
+        ),
+        sa.Column(
+            "card_type",
+            sa.Enum("ALLY", "CHAMPION", "MERCENARY", "RELIC", name="cardtype"),
             nullable=False,
         ),
         sa.Column("icon", sa.String(length=100), nullable=False),
@@ -83,6 +88,7 @@ def upgrade() -> None:
                 "IMMUNITY",
                 "COPY_EFFECT",
                 "DOUBLE_CHOISE",
+                "NONE",
                 name="cardaction",
             ),
             nullable=False,
@@ -101,6 +107,7 @@ def upgrade() -> None:
                 "ENEMY_HAS_CHAMPION",
                 "YOU_HAVE_CARD_IN_RESET",
                 "CARD_ON_TABLE",
+                "NONE",
                 name="conditiontype",
             ),
             nullable=True,

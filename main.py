@@ -15,35 +15,6 @@ from app.backend.api import router as api_router
 from app.backend.factories.database import db_helper
 
 
-# @asynccontextmanager
-# async def lifepan(app: FastAPI):
-#     yield
-#     await db_helper.dispose()
-
-
-# main_app = FastAPI(lifespan=lifepan)
-
-
-# async def main():
-#     logging.basicConfig(level=logging.INFO)
-#     dp = Dispatcher()
-#     dp.include_router(router)
-#     bot = Bot(
-#         token=settings.bot_token,
-#         default=DefaultBotProperties(parse_mode=ParseMode.HTML),
-#     )
-#     await dp.start_polling(bot)
-
-
-# if __name__ == "__main__":
-#     asyncio.run(main())
-#     uvicorn.run(
-#         "main:main_app",
-#         host=settings.run.host,
-#         port=settings.run.port,
-#         reload=True,
-#     )
-
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Инициализация бота при старте
@@ -66,7 +37,7 @@ async def lifespan(app: FastAPI):
 app = FastAPI(lifespan=lifespan)
 app.include_router(
     api_router,
-    prefix=settings.api.prefix,
+    prefix=settings.api_prefix.prefix,
 )
 
 if __name__ == "__main__":

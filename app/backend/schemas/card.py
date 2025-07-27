@@ -3,6 +3,7 @@ from typing import Annotated, List
 from app.backend.core.models.card import (
     CardAction,
     CardFaction,
+    CardType,
     ConditionType,
     EffectType,
 )
@@ -26,6 +27,7 @@ class CreateCardSchema(BaseModel):
     description: str
     shield: PositiveInt
     champion_health: PositiveInt = 0
+    card_type: CardType
     faction: CardFaction
     icon: str
     effects: List[CreateCardEffectSchema]

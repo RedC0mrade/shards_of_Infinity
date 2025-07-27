@@ -35,6 +35,7 @@ class CardServices:
             description=card_data.description,
             shield=card_data.shield,
             champion_health=card_data.champion_health,
+            card_type=card_data.card_type,
             faction=card_data.faction,
             icon=card_data.icon,
             effects=effects,
