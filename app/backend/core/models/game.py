@@ -33,6 +33,30 @@ class Game(Base):
     player_states: Mapped[list["PlayerState"]] = relationship(
         back_populates="game", cascade="all, delete-orphan"
     )
+    winner_id: Mapped[int | None] = mapped_column(
+        ForeignKey("users.id"),
+        nullable=True,
+    )
+    player1 = relationship(
+        "TelegrammUser",
+        foreign_keys=[player1_id],
+    )
+    player2 = relationship(
+        "TelegrammUser",
+        foreign_keys=[player2_id],
+    )
+    active_player = relationship(
+        "TelegrammUser",
+        foreign_keys=[active_player_id],
+    )
+    winner = relationship(
+        "TelegrammUser",
+        foreign_keys=[winner_id],
+    )
+    active_player = relationship(
+        "TelegrammUser",
+        foreign_keys=[active_player_id],
+    )
 
 
 class Turn(Base):
@@ -42,3 +66,4 @@ class Turn(Base):
     game: Mapped["Game"] = relationship(back_populates="turns")
     active_player_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
     turn_number: Mapped[int] = mapped_column(Integer)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=func.now())
