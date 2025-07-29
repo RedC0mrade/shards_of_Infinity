@@ -1,8 +1,8 @@
 """Create table
 
-Revision ID: 717ac6668e4b
+Revision ID: 1533ce583f6e
 Revises:
-Create Date: 2025-07-27 19:16:52.087554
+Create Date: 2025-07-29 15:17:30.592774
 
 """
 
@@ -13,7 +13,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = "717ac6668e4b"
+revision: str = "1533ce583f6e"
 down_revision: Union[str, Sequence[str], None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -47,6 +47,7 @@ def upgrade() -> None:
             nullable=False,
         ),
         sa.Column("icon", sa.String(length=100), nullable=False),
+        sa.Column("start_card", sa.Boolean(), nullable=False),
         sa.Column("id", sa.Integer(), nullable=False),
         sa.CheckConstraint(
             "champion_health >= 0",
@@ -134,6 +135,7 @@ def upgrade() -> None:
         sa.Column("current_turn", sa.Integer(), nullable=False),
         sa.Column("is_finished", sa.Boolean(), nullable=False),
         sa.Column("active_player_id", sa.Integer(), nullable=False),
+        sa.Column("winner_id", sa.Integer(), nullable=True),
         sa.Column("id", sa.Integer(), nullable=False),
         sa.ForeignKeyConstraint(
             ["active_player_id"],
@@ -150,11 +152,13 @@ def upgrade() -> None:
             ["users.id"],
             name=op.f("fk_games_player2_id_users"),
         ),
+        sa.ForeignKeyConstraint(
+            ["winner_id"], ["users.id"], name=op.f("fk_games_winner_id_users")
+        ),
         sa.PrimaryKeyConstraint("id", name=op.f("pk_games")),
     )
     op.create_table(
         "player_states",
-        sa.Column("id", sa.Integer(), nullable=False),
         sa.Column("game_id", sa.Integer(), nullable=False),
         sa.Column("player_id", sa.Integer(), nullable=False),
         sa.Column("health", sa.Integer(), nullable=False),
@@ -165,6 +169,7 @@ def upgrade() -> None:
         sa.Column("discard_count", sa.Integer(), nullable=False),
         sa.Column("hand_count", sa.Integer(), nullable=False),
         sa.Column("is_defeated", sa.Boolean(), nullable=False),
+        sa.Column("id", sa.Integer(), nullable=False),
         sa.ForeignKeyConstraint(
             ["game_id"],
             ["games.id"],
@@ -182,6 +187,7 @@ def upgrade() -> None:
         sa.Column("game_id", sa.Integer(), nullable=False),
         sa.Column("active_player_id", sa.Integer(), nullable=False),
         sa.Column("turn_number", sa.Integer(), nullable=False),
+        sa.Column("created_at", sa.DateTime(), nullable=False),
         sa.Column("id", sa.Integer(), nullable=False),
         sa.ForeignKeyConstraint(
             ["active_player_id"],

@@ -2,6 +2,7 @@ import enum
 
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import (
+    Boolean,
     CheckConstraint,
     ForeignKey,
     Integer,
@@ -88,6 +89,7 @@ class Card(Base):
         Enum(CardType),
     )
     icon: Mapped[str] = mapped_column(String(100), nullable=False)
+    start_card: Mapped[bool] = mapped_column(Boolean, default=False)
     effects: Mapped[list["CardEffect"]] = relationship(
         back_populates="card",
         cascade="all, delete-orphan",

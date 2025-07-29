@@ -2,12 +2,13 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import ForeignKey, Integer, Boolean
 from .base_model import Base
 from .play_card_instance import PlayerCardInstance
+from .user import TelegrammUser
 
 
 class PlayerState(Base):
     __tablename__ = "player_states"
 
-    player = relationship("User", back_populates="player_states")
+    player = relationship("TelegrammUser", back_populates="player_states")
     game_id: Mapped[int] = mapped_column(ForeignKey("games.id"))
     player_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
 

@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, NonNegativeInt
 from typing import Annotated, List
 from app.backend.core.models.card import (
     CardAction,
@@ -8,28 +8,27 @@ from app.backend.core.models.card import (
     EffectType,
 )
 
-PositiveInt = Annotated[int, Field(ge=0)]
-
 
 class CreateCardEffectSchema(BaseModel):
 
     action: CardAction
-    value: PositiveInt
+    value: NonNegativeInt
     effect_type: EffectType
     condition_type: ConditionType | None = None
-    condition_value: PositiveInt | None = None
+    condition_value: NonNegativeInt | None = None
 
 
 class CreateCardSchema(BaseModel):
 
     name: str
-    crystals_cost: PositiveInt
+    crystals_cost: NonNegativeInt
     description: str
-    shield: PositiveInt
-    champion_health: PositiveInt = 0
+    shield: NonNegativeInt
+    champion_health: NonNegativeInt = 0
     card_type: CardType
     faction: CardFaction
     icon: str
+    start_card: bool = False
     effects: List[CreateCardEffectSchema]
 
 

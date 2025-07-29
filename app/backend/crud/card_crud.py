@@ -15,7 +15,7 @@ class CardServices:
     async def get_all_cards_in_the_deck(self) -> list[Card]:
         stmt = select(Card)
         result: Result = await self.session.execute(stmt)
-        cards = result.scalars().unique().all() 
+        cards = result.scalars().unique().all()
         return list(cards)
 
     async def create_card(self, card_data: CreateCardSchema) -> Card:
@@ -38,6 +38,7 @@ class CardServices:
             card_type=card_data.card_type,
             faction=card_data.faction,
             icon=card_data.icon,
+            start_card=card_data.start_card,
             effects=effects,
         )
 
@@ -46,3 +47,12 @@ class CardServices:
         await self.session.refresh(card)
 
         return card
+
+    async def create_all_cards(
+        self,
+        cards_data: list[CreateCardSchema],
+    ) -> list[Card]:
+        cards = []
+        for card in cards_data:
+            cards.append(await self.create_card(card))
+        return cards
