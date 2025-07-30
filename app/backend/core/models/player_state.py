@@ -1,5 +1,7 @@
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import ForeignKey, Integer, Boolean
+
+from app.backend.core.models.game import Game
 from .base_model import Base
 from .play_card_instance import PlayerCardInstance
 from .user import TelegrammUser
@@ -24,7 +26,7 @@ class PlayerState(Base):
     is_defeated: Mapped[bool] = mapped_column(Boolean, default=False)
 
     # relationships
-    game = relationship("Game", back_populates="player_states")
+    game: Mapped["Game"] = relationship("Game", back_populates="player_states")
     cards: Mapped[list["PlayerCardInstance"]] = relationship(
         back_populates="player_state",
         cascade="all, delete-orphan"
