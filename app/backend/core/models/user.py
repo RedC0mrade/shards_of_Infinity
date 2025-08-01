@@ -1,9 +1,12 @@
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import Integer, String
-
-from app.backend.core.models.player_state import PlayerState
+from typing import TYPE_CHECKING
 
 from .base_model import Base
+
+
+if TYPE_CHECKING:
+    from app.backend.core.models.player_state import PlayerState
 
 
 class TelegrammUser(Base):

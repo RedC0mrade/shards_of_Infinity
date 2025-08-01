@@ -1,10 +1,15 @@
 import enum
 from datetime import datetime
+from typing import TYPE_CHECKING
 from sqlalchemy import Boolean, DateTime, Enum, func, ForeignKey, Integer
+
 from .base_model import Base
-from .user import TelegrammUser
-from .player_state import PlayerState
 from sqlalchemy.orm import Mapped, mapped_column, relationship
+
+
+if TYPE_CHECKING:
+    from app.backend.core.models.user import TelegrammUser
+    from app.backend.core.models.player_state import PlayerState
 
 
 class GameStatus(str, enum.Enum):
