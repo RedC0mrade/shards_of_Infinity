@@ -1,4 +1,3 @@
-from typing import List
 from fastapi import APIRouter, Depends
 
 from app.backend.factories.card_factories import get_card_service

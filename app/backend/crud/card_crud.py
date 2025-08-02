@@ -19,29 +19,15 @@ class CardServices:
         return list(cards)
 
     async def create_card(self, card_data: CreateCardSchema) -> Card:
+        card_data_dict = card_data.model_dump(exclude={"effects"})
         effects = [
-            CardEffect(
-                action=effect.action,
-                value=effect.value,
-                effect_type=effect.effect_type,
-                condition_type=effect.condition_type,
-                condition_value=effect.condition_value,
-            )
+            CardEffect(**effect.model_dump())
             for effect in card_data.effects
         ]
         card = Card(
-            name=card_data.name,
-            crystals_cost=card_data.crystals_cost,
-            description=card_data.description,
-            shield=card_data.shield,
-            champion_health=card_data.champion_health,
-            card_type=card_data.card_type,
-            faction=card_data.faction,
-            icon=card_data.icon,
-            start_card=card_data.start_card,
+            **card_data.model_dump(exclude={"effects"}),
             effects=effects,
         )
-
         self.session.add(card)
         await self.session.commit()
         await self.session.refresh(card)

@@ -44,18 +44,21 @@ async def handle_take_f_card(message: types.Message):
 @router.message(CommandStart())  # CommandStart() Команда /start
 async def handle_start(message: types.Message):
     """Команда /start передает картинку"""
-    url = (
-        "https://cf.geekdo-images.com/GfQBoqOl21zQx-Vy-dSHZw__imagepagezoom/"
-        "img/5cxdPGDSaEhGGm1lLkFGKt3-2iE=/fit-in/1200x900/filters:no_upscale():"
-        "strip_icc()/pic4064509.png"
-    )
-    await message.answer(
-        text=(
-            f'<a href="{url}">&#8205;</a>'  # скрытая ссылка через zero-width space
-            f"Hello, <b>{message.from_user.full_name}</b>!"
-        ),
-        reply_markup=start_keyboard(),
-    )
+    user_id = message.from_user.id
+    first_name = message.from_user.first_name
+    last_name = message.from_user.last_name
+    # url = (
+    #     "https://cf.geekdo-images.com/GfQBoqOl21zQx-Vy-dSHZw__imagepagezoom/"
+    #     "img/5cxdPGDSaEhGGm1lLkFGKt3-2iE=/fit-in/1200x900/filters:no_upscale():"
+    #     "strip_icc()/pic4064509.png"
+    # )
+    # await message.answer(
+    #     text=(
+    #         f'<a href="{url}">&#8205;</a>'  # скрытая ссылка через zero-width space
+    #         f"Hello, <b>{message.from_user.full_name}</b>!"
+    #     ),
+    #     reply_markup=start_keyboard(),
+    # )
 
 
 @router.message(F.text == ButtonText.HELLO)
