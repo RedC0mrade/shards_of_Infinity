@@ -46,6 +46,19 @@ async def handle_take_f_card(message: types.Message):
             reply_markup=get_on_help_kb(),
         )
 
+@router.message(CommandStart())
+async def handle_start(message: types.Message):
+    async with db_helper.session_context() as session:
+        user_data = UserCreateSchema(
+            telegramm_id=message.from_user.id,
+            first_name=message.from_user.first_name,
+            last_name=message.from_user.last_name,
+        )
+
+        user_service = UserServices(session=session)
+        user = await user_service.get_or_create_user(user_data)
+
+        await message.answer(f"Привет, {user.first_name}! Твой ID: {user.telegramm_id}")
 
 @router.message(CommandStart())
 async def handle_start(message: types.Message):
