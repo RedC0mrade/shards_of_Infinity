@@ -46,6 +46,7 @@ async def handle_take_f_card(message: types.Message):
             reply_markup=get_on_help_kb(),
         )
 
+
 @router.message(CommandStart())
 async def handle_start(message: types.Message):
     async with db_helper.session_context() as session:
@@ -58,41 +59,44 @@ async def handle_start(message: types.Message):
         user_service = UserServices(session=session)
         user = await user_service.get_or_create_user(user_data)
 
-        await message.answer(f"Привет, {user.first_name}! Твой ID: {user.telegramm_id}")
-
-@router.message(CommandStart())
-async def handle_start(message: types.Message):
-    """Обработчик команды /start"""
-    # Создаем асинхронную сессию
-    async with db_helper.session_factory() as session:
-        # Подготавливаем данные пользователя
-        user_data = UserCreateSchema(
-            telegramm_id=message.from_user.id,
-            first_name=message.from_user.first_name,
-            last_name=message.from_user.last_name,
+        await message.answer(
+            f"Привет, {user.first_name}! Твой ID: {user.telegramm_id}"
         )
-        
-        # Создаем сервис для работы с пользователями
-        user_service = UserServices(session=session)
-        
-        # Получаем или создаем пользователя
-        user = await user_service.get_or_create_user(user_data)
-        
-        # Отправляем приветственное сообщение
-        await message.answer(f"Привет, {user.first_name}! Твой ID: {user.telegramm_id}")
-    # url = (
-    #     "https://cf.geekdo-images.com/GfQBoqOl21zQx-Vy-dSHZw__imagepagezoom/"
-    #     "img/5cxdPGDSaEhGGm1lLkFGKt3-2iE=/fit-in/1200x900/filters:no_upscale():"
-    #     "strip_icc()/pic4064509.png"
-    # )
-    # await message.answer(
-    #     text=(
-    #         f'<a href="{url}">&#8205;</a>'  # скрытая ссылка через zero-width space
-    #         f"Hello, <b>{message.from_user.full_name}</b>!"
-    #     ),
-    #     reply_markup=start_keyboard(),
-    # )
-    
+
+
+# @router.message(CommandStart())
+# async def handle_start(message: types.Message):
+#     """Обработчик команды /start"""
+#     # Создаем асинхронную сессию
+#     async with db_helper.session_factory() as session:
+#         # Подготавливаем данные пользователя
+#         user_data = UserCreateSchema(
+#             telegramm_id=message.from_user.id,
+#             first_name=message.from_user.first_name,
+#             last_name=message.from_user.last_name,
+#         )
+
+#         # Создаем сервис для работы с пользователями
+#         user_service = UserServices(session=session)
+
+#         # Получаем или создаем пользователя
+#         user = await user_service.get_or_create_user(user_data)
+
+#         # Отправляем приветственное сообщение
+#         await message.answer(f"Привет, {user.first_name}! Твой ID: {user.telegramm_id}")
+# url = (
+#     "https://cf.geekdo-images.com/GfQBoqOl21zQx-Vy-dSHZw__imagepagezoom/"
+#     "img/5cxdPGDSaEhGGm1lLkFGKt3-2iE=/fit-in/1200x900/filters:no_upscale():"
+#     "strip_icc()/pic4064509.png"
+# )
+# await message.answer(
+#     text=(
+#         f'<a href="{url}">&#8205;</a>'  # скрытая ссылка через zero-width space
+#         f"Hello, <b>{message.from_user.full_name}</b>!"
+#     ),
+#     reply_markup=start_keyboard(),
+# )
+
 
 @router.message(F.text == ButtonText.HELLO)
 @router.message(
@@ -123,10 +127,14 @@ async def handel_command_pic(message: types.Message):
 
 
 @router.message(
-    Command("home_pic")  # Команда /home_pic вводится вручную, если нужна регистрация
+    Command(
+        "home_pic"
+    )  # Команда /home_pic вводится вручную, если нужна регистрация
 )  # в панеле команд делается через botFather /setcommand
 async def handel_command_home_pic(message: types.Message):
-    file_path = "C:/Users/PC/Pictures/Screenshots/Снимок_экрана_2024-09-10_194528.png"
+    file_path = (
+        "C:/Users/PC/Pictures/Screenshots/Снимок_экрана_2024-09-10_194528.png"
+    )
     await message.bot.send_chat_action(
         chat_id=message.chat.id,
         action=ChatAction.UPLOAD_PHOTO,
@@ -205,7 +213,9 @@ async def handel_command_file(message: types.Message):
         document=types.FSInputFile(path=file_path, filename="antizapret"),
         caption="Antizapret",
     )
-    print(message_send.document.file_id)  # id для сохранения в базе и отправки повторно
+    print(
+        message_send.document.file_id
+    )  # id для сохранения в базе и отправки повторно
 
 
 @router.message(Command("csv"))
@@ -226,7 +236,9 @@ async def send_csv_file(message: types.Message):
     )
     await message.reply_document(
         document=types.BufferedInputFile(
-            file=file.getvalue().encode("utf-8"),  # необходимо перевести в байты
+            file=file.getvalue().encode(
+                "utf-8"
+            ),  # необходимо перевести в байты
             filename="people.csv",  # Название файла
         ),
     )
