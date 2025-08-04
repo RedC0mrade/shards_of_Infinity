@@ -60,7 +60,7 @@ async def handle_start(message: types.Message):
         user = await user_service.get_or_create_user(user_data)
 
         await message.answer(
-            f"Привет, {user.first_name}! Твой ID: {user.telegramm_id}"
+            f"Привет, {user.first_name}! Твой ID: {user.telegramm_id}. Твой Chat_id: {message.chat.id}"
         )
 
 
