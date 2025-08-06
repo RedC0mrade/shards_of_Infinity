@@ -10,7 +10,7 @@ from aiogram.enums import ParseMode
 from fastapi.concurrency import asynccontextmanager
 
 from config import settings
-from app.routers import router as bot_router
+from app.telegram_bot import router as bot_router
 from app.backend.api import router as api_router
 from app.backend.factories.database import db_helper
 
