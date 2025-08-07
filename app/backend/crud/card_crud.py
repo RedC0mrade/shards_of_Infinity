@@ -19,7 +19,6 @@ class CardServices:
         return list(cards)
 
     async def create_card(self, card_data: CreateCardSchema) -> Card:
-        card_data_dict = card_data.model_dump(exclude={"effects"})
         effects = [
             CardEffect(**effect.model_dump())
             for effect in card_data.effects

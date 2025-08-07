@@ -1,4 +1,6 @@
 import secrets
+from app.backend.core.models.game import Game
+from app.backend.crud.games import GameServices
 from app.backend.factories.database import db_helper
 from aiogram import Router, types
 from aiogram.filters import CommandStart, Command
@@ -8,7 +10,8 @@ from app.backend.schemas.users import UserCreateSchema
 
 router = Router(name=__name__)
 
-@router.message(CommandStart(deep_link=True))
+
+@router.message(CommandStart())
 async def handle_start(message: types.Message, command: CommandStart):
     """Команда старт."""
     async with db_helper.session_context() as session:
@@ -26,23 +29,29 @@ async def handle_start(message: types.Message, command: CommandStart):
             f"Твой ID: {user.telegramm_id}. "
             f"Твой Chat_id: {message.chat.id}"
         )
-    if command.args and command.args.startswith("invite_"):
-        token = command.args.replace("invite_", "")
+    # if command.args and command.args.startswith("invite_"):
+    #     token = command.args.replace("invite_", "")
+
 
 def generate_invite_token():
     return secrets.token_hex(4)
 
-# @router.message(Command("newgame"))
-# async def new_game(message: types.Message):
-#     token = generate_invite_token()
-#     invite_sessions[token] = {
-#         "player1_id": message.from_user.id,
-#         "status": "waiting"
-#     }
-#     bot_username = (await message.bot.me()).username
-#     invite_link = f"https://t.me/{bot_username}?start=invite_{token}"
 
-#     await message.answer(
-#         f"\U0001F3AE Игра создана!\n"
-#         f"🔗 Отправь эту ссылку другу для подключения:\n{invite_link}"
-#     )
+@router.message(Command("newgame"))
+async def new_game(message: types.Message):
+    invite_token = generate_invite_token()
+    player1_id = message.from_user.id
+    bot_username = (await message.bot.me()).username
+    invite_link = f"https://t.me/{bot_username}?start=invite_{invite_token}"
+    async with db_helper.session_context() as session:
+        came_service = GameServices(session=session)
+        # game = Game(
+        #     player1_id=player1_id,
+        #     active_player_id=player1_id,
+        #     invite_token=invite_token,
+        # )
+
+    await message.answer(
+        f"\U0001f3ae Игра создана!\n"
+        f"🔗 Отправь эту ссылку другу для подключения:\n{invite_link}"
+    )
