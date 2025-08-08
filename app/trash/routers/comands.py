@@ -13,7 +13,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.backend.crud.users_crud import UserServices
 from app.backend.factories.user_factory import get_user_service
 from app.backend.schemas.users import UserCreateSchema
-from app.keyboards.common_keyboards import (
+from app.trash.keyboards.common_keyboards import (
     get_on_help_kb,
     start_keyboard,
     ButtonText,
@@ -64,38 +64,38 @@ async def handle_start(message: types.Message):
         )
 
 
-# @router.message(CommandStart())
-# async def handle_start(message: types.Message):
-#     """Обработчик команды /start"""
-#     # Создаем асинхронную сессию
-#     async with db_helper.session_factory() as session:
-#         # Подготавливаем данные пользователя
-#         user_data = UserCreateSchema(
-#             telegramm_id=message.from_user.id,
-#             first_name=message.from_user.first_name,
-#             last_name=message.from_user.last_name,
-#         )
+@router.message(CommandStart())
+async def handle_start(message: types.Message):
+    """Обработчик команды /start"""
+    # Создаем асинхронную сессию
+    async with db_helper.session_factory() as session:
+        # Подготавливаем данные пользователя
+        user_data = UserCreateSchema(
+            telegramm_id=message.from_user.id,
+            first_name=message.from_user.first_name,
+            last_name=message.from_user.last_name,
+        )
 
-#         # Создаем сервис для работы с пользователями
-#         user_service = UserServices(session=session)
+        # Создаем сервис для работы с пользователями
+        user_service = UserServices(session=session)
 
-#         # Получаем или создаем пользователя
-#         user = await user_service.get_or_create_user(user_data)
+        # Получаем или создаем пользователя
+        user = await user_service.get_or_create_user(user_data)
 
-#         # Отправляем приветственное сообщение
-#         await message.answer(f"Привет, {user.first_name}! Твой ID: {user.telegramm_id}")
-# url = (
-#     "https://cf.geekdo-images.com/GfQBoqOl21zQx-Vy-dSHZw__imagepagezoom/"
-#     "img/5cxdPGDSaEhGGm1lLkFGKt3-2iE=/fit-in/1200x900/filters:no_upscale():"
-#     "strip_icc()/pic4064509.png"
-# )
-# await message.answer(
-#     text=(
-#         f'<a href="{url}">&#8205;</a>'  # скрытая ссылка через zero-width space
-#         f"Hello, <b>{message.from_user.full_name}</b>!"
-#     ),
-#     reply_markup=start_keyboard(),
-# )
+        # Отправляем приветственное сообщение
+        await message.answer(f"Привет, {user.first_name}! Твой ID: {user.telegramm_id}")
+    url = (
+        "https://cf.geekdo-images.com/GfQBoqOl21zQx-Vy-dSHZw__imagepagezoom/"
+        "img/5cxdPGDSaEhGGm1lLkFGKt3-2iE=/fit-in/1200x900/filters:no_upscale():"
+        "strip_icc()/pic4064509.png"
+    )
+    await message.answer(
+        text=(
+            f'<a href="{url}">&#8205;</a>'  # скрытая ссылка через zero-width space
+            f"Hello, <b>{message.from_user.full_name}</b>!"
+        ),
+        reply_markup=start_keyboard(),
+    )
 
 
 @router.message(F.text == ButtonText.HELLO)
