@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends
 
-from app.backend.factories.card_factories import get_card_service
+from app.backend.factories.card_factory import get_card_service
 from app.backend.schemas.card import CardSchema, CreateCardSchema
 from app.backend.crud.card_crud import CardServices
 

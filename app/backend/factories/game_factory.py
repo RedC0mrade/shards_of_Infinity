@@ -1,8 +1,7 @@
 from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.backend.crud.games import GameServices
-from app.backend.crud.users_crud import UserServices
+from app.backend.crud.games_crud import GameServices
 from app.backend.factories.database import db_helper
 
 

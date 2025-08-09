@@ -7,7 +7,7 @@ class StartKBText:
     START_GAME = "Start Game"
     ACCEPT_INVITATION = "Accept Invitation"
 
-def  start_keyboard():
+def start_keyboard():
     start_button = KeyboardButton(text=StartKBText.START_GAME)
     accept_button = KeyboardButton(text=StartKBText.ACCEPT_INVITATION)
 
