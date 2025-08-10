@@ -2,7 +2,8 @@ from pydantic import BaseModel
 
 
 class UserCreateSchema(BaseModel):
-    telegramm_id: int
+    chat_id: int
+    username: str | None = None
     first_name: str | None = None
     last_name: str | None = None
 

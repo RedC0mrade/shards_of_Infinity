@@ -16,7 +16,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 
 if TYPE_CHECKING:
-    from app.backend.core.models.user import TelegrammUser
+    from app.backend.core.models.user import TelegramUser
     from app.backend.core.models.player_state import PlayerState
 
 
@@ -60,22 +60,22 @@ class Game(Base):
         ForeignKey("users.id"),
         nullable=True,
     )
-    player1: Mapped["TelegrammUser"] = relationship(
+    player1: Mapped["TelegramUser"] = relationship(
         "TelegrammUser",
         foreign_keys=[player1_id],
     )
 
-    player2: Mapped[Optional["TelegrammUser"]] = relationship(
+    player2: Mapped[Optional["TelegramUser"]] = relationship(
         "TelegrammUser",
         foreign_keys=[player2_id],
     )
 
-    active_player: Mapped[Optional["TelegrammUser"]] = relationship(
+    active_player: Mapped[Optional["TelegramUser"]] = relationship(
         "TelegrammUser",
         foreign_keys=[active_player_id],
     )
 
-    winner: Mapped[Optional["TelegrammUser"]] = relationship(
+    winner: Mapped[Optional["TelegramUser"]] = relationship(
         "TelegrammUser",
         foreign_keys=[winner_id],
     )

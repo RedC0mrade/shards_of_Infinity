@@ -2,7 +2,7 @@ import secrets
 
 from sqlalchemy import select
 from app.backend.core.models.game import Game
-from app.backend.core.models.user import TelegrammUser
+from app.backend.core.models.user import TelegramUser
 from app.backend.crud.games_crud import GameServices
 from app.backend.factories.database import db_helper
 from aiogram import Router, types, F
@@ -25,7 +25,7 @@ async def handle_start(message: types.Message, command: CommandStart):
     """Команда старт."""
     async with db_helper.session_context() as session:
         user_data = UserCreateSchema(
-            telegramm_id=message.from_user.id,
+            telegram_id=message.from_user.id,
             first_name=message.from_user.first_name,
             last_name=message.from_user.last_name,
         )
@@ -55,7 +55,7 @@ async def new_game(message: types.Message):
 
     async with db_helper.session_context() as session:
         game_service = GameServices(session=session)
-        user = await select(TelegrammUser).where(TelegrammUser.telegramm_id==telegramm_id)
+        user = await select(TelegramUser).where(TelegramUser.telegramm_id==telegramm_id)
         if not user:
         await game_service.create_game(game_data=game_data)
 

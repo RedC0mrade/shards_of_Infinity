@@ -8,7 +8,7 @@ from .base_model import Base
 if TYPE_CHECKING:
     from app.backend.core.models.play_card_instance import PlayerCardInstance
     from app.backend.core.models.game import Game
-    from app.backend.core.models.user import TelegrammUser
+    from app.backend.core.models.user import TelegramUser
 
 
 class PlayerState(Base):
@@ -18,12 +18,20 @@ class PlayerState(Base):
     game_id: Mapped[int] = mapped_column(ForeignKey("games.id"))
     player_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
 
-    health: Mapped[int] = mapped_column(Integer, default=50)  # Стартовое здоровье
-    mastery: Mapped[int] = mapped_column(Integer, default=0)  # Уровень мастерства
-    crystals: Mapped[int] = mapped_column(Integer, default=0)  # Кристаллы (ресурс)
+    health: Mapped[int] = mapped_column(
+        Integer, default=50
+    )  # Стартовое здоровье
+    mastery: Mapped[int] = mapped_column(
+        Integer, default=0
+    )  # Уровень мастерства
+    crystals: Mapped[int] = mapped_column(
+        Integer, default=0
+    )  # Кристаллы (ресурс)
     power: Mapped[int] = mapped_column(Integer, default=0)  # Урон (боевые очки)
 
-    deck_count: Mapped[int] = mapped_column(Integer, default=0)  # Осталось в колоде
+    deck_count: Mapped[int] = mapped_column(
+        Integer, default=0
+    )  # Осталось в колоде
     discard_count: Mapped[int] = mapped_column(Integer, default=0)  # В сбросе
     hand_count: Mapped[int] = mapped_column(Integer, default=0)  # В руке
 

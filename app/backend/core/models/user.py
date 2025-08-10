@@ -9,13 +9,21 @@ if TYPE_CHECKING:
     from app.backend.core.models.player_state import PlayerState
 
 
-class TelegrammUser(Base):
+class TelegramUser(Base):
     __tablename__ = "users"
 
-    telegramm_id: Mapped[int] = mapped_column(Integer, unique=True)
+    id: Mapped[int] = mapped_column(
+        Integer,
+        primary_key=True,  # Делаем PK
+        autoincrement=False  # Отключаем автоинкремент
+    )
+    chat_id: Mapped[int] = mapped_column(Integer, unique=True)
+    username: Mapped[str] = mapped_column(String(20), nullable=True)
     first_name: Mapped[str] = mapped_column(String(20), nullable=True)
     last_name: Mapped[str] = mapped_column(String(20), nullable=True)
     player_states: Mapped["PlayerState"] = relationship(
         "PlayerState",
         back_populates="player",
     )
+    Victories: Mapped[int] = mapped_column(Integer, default=0)
+    Defeats: Mapped[int] = mapped_column(Integer, default=0)
