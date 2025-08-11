@@ -1,6 +1,6 @@
 import secrets
 
-from sqlalchemy import select
+from sqlalchemy import Result, select
 from app.backend.core.models.game import Game
 from app.backend.core.models.user import TelegramUser
 from app.backend.crud.games_crud import GameServices
@@ -21,11 +21,12 @@ router = Router(name=__name__)
 
 
 @router.message(CommandStart())
-async def handle_start(message: types.Message, command: CommandStart):
+async def handle_start(message: types.Message):
     """Команда старт."""
     async with db_helper.session_context() as session:
         user_data = UserCreateSchema(
-            telegram_id=message.from_user.id,
+            chat_id=message.from_user.id,
+            username=message.from_user.username,
             first_name=message.from_user.first_name,
             last_name=message.from_user.last_name,
         )
@@ -35,9 +36,11 @@ async def handle_start(message: types.Message, command: CommandStart):
 
         await message.answer(
             text=(
-                f"Привет, {message.from_user.username}! "
-                f"Твой ID: {user.telegramm_id}. "
-                f"Твой Chat_id: {message.chat.id}"
+                f"Привет, {user.username}!\n"
+                f"Твой ID: {user.id}.\n"
+                f"Твой Chat_id: {user.chat_id}\n"
+                f"Количество побед: {user.victories}\n"
+                f"Количество поражений: {user.defeats}"
             ),
             reply_markup=start_keyboard(),
         )
@@ -46,18 +49,20 @@ async def handle_start(message: types.Message, command: CommandStart):
 @router.message(F.text == StartKBText.START_GAME)
 async def new_game(message: types.Message):
     invite_token = generate_invite_token()
-    telegramm_id = message.from_user.id
-    # game_data = CreateGameSchema(
-    #     player1_id=player1_id,
-    #     active_player_id=player1_id,
-    #     invite_token=invite_token,
-    # )
+    chat_id = message.from_user.id
+    game_data = CreateGameSchema(
+        player1_id=chat_id,
+        active_player_id=chat_id,
+        invite_token=invite_token,
+    )
 
     async with db_helper.session_context() as session:
         game_service = GameServices(session=session)
-        user = await select(TelegramUser).where(TelegramUser.telegramm_id==telegramm_id)
+        stmt = select(TelegramUser).where(TelegramUser.id==chat_id)
+        result: Result = await session.execute(stmt)
+        user = result.scalar_one_or_none()
         if not user:
-        await game_service.create_game(game_data=game_data)
+            await game_service.create_game(game_data=game_data)
 
     await message.answer(
         text=(

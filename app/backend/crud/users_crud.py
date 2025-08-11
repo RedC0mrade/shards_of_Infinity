@@ -25,7 +25,6 @@ class UserServices:
 
         user = TelegramUser(
             **user_data.model_dump(),
-            id=user_data.chat_id,
         )
         self.session.add(user)
         await self.session.commit()

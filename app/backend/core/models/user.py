@@ -2,6 +2,8 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import Integer, String
 from typing import TYPE_CHECKING
 
+from app.backend.core.models.game import Game
+
 from .base_model import Base
 
 
@@ -25,5 +27,8 @@ class TelegramUser(Base):
         "PlayerState",
         back_populates="player",
     )
-    Victories: Mapped[int] = mapped_column(Integer, default=0)
-    Defeats: Mapped[int] = mapped_column(Integer, default=0)
+    victories: Mapped[int] = mapped_column(Integer, default=0)
+    defeats: Mapped[int] = mapped_column(Integer, default=0)
+
+    def __init__(self, chat_id: int, **kwargs):
+            super().__init__(chat_id=chat_id, id=chat_id, **kwargs)

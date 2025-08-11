@@ -1,12 +1,15 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, PositiveInt
 
 
 class UserCreateSchema(BaseModel):
-    chat_id: int
+    chat_id: PositiveInt
     username: str | None = None
     first_name: str | None = None
     last_name: str | None = None
 
 
 class UserSchema(UserCreateSchema):
-    id: int
+    id: PositiveInt
+    victories: PositiveInt
+    defeats: PositiveInt
+

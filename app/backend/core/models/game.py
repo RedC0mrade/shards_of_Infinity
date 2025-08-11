@@ -2,13 +2,11 @@ import enum
 from datetime import datetime
 from typing import TYPE_CHECKING, List, Optional
 from sqlalchemy import (
-    Boolean,
     DateTime,
     Enum,
     String,
     func,
     ForeignKey,
-    Integer,
 )
 
 from .base_model import Base
@@ -61,34 +59,24 @@ class Game(Base):
         nullable=True,
     )
     player1: Mapped["TelegramUser"] = relationship(
-        "TelegrammUser",
+        "TelegramUser",
         foreign_keys=[player1_id],
     )
 
     player2: Mapped[Optional["TelegramUser"]] = relationship(
-        "TelegrammUser",
+        "TelegramUser",
         foreign_keys=[player2_id],
     )
 
     active_player: Mapped[Optional["TelegramUser"]] = relationship(
-        "TelegrammUser",
+        "TelegramUser",
         foreign_keys=[active_player_id],
     )
 
     winner: Mapped[Optional["TelegramUser"]] = relationship(
-        "TelegrammUser",
+        "TelegramUser",
         foreign_keys=[winner_id],
     )
 
     def __repr__(self):
-        return f"<Game id={self.id} status={self.status} player1={self.player1_id} player2={self.player2_id}>"
-
-
-# class Turn(Base):
-#     __tablename__ = "turns"
-
-#     game_id: Mapped[int] = mapped_column(ForeignKey("games.id"))
-#     game: Mapped["Game"] = relationship(back_populates="turns")
-#     active_player_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
-#     turn_number: Mapped[int] = mapped_column(Integer)
-#     created_at: Mapped[datetime] = mapped_column(DateTime, default=func.now())
+        return f"Game id={self.id} status={self.status} player1={self.player1_id} player2={self.player2_id}"

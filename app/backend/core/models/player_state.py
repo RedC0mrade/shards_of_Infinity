@@ -14,7 +14,7 @@ if TYPE_CHECKING:
 class PlayerState(Base):
     __tablename__ = "player_states"
 
-    player = relationship("TelegrammUser", back_populates="player_states")
+    player = relationship("TelegramUser", back_populates="player_states")
     game_id: Mapped[int] = mapped_column(ForeignKey("games.id"))
     player_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
 

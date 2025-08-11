@@ -1,8 +1,8 @@
 """Create table
 
-Revision ID: f12dafe469a6
+Revision ID: ec074c386367
 Revises:
-Create Date: 2025-08-09 11:21:21.300543
+Create Date: 2025-08-11 21:25:52.543277
 
 """
 
@@ -13,7 +13,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = "f12dafe469a6"
+revision: str = "ec074c386367"
 down_revision: Union[str, Sequence[str], None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -63,14 +63,15 @@ def upgrade() -> None:
     )
     op.create_table(
         "users",
-        sa.Column("telegramm_id", sa.Integer(), nullable=False),
+        sa.Column("id", sa.Integer(), autoincrement=False, nullable=False),
+        sa.Column("chat_id", sa.Integer(), nullable=False),
+        sa.Column("username", sa.String(length=20), nullable=True),
         sa.Column("first_name", sa.String(length=20), nullable=True),
         sa.Column("last_name", sa.String(length=20), nullable=True),
-        sa.Column("id", sa.Integer(), nullable=False),
+        sa.Column("victories", sa.Integer(), nullable=False),
+        sa.Column("defeats", sa.Integer(), nullable=False),
         sa.PrimaryKeyConstraint("id", name=op.f("pk_users")),
-        sa.UniqueConstraint(
-            "telegramm_id", name=op.f("uq_users_telegramm_id")
-        ),
+        sa.UniqueConstraint("chat_id", name=op.f("uq_users_chat_id")),
     )
     op.create_table(
         "card_effects",
