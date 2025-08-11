@@ -61,8 +61,8 @@ async def new_game(message: types.Message):
         stmt = select(TelegramUser).where(TelegramUser.id==chat_id)
         result: Result = await session.execute(stmt)
         user = result.scalar_one_or_none()
-        if not user:
-            await game_service.create_game(game_data=game_data)
+        # if not user:
+        await game_service.create_game(game_data=game_data)
 
     await message.answer(
         text=(
