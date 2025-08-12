@@ -7,6 +7,8 @@ from app.backend.crud.games_crud import GameServices
 from app.backend.factories.database import db_helper
 from aiogram import Router, types, F
 from aiogram.filters import CommandStart, Command
+from aiogram.fsm.state import State, StatesGroup
+from aiogram.fsm.context import FSMContext
 
 from app.backend.crud.users_crud import UserServices
 from app.backend.schemas.games import CreateGameSchema
@@ -58,15 +60,65 @@ async def new_game(message: types.Message):
 
     async with db_helper.session_context() as session:
         game_service = GameServices(session=session)
-        stmt = select(TelegramUser).where(TelegramUser.id==chat_id)
+        stmt = select(TelegramUser).where(TelegramUser.id == chat_id)
         result: Result = await session.execute(stmt)
         user = result.scalar_one_or_none()
-        # if not user:
+        if not user:
+            user_data = UserCreateSchema(
+                chat_id=message.from_user.id,
+                username=message.from_user.username,
+                first_name=message.from_user.first_name,
+                last_name=message.from_user.last_name,
+            )
+
+            user_service = UserServices(session=session)
+            user = await user_service.get_or_create_user(user_data)
         await game_service.create_game(game_data=game_data)
 
     await message.answer(
         text=(
-        f"\U0001f3ae Игра создана!\n"
-        f"🔗 Отправь этот токен другу для подключения:\n{invite_token}"
+            f"\U0001f3ae Игра создана!\n"
+            f"🔗 Отправь этот токен другу для подключения:\n{invite_token}"
         )
     )
+
+class AcceptInvitationStates(StatesGroup):
+    waiting_for_invite_code = State()
+
+
+@router.message(F.text == StartKBText.ACCEPT_INVITATION)
+async def ask_invite_code(message: types.Message, state: FSMContext):
+    """Запрашиваем код приглашения у пользователя"""
+    async with db_helper.session_context() as session:
+        game_service = GameServices(session=session)
+
+        # Проверяем, есть ли у пользователя активная игра
+        if await game_service.has_active_game(
+            player_id=message.from_user.id,
+            statuses=[GameStatus.WAITING, GameStatus.IN_PROGRESS]
+        ):
+            await message.answer("❌ У вас уже есть активная игра.")
+            return
+
+    await message.answer("Введите код приглашения:")
+    await state.set_state(AcceptInvitationStates.waiting_for_invite_code)
+
+
+@router.message(AcceptInvitationStates.waiting_for_invite_code)
+async def process_invite_code(message: types.Message, state: FSMContext):
+    """Обрабатываем введённый код приглашения"""
+    invite_code = message.text.strip()
+
+    async with db_helper.session_context() as session:
+        game_service = GameServices(session=session)
+        game = await game_service.join_game_by_code(
+            player_id=message.from_user.id,
+            invite_code=invite_code,
+        )
+
+        if game:
+            await message.answer("✅ Вы успешно присоединились к игре!")
+        else:
+            await message.answer("❌ Код приглашения не найден или игра уже началась.")
+
+    await state.clear()

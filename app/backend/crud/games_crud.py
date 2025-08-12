@@ -17,19 +17,16 @@ class GameServices:
         self,
         game_data: CreateGameSchema,
     ) -> Game:
-        
+
         game = Game(**game_data.model_dump())
-        
+
         self.session.add(game)
         await self.session.commit()
         await self.session.refresh(game)
 
         return game
 
-    async def accept_game(
-        self,
-        game_data: InvateGameSchema
-    ) -> Game:
+    async def accept_game(self, game_data: InvateGameSchema) -> Game:
         stmt = select(Game).where(Game.invite_token == game_data.invite_token)
         result: Result = self.session.execute(stmt)
         game: Game = result.scalar_one_or_none()
