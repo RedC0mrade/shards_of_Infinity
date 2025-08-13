@@ -3,9 +3,9 @@ from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
 from aiogram.utils import markdown
 
-from app.keyboards.survey_keyboard import build_yes_or_no_kb
-from app.routers.survey.states import Survey
-from app.routers.validators.email_validator import valid_email_filter
+from app.trash.keyboards.survey_keyboard import build_yes_or_no_kb
+from app.trash.routers.survey.states import Survey
+from app.trash.routers.validators.email_validator import valid_email_filter
 
 
 router = Router(name=__name__)

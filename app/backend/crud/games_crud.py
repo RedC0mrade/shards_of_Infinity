@@ -1,8 +1,9 @@
 from fastapi import HTTPException, status
-from sqlalchemy import Result, select
+from sqlalchemy import Result, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.backend.core.models.game import Game, GameStatus
+from app.backend.core.models.user import TelegramUser
 from app.backend.schemas.games import CreateGameSchema, InvateGameSchema
 
 
@@ -28,7 +29,7 @@ class GameServices:
 
     async def accept_game(self, game_data: InvateGameSchema) -> Game:
         stmt = select(Game).where(Game.invite_token == game_data.invite_token)
-        result: Result = self.session.execute(stmt)
+        result: Result = await self.session.execute(stmt)
         game: Game = result.scalar_one_or_none()
         if not game:
             raise HTTPException(
@@ -41,3 +42,25 @@ class GameServices:
         self.session.add(game)
         await self.session.commit()
         return game
+
+    async def has_active_game(self, player_id: int) -> bool:
+        stmt = (
+            select(Game)
+            .where(
+                or_(
+                    Game.player1_id == player_id,
+                    Game.player2_id == player_id,
+                ),
+                Game.status == GameStatus.IN_PROGRESS,
+            )
+            .limit(1)
+        )
+        result: Result = await self.session.execute(stmt)
+
+        return result.scalar_one_or_none() is not None
+
+    async def join_game_by_code(self, token: str):
+        stmt = select(Game).where(
+            Game.invite_token == token,
+            Game.status == GameStatus.WAITING,
+        )

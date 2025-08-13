@@ -1,13 +1,10 @@
-import secrets
-
 from sqlalchemy import Result, select
-from app.backend.core.models.game import Game
+from app.backend.core.models.game import Game, GameStatus
 from app.backend.core.models.user import TelegramUser
 from app.backend.crud.games_crud import GameServices
 from app.backend.factories.database import db_helper
 from aiogram import Router, types, F
 from aiogram.filters import CommandStart, Command
-from aiogram.fsm.state import State, StatesGroup
 from aiogram.fsm.context import FSMContext
 
 from app.backend.crud.users_crud import UserServices
@@ -17,6 +14,7 @@ from app.telegram_bot.keyboards.start_keyboard import (
     start_keyboard,
     StartKBText,
 )
+from app.telegram_bot.stats.start_state import AcceptInvitationStates
 from app.utils.generate_token import generate_invite_token
 
 router = Router(name=__name__)
@@ -82,9 +80,6 @@ async def new_game(message: types.Message):
         )
     )
 
-class AcceptInvitationStates(StatesGroup):
-    waiting_for_invite_code = State()
-
 
 @router.message(F.text == StartKBText.ACCEPT_INVITATION)
 async def ask_invite_code(message: types.Message, state: FSMContext):
@@ -93,10 +88,7 @@ async def ask_invite_code(message: types.Message, state: FSMContext):
         game_service = GameServices(session=session)
 
         # Проверяем, есть ли у пользователя активная игра
-        if await game_service.has_active_game(
-            player_id=message.from_user.id,
-            statuses=[GameStatus.WAITING, GameStatus.IN_PROGRESS]
-        ):
+        if await game_service.has_active_game(player_id=message.from_user.id):
             await message.answer("❌ У вас уже есть активная игра.")
             return
 
@@ -111,10 +103,7 @@ async def process_invite_code(message: types.Message, state: FSMContext):
 
     async with db_helper.session_context() as session:
         game_service = GameServices(session=session)
-        game = await game_service.join_game_by_code(
-            player_id=message.from_user.id,
-            invite_code=invite_code,
-        )
+        game = await game_service.join_game_by_code(invite_code=invite_code)
 
         if game:
             await message.answer("✅ Вы успешно присоединились к игре!")
