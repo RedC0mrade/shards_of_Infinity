@@ -1,8 +1,7 @@
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from sqlalchemy import Integer, String
+from sqlalchemy import BigInteger, Integer, String
 from typing import TYPE_CHECKING
 
-from app.backend.core.models.game import Game
 
 from .base_model import Base
 
@@ -15,11 +14,11 @@ class TelegramUser(Base):
     __tablename__ = "users"
 
     id: Mapped[int] = mapped_column(
-        Integer,
+        BigInteger,
         primary_key=True,  # Делаем PK
         autoincrement=False  # Отключаем автоинкремент
     )
-    chat_id: Mapped[int] = mapped_column(Integer, unique=True)
+    chat_id: Mapped[int] = mapped_column(BigInteger, unique=True)
     username: Mapped[str] = mapped_column(String(20), nullable=True)
     first_name: Mapped[str] = mapped_column(String(20), nullable=True)
     last_name: Mapped[str] = mapped_column(String(20), nullable=True)

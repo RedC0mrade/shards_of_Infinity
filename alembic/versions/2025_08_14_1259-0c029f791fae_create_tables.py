@@ -1,8 +1,8 @@
-"""Create table
+"""create tables
 
-Revision ID: ec074c386367
+Revision ID: 0c029f791fae
 Revises:
-Create Date: 2025-08-11 21:25:52.543277
+Create Date: 2025-08-14 12:59:57.280929
 
 """
 
@@ -13,7 +13,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = "ec074c386367"
+revision: str = "0c029f791fae"
 down_revision: Union[str, Sequence[str], None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -63,8 +63,8 @@ def upgrade() -> None:
     )
     op.create_table(
         "users",
-        sa.Column("id", sa.Integer(), autoincrement=False, nullable=False),
-        sa.Column("chat_id", sa.Integer(), nullable=False),
+        sa.Column("id", sa.BigInteger(), autoincrement=False, nullable=False),
+        sa.Column("chat_id", sa.BigInteger(), nullable=False),
         sa.Column("username", sa.String(length=20), nullable=True),
         sa.Column("first_name", sa.String(length=20), nullable=True),
         sa.Column("last_name", sa.String(length=20), nullable=True),
@@ -131,11 +131,11 @@ def upgrade() -> None:
             sa.Enum("WAITING", "IN_PROGRESS", "FINISHED", name="gamestatus"),
             nullable=False,
         ),
-        sa.Column("player1_id", sa.Integer(), nullable=False),
-        sa.Column("player2_id", sa.Integer(), nullable=True),
-        sa.Column("active_player_id", sa.Integer(), nullable=True),
+        sa.Column("player1_id", sa.BigInteger(), nullable=False),
+        sa.Column("player2_id", sa.BigInteger(), nullable=True),
+        sa.Column("active_player_id", sa.BigInteger(), nullable=True),
         sa.Column("invite_token", sa.String(length=32), nullable=True),
-        sa.Column("winner_id", sa.Integer(), nullable=True),
+        sa.Column("winner_id", sa.BigInteger(), nullable=True),
         sa.Column("id", sa.Integer(), nullable=False),
         sa.ForeignKeyConstraint(
             ["active_player_id"],
@@ -163,7 +163,7 @@ def upgrade() -> None:
     op.create_table(
         "player_states",
         sa.Column("game_id", sa.Integer(), nullable=False),
-        sa.Column("player_id", sa.Integer(), nullable=False),
+        sa.Column("player_id", sa.BigInteger(), nullable=False),
         sa.Column("health", sa.Integer(), nullable=False),
         sa.Column("mastery", sa.Integer(), nullable=False),
         sa.Column("crystals", sa.Integer(), nullable=False),

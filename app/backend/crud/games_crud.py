@@ -1,3 +1,4 @@
+from random import choice
 from fastapi import HTTPException, status
 from sqlalchemy import Result, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -59,8 +60,21 @@ class GameServices:
 
         return result.scalar_one_or_none() is not None
 
-    async def join_game_by_code(self, token: str):
+    async def join_game_by_code(
+        self,
+        token: str,
+        player2_id: int,
+    ) -> Game | None:
         stmt = select(Game).where(
             Game.invite_token == token,
             Game.status == GameStatus.WAITING,
         )
+        result: Result = await self.session.execute(stmt)
+        game: Game = result.scalar_one_or_none()
+        if game:
+            game.player2_id = player2_id
+            game.active_player_id = choice([player2_id, game.player1_id])
+            game.status = GameStatus.IN_PROGRESS
+            await self.session.commit()
+            return game
+        return None

@@ -36,7 +36,7 @@ async def handle_start(message: types.Message):
 
         await message.answer(
             text=(
-                f"Привет, {user.username}!\n"
+                f"Привет, {user.first_name}!\n"
                 f"Твой ID: {user.id}.\n"
                 f"Твой Chat_id: {user.chat_id}\n"
                 f"Количество побед: {user.victories}\n"
@@ -99,15 +99,26 @@ async def ask_invite_code(message: types.Message, state: FSMContext):
 @router.message(AcceptInvitationStates.waiting_for_invite_code)
 async def process_invite_code(message: types.Message, state: FSMContext):
     """Обрабатываем введённый код приглашения"""
-    invite_code = message.text.strip()
+    token = message.text.strip()
+    player2_id = message.from_user.id
 
     async with db_helper.session_context() as session:
         game_service = GameServices(session=session)
-        game = await game_service.join_game_by_code(invite_code=invite_code)
+        game = await game_service.join_game_by_code(
+            token=token,
+            player2_id=player2_id,
+        )
 
         if game:
             await message.answer("✅ Вы успешно присоединились к игре!")
+            await message.bot.send_message(
+                chat_id=game.player1_id,
+                text="✅ Игрок принял предложение")
         else:
-            await message.answer("❌ Код приглашения не найден или игра уже началась.")
+            await message.answer(
+                "❌ Код приглашения не найден или игра уже началась."
+            )
+
+
 
     await state.clear()
