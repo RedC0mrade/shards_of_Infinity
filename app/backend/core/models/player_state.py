@@ -42,3 +42,4 @@ class PlayerState(Base):
     cards: Mapped[list["PlayerCardInstance"]] = relationship(
         back_populates="player_state", cascade="all, delete-orphan"
     )
+
