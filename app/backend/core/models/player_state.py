@@ -38,8 +38,8 @@ class PlayerState(Base):
     is_defeated: Mapped[bool] = mapped_column(Boolean, default=False)
 
     # relationships
-    game: Mapped["Game"] = relationship("Game", back_populates="player_states")
+    game: Mapped["Game"] = relationship("Game", back_populates="player_states",)
     cards: Mapped[list["PlayerCardInstance"]] = relationship(
-        back_populates="player_state", cascade="all, delete-orphan"
+        back_populates="player_state", cascade="all, delete-orphan",
     )
 

@@ -1,7 +1,9 @@
 from sqlalchemy import Result, select
 from app.backend.core.models.game import Game, GameStatus
+from app.backend.core.models.player_state import PlayerState
 from app.backend.core.models.user import TelegramUser
 from app.backend.crud.games_crud import GameServices
+from app.backend.crud.player_state_crud import PlayerStateServices
 from app.backend.factories.database import db_helper
 from aiogram import Router, types, F
 from aiogram.filters import CommandStart, Command
@@ -9,6 +11,7 @@ from aiogram.fsm.context import FSMContext
 
 from app.backend.crud.users_crud import UserServices
 from app.backend.schemas.games import CreateGameSchema
+from app.backend.schemas.play_state import CreatePlayStateSchema
 from app.backend.schemas.users import UserCreateSchema
 from app.telegram_bot.keyboards.start_keyboard import (
     start_keyboard,
@@ -104,21 +107,24 @@ async def process_invite_code(message: types.Message, state: FSMContext):
 
     async with db_helper.session_context() as session:
         game_service = GameServices(session=session)
+        get_player_state_service = PlayerStateServices(session=session)
         game = await game_service.join_game_by_code(
             token=token,
             player2_id=player2_id,
         )
 
         if game:
+            player_states = get_player_state_service.assign_mastery(game: Game)
+            await get_player_state_service.create_play_state(play_datas=[player_states])
+
             await message.answer("✅ Вы успешно присоединились к игре!")
             await message.bot.send_message(
                 chat_id=game.player1_id,
-                text="✅ Игрок принял предложение")
+                text="✅ Игрок принял предложение",
+            )
         else:
             await message.answer(
-                "❌ Код приглашения не найден или игра уже началась."
+                text="❌ Код приглашения не найден или игра уже началась."
             )
-
-
 
     await state.clear()

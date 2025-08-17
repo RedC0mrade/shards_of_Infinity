@@ -29,7 +29,7 @@ class CreateCardSchema(BaseModel):
     faction: CardFaction
     icon: str
     start_card: bool = False
-    effects: List[CreateCardEffectSchema]
+    effects: list[CreateCardEffectSchema]
 
 
 class CardSchema(CreateCardSchema):

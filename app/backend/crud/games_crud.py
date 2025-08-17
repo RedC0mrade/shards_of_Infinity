@@ -76,5 +76,6 @@ class GameServices:
             game.active_player_id = choice([player2_id, game.player1_id])
             game.status = GameStatus.IN_PROGRESS
             await self.session.commit()
+            await self.session.refresh(game)
             return game
         return None
