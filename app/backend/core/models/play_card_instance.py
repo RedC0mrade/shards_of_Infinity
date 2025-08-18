@@ -13,9 +13,9 @@ class CardZone(str, enum.Enum):
     DISCARD = "discard"
     IN_PLAY = "in_play"
     EXILED = "exiled"
-    MARKET = "market"  # если потребуется
+    MARKET = "market"      # если потребуется
     CHAMPION = "champion"  # если карта активирована
-    OTHER = "other"  # на будущее
+    OTHER = "other"        # на будущее
 
 
 class PlayerCardInstance(Base):

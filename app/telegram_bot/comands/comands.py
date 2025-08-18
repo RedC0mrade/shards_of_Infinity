@@ -114,8 +114,10 @@ async def process_invite_code(message: types.Message, state: FSMContext):
         )
 
         if game:
-            player_states = get_player_state_service.assign_mastery(game: Game)
-            await get_player_state_service.create_play_state(play_datas=[player_states])
+            player_states = get_player_state_service.assign_mastery(game=game)
+            await get_player_state_service.create_play_state(
+                play_datas=player_states
+            )
 
             await message.answer("✅ Вы успешно присоединились к игре!")
             await message.bot.send_message(

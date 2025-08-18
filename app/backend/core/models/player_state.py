@@ -33,7 +33,7 @@ class PlayerState(Base):
         Integer, default=0
     )  # Осталось в колоде
     discard_count: Mapped[int] = mapped_column(Integer, default=0)  # В сбросе
-    hand_count: Mapped[int] = mapped_column(Integer, default=0)  # В руке
+    hand_count: Mapped[int] = mapped_column(Integer, default=0)     # В руке
 
     is_defeated: Mapped[bool] = mapped_column(Boolean, default=False)
 

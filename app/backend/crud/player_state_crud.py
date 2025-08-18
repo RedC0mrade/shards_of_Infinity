@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.backend.core.models.game import Game
-from app.backend.core.models.play_card_instance import PlayerCardInstance
+from app.backend.core.models.play_card_instance import CardZone, PlayerCardInstance
 from app.backend.core.models.player_state import PlayerState
 from app.backend.schemas.play_state import CreatePlayStateSchema
 
@@ -27,16 +27,15 @@ class PlayerStateServices:
                 cards=[
                     PlayerCardInstance(
                         card_id=card_id,
+                        zone=CardZone.DECK,
                     )
                     for card_id in range(1, 11)
                 ]
             )
             for play_data in play_datas
         ]
-
-        async with self.session.begin():
-            self.session.add_all(play_states)
-
+        self.session.add_all(play_states)
+        await self.session.commit()
         return play_states
 
     def assign_mastery(self, game: Game) -> list[CreatePlayStateSchema]:

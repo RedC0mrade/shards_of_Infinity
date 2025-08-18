@@ -73,7 +73,7 @@ class Card(Base):
             name="champion_health_non_negative",
         ),
     )
-    name: Mapped[str] = mapped_column(String(20), nullable=False)
+    name: Mapped[str] = mapped_column(String(50), nullable=False)
     crystals_cost: Mapped[int] = mapped_column(Integer, nullable=False)
     description: Mapped[str] = mapped_column(String(500), nullable=False)
     shield: Mapped[int] = mapped_column(Integer, nullable=False)
