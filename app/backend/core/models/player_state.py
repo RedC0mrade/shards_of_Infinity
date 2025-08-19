@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from sqlalchemy import ForeignKey, Integer, Boolean
+from sqlalchemy import BigInteger, ForeignKey, Integer, Boolean
 from typing import TYPE_CHECKING
 
 from .base_model import Base
@@ -16,7 +16,7 @@ class PlayerState(Base):
 
     player = relationship("TelegramUser", back_populates="player_states")
     game_id: Mapped[int] = mapped_column(ForeignKey("games.id"))
-    player_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
+    player_id: Mapped[int] = mapped_column(ForeignKey("users.id"), BigInteger)
 
     health: Mapped[int] = mapped_column(
         Integer, default=50

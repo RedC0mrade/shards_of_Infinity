@@ -8,7 +8,7 @@
     "card_type": "Союзник",
     "faction": "Ветвь",
     "icon": "C:/telegram/card_1.jpeg",
-    "start_card": "True",
+    "start_card": "False",
     "effects": [
       {
         "action": "healing",
@@ -35,7 +35,7 @@
     "faction": "Ветвь",
     "card_type": "Союзник",
     "icon": "c:/telegram/card_6.jpeg",
-    "start_card": "True",
+    "start_card": "False",
     "effects": [
       {
         "action": "attack",
@@ -62,7 +62,7 @@
     "faction": "Ветвь",
     "card_type": "Наёмник",
     "icon": "c:/telegram/card_7.jpeg",
-    "start_card": "True",
+    "start_card": "False",
     "effects": [
       {
         "action": "healing",
@@ -82,7 +82,7 @@
     "faction": "Ветвь",
     "card_type": "Наёмник",
     "icon": "c:/telegram/card_10.jpeg",
-    "start_card": "True",
+    "start_card": "False",
     "effects": [
       {
         "action": "attack",
