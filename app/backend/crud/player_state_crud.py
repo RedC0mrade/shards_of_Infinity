@@ -2,7 +2,10 @@ from typing import TYPE_CHECKING
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.backend.core.models.game import Game
-from app.backend.core.models.play_card_instance import CardZone, PlayerCardInstance
+from app.backend.core.models.play_card_instance import (
+    CardZone,
+    PlayerCardInstance,
+)
 from app.backend.core.models.player_state import PlayerState
 from app.backend.schemas.play_state import CreatePlayStateSchema
 

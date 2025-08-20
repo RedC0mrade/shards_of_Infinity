@@ -7,7 +7,9 @@ from sqlalchemy import (
     String,
     func,
     ForeignKey,
+    text,
 )
+from sqlalchemy.dialects.postgresql import JSONB
 
 from .base_model import Base
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -53,6 +55,12 @@ class Game(Base):
         String(32),
         unique=True,
         nullable=True,
+    )
+    market_cards: Mapped[list[int]] = mapped_column(
+        JSONB,
+        default=list,
+        nullable=False,
+        server_default=text("'[]'::jsonb"),
     )
     winner_id: Mapped[int | None] = mapped_column(
         ForeignKey("users.id"),
