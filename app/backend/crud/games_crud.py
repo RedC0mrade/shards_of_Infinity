@@ -79,3 +79,20 @@ class GameServices:
             await self.session.refresh(game)
             return game
         return None
+
+    async def defeat(self, player_id: int,):
+        stmt = (
+            select(Game)
+            .where(
+                or_(
+                    Game.player1_id == player_id,
+                    Game.player2_id == player_id,
+                ),
+                Game.status == GameStatus.IN_PROGRESS,
+            )
+            .limit(1)
+        )
+        result: Result = await self.session.execute(stmt)
+        game = result.scalar_one_or_none()
+        if game:
+            Game.status == GameStatus.FINISHED
