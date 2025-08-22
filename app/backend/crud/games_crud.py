@@ -74,13 +74,21 @@ class GameServices:
         if game:
             game.player2_id = player2_id
             game.active_player_id = choice([player2_id, game.player1_id])
+            game.non_active_player_id = (
+                game.player1_id
+                if game.active_player_id == player2_id
+                else player2_id
+            )
             game.status = GameStatus.IN_PROGRESS
             await self.session.commit()
             await self.session.refresh(game)
             return game
         return None
 
-    async def defeat(self, player_id: int,):
+    async def defeat(
+        self,
+        player_id: int,
+    ):
         stmt = (
             select(Game)
             .where(
@@ -93,6 +101,26 @@ class GameServices:
             .limit(1)
         )
         result: Result = await self.session.execute(stmt)
-        game = result.scalar_one_or_none()
-        if game:
-            Game.status == GameStatus.FINISHED
+        game: Game = result.scalar_one_or_none()
+        if not game:
+            raise ValueError(f"Active game not found for player {player_id}")
+        game.status = GameStatus.FINISHED
+        player2_id = (
+            game.player1_id if game.player1_id != player_id else game.player2_id
+        )
+        stmt = select(TelegramUser).where(TelegramUser.id == player_id)
+        result: Result = await self.session.execute(stmt)
+        loser: TelegramUser = result.scalar_one_or_none()
+        if not loser:
+            raise ValueError(f"User {player_id} not found")
+        loser.defeats += 1
+
+        stmt = select(TelegramUser).where(TelegramUser.id == player2_id)
+        result: Result = await self.session.execute(stmt)
+        winner: TelegramUser = result.scalar_one_or_none()
+        if not winner:
+            raise ValueError(f"User {player2_id} not found")
+        winner.victories += 1
+
+        self.session.add_all([game, loser, winner])
+        await self.session.commit()

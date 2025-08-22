@@ -48,6 +48,10 @@ class Game(Base):
         ForeignKey("users.id"),
         nullable=True,
     )
+    non_active_player_id: Mapped[int | None] = mapped_column(
+        ForeignKey("users.id"),
+        nullable=True,
+        )
     player_states: Mapped[List["PlayerState"]] = relationship(
         back_populates="game", cascade="all, delete-orphan"
     )
