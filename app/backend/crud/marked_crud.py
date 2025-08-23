@@ -61,4 +61,5 @@ class GameMove:
         if len(available_cards) < count:
             return available_cards
 
+        market_cards = random.sample(available_cards, count)
         return random.sample(available_cards, count)

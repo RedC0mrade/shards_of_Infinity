@@ -15,8 +15,8 @@ class PlayerState(Base):
     __tablename__ = "player_states"
 
     player = relationship("TelegramUser", back_populates="player_states")
-    game_id: Mapped[int] = mapped_column(ForeignKey("games.id"))
-    player_id: Mapped[int] = mapped_column(ForeignKey("users.id"), BigInteger)
+    game_id: Mapped[int] = mapped_column(Integer, ForeignKey("games.id"))
+    player_id: Mapped[int] = mapped_column(BigInteger, ForeignKey("users.id"))
 
     health: Mapped[int] = mapped_column(
         Integer, default=50

@@ -71,19 +71,20 @@ class GameServices:
         )
         result: Result = await self.session.execute(stmt)
         game: Game = result.scalar_one_or_none()
-        if game:
-            game.player2_id = player2_id
-            game.active_player_id = choice([player2_id, game.player1_id])
-            game.non_active_player_id = (
-                game.player1_id
-                if game.active_player_id == player2_id
-                else player2_id
-            )
-            game.status = GameStatus.IN_PROGRESS
-            await self.session.commit()
-            await self.session.refresh(game)
-            return game
-        return None
+        if not game:
+            return None
+        
+        game.player2_id = player2_id
+        game.active_player_id = choice([player2_id, game.player1_id])
+        game.non_active_player_id = (
+            game.player1_id
+            if game.active_player_id == player2_id
+            else player2_id
+        )
+        game.status = GameStatus.IN_PROGRESS
+        await self.session.commit()
+        await self.session.refresh(game)
+        return game
 
     async def defeat(
         self,

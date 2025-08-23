@@ -1,8 +1,8 @@
-"""Create table
+"""create tables
 
-Revision ID: 0e6e3a405832
+Revision ID: db1f1460e050
 Revises:
-Create Date: 2025-08-18 20:50:24.132793
+Create Date: 2025-08-23 12:52:54.033459
 
 """
 
@@ -10,10 +10,10 @@ from typing import Sequence, Union
 
 from alembic import op
 import sqlalchemy as sa
-
+from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
-revision: str = "0e6e3a405832"
+revision: str = "db1f1460e050"
 down_revision: Union[str, Sequence[str], None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -134,13 +134,25 @@ def upgrade() -> None:
         sa.Column("player1_id", sa.BigInteger(), nullable=False),
         sa.Column("player2_id", sa.BigInteger(), nullable=True),
         sa.Column("active_player_id", sa.BigInteger(), nullable=True),
+        sa.Column("non_active_player_id", sa.BigInteger(), nullable=True),
         sa.Column("invite_token", sa.String(length=32), nullable=True),
+        sa.Column(
+            "market_cards",
+            postgresql.JSONB(astext_type=sa.Text()),
+            server_default=sa.text("'[]'::jsonb"),
+            nullable=False,
+        ),
         sa.Column("winner_id", sa.BigInteger(), nullable=True),
         sa.Column("id", sa.Integer(), nullable=False),
         sa.ForeignKeyConstraint(
             ["active_player_id"],
             ["users.id"],
             name=op.f("fk_games_active_player_id_users"),
+        ),
+        sa.ForeignKeyConstraint(
+            ["non_active_player_id"],
+            ["users.id"],
+            name=op.f("fk_games_non_active_player_id_users"),
         ),
         sa.ForeignKeyConstraint(
             ["player1_id"],
