@@ -3,6 +3,7 @@ from app.backend.core.models.game import Game, GameStatus
 from app.backend.core.models.player_state import PlayerState
 from app.backend.core.models.user import TelegramUser
 from app.backend.crud.games_crud import GameServices
+from app.backend.crud.market_crud1 import MarketServices
 from app.backend.crud.player_state_crud import PlayerStateServices
 from app.backend.factories.database import db_helper
 from aiogram import Router, types, F
@@ -108,17 +109,17 @@ async def process_invite_code(message: types.Message, state: FSMContext):
     async with db_helper.session_context() as session:
         game_service = GameServices(session=session)
         get_player_state_service = PlayerStateServices(session=session)
+        market_service = MarketServices(session=session)
         game = await game_service.join_game_by_code(
             token=token,
             player2_id=player2_id,
         )
-
         if game:
             player_states = get_player_state_service.assign_mastery(game=game)
             await get_player_state_service.create_play_state(
                 play_datas=player_states
             )
-
+            await market_service.create_market(game=game)
             await message.answer("✅ Вы успешно присоединились к игре!")
             await message.bot.send_message(
                 chat_id=game.player1_id,
