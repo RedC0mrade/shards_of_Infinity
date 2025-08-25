@@ -11,6 +11,7 @@ from aiogram.filters import CommandStart, Command
 from aiogram.fsm.context import FSMContext
 
 from app.backend.crud.users_crud import UserServices
+from app.backend.factories.game_factory import get_game_service
 from app.backend.schemas.games import CreateGameSchema
 from app.backend.schemas.play_state import CreatePlayStateSchema
 from app.backend.schemas.users import UserCreateSchema
@@ -107,10 +108,9 @@ async def process_invite_code(message: types.Message, state: FSMContext):
     player2_id = message.from_user.id
 
     async with db_helper.session_context() as session:
-        game_service = GameServices(session=session)
         get_player_state_service = PlayerStateServices(session=session)
         market_service = MarketServices(session=session)
-        game = await game_service.join_game_by_code(
+        game = await get_game_service.join_game_by_code(
             token=token,
             player2_id=player2_id,
         )
