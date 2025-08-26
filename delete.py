@@ -22,6 +22,10 @@
 # SET user_role = 'super_user'
 # WHERE id = 1;
 
+# UPDATE games 
+# SET status = 'FINISHED'::gamestatus
+# WHERE id = 1;
+
 
 # ruff check .  # проверка кода
 # ruff format .  # форматирование (как black)

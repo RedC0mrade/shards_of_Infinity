@@ -35,11 +35,11 @@ class CardAction(str, enum.Enum):
     HEALING = "healing"
     CRYSTAL = "crystal"
     MIGHT = "might"
-    SPECiAL = "special"
+    SPECIAL = "special"
     TAKE_MERCENARY = "take_mercenary"
     IMMUNITY = "immunity"
     COPY_EFFECT = "copy_effect"
-    DOUBLE_CHOISE = "double_choice"
+    DOUBLE_CHOICE = "double_choice"
     NONE = "none"
 
 
@@ -52,7 +52,7 @@ class ConditionType(str, enum.Enum):
     MASTERY = "mastery"
     PLAYER_HEALTH = "player_health"
     ENEMY_HAS_CHAMPION = "enemy_has_champion"
-    YOU_HAVE_CARD_IN_RESET = "you_have_card"
+    YOU_HAVE_CARD_IN_RESET = "you_have_card_in_reset"
     CARD_ON_TABLE = "card_on_table"
     NONE = "none"
 
@@ -76,17 +76,19 @@ class Card(Base):
     name: Mapped[str] = mapped_column(String(50), nullable=False)
     crystals_cost: Mapped[int] = mapped_column(Integer, nullable=False)
     description: Mapped[str] = mapped_column(String(500), nullable=False)
-    shield: Mapped[int] = mapped_column(Integer, nullable=False)
+    shield: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     champion_health: Mapped[int] = mapped_column(
         Integer,
         nullable=False,
         default=0,
     )
-    faction: Mapped["CardFaction"] = mapped_column(
+    faction: Mapped[CardFaction] = mapped_column(
         Enum(CardFaction),
+        nullable=False,
     )
-    card_type: Mapped["CardType"] = mapped_column(
+    card_type: Mapped[CardType] = mapped_column(
         Enum(CardType),
+        nullable=False,
     )
     icon: Mapped[str] = mapped_column(String(100), nullable=False)
     start_card: Mapped[bool] = mapped_column(Boolean, default=False)
@@ -99,7 +101,12 @@ class Card(Base):
 
 class CardEffect(Base):
     __tablename__ = "card_effects"
-    card_id: Mapped[int] = mapped_column(ForeignKey("cards.id"))
+    card_id: Mapped[int] = mapped_column(
+        ForeignKey(
+            "cards.id",
+            ondelete="CASCADE",
+        )
+    )
     card: Mapped[Card] = relationship(back_populates="effects")
     action: Mapped["CardAction"] = mapped_column(Enum(CardAction))
     value: Mapped[int] = mapped_column(Integer, nullable=True)

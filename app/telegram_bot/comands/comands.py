@@ -1,6 +1,4 @@
 from sqlalchemy import Result, select
-from app.backend.core.models.game import Game, GameStatus
-from app.backend.core.models.player_state import PlayerState
 from app.backend.core.models.user import TelegramUser
 from app.backend.crud.games_crud import GameServices
 from app.backend.crud.market_crud1 import MarketServices
@@ -11,9 +9,7 @@ from aiogram.filters import CommandStart, Command
 from aiogram.fsm.context import FSMContext
 
 from app.backend.crud.users_crud import UserServices
-from app.backend.factories.game_factory import get_game_service
 from app.backend.schemas.games import CreateGameSchema
-from app.backend.schemas.play_state import CreatePlayStateSchema
 from app.backend.schemas.users import UserCreateSchema
 from app.telegram_bot.keyboards.start_keyboard import (
     start_keyboard,
@@ -110,21 +106,32 @@ async def process_invite_code(message: types.Message, state: FSMContext):
     async with db_helper.session_context() as session:
         get_player_state_service = PlayerStateServices(session=session)
         market_service = MarketServices(session=session)
+        get_game_service = GameServices(session=session)
         game = await get_game_service.join_game_by_code(
             token=token,
             player2_id=player2_id,
         )
         if game:
+            # Назначаем у кого сила 1, у кого 0
             player_states = get_player_state_service.assign_mastery(game=game)
-            await get_player_state_service.create_play_state(
+            play_state = await get_player_state_service.create_play_state(
                 play_datas=player_states
             )
-            await market_service.create_market(game=game)
-            await message.answer("✅ Вы успешно присоединились к игре!")
+            # Создаем мартет из 6 рандомных карт
+            market_cards = await market_service.create_market(game=game)
+
+            await session.commit()
+            
             await message.bot.send_message(
-                chat_id=game.player1_id,
-                text="✅ Игрок принял предложение",
+                chat_id=game.non_active_player_id,
+                text="✅ Игра начинается, ходит ваш противник, удачи",
             )
+
+            await message.bot.send_message(
+                chat_id=game.active_player,
+                text="✅ Игра начинается, ваш ход, удачи",
+            )
+            
         else:
             await message.answer(
                 text="❌ Код приглашения не найден или игра уже началась."

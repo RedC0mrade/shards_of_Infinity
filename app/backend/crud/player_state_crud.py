@@ -8,6 +8,7 @@ from app.backend.core.models.play_card_instance import (
 )
 from app.backend.core.models.player_state import PlayerState
 from app.backend.schemas.play_state import CreatePlayStateSchema
+from app.utils.logger import get_logger
 
 if TYPE_CHECKING:
     from app.backend.core.models.game import Game
@@ -19,11 +20,16 @@ class PlayerStateServices:
         session: AsyncSession,
     ):
         self.session = session
+        self.logger = get_logger(self.__class__.__name__)
 
     async def create_play_state(
         self,
         play_datas: list[CreatePlayStateSchema],
     ) -> list[PlayerState]:
+        self.logger.info(
+            "Создание play_state для игроков: %s",
+            [p.player_id for p in play_datas],
+        )
         play_states = [
             PlayerState(
                 **play_data.model_dump(),
@@ -38,7 +44,7 @@ class PlayerStateServices:
             for play_data in play_datas
         ]
         self.session.add_all(play_states)
-        await self.session.commit()
+        await self.session.flush()  # Не забыть, что нужно закоммитить
         return play_states
 
     def assign_mastery(self, game: Game) -> list[CreatePlayStateSchema]:
@@ -46,29 +52,28 @@ class PlayerStateServices:
         player1_id = game.player1_id
         player2_id = game.player2_id
 
+        self.logger.info("Назначение mastery для игры %s", game.id)
+
         if game.active_player_id == player1_id:
-            return [
+            res = [
                 CreatePlayStateSchema(
-                    game_id=game.id,
-                    player_id=player1_id,
-                    mastery=0,
+                    game_id=game.id, player_id=player1_id, mastery=0
                 ),
                 CreatePlayStateSchema(
-                    game_id=game.id,
-                    player_id=player2_id,
-                    mastery=1,
+                    game_id=game.id, player_id=player2_id, mastery=1
                 ),
             ]
         else:
-            return [
+            res = [
                 CreatePlayStateSchema(
-                    game_id=game.id,
-                    player_id=player1_id,
-                    mastery=1,
+                    game_id=game.id, player_id=player1_id, mastery=1
                 ),
                 CreatePlayStateSchema(
-                    game_id=game.id,
-                    player_id=player2_id,
-                    mastery=0,
+                    game_id=game.id, player_id=player2_id, mastery=0
                 ),
             ]
+
+        self.logger.info(
+            "Mastery назначено: %s", {r.player_id: r.mastery for r in res}
+        )
+        return res

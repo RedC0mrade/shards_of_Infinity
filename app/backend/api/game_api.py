@@ -2,7 +2,11 @@ from fastapi import APIRouter, Depends
 
 from app.backend.factories.game_factory import get_game_service
 from app.backend.crud.games_crud import GameServices
-from app.backend.schemas.games import CreateGameSchema, GameSchems, InvateGameSchema
+from app.backend.schemas.games import (
+    CreateGameSchema,
+    GameSchems,
+    InvateGameSchema,
+)
 
 
 router = APIRouter(tags=["Game"])
@@ -22,3 +26,11 @@ async def create_game(
     game_service: GameServices = Depends(get_game_service),
 ):
     return await game_service.accept_game(game_data=game_data)
+
+
+@router.delete("/{game_id}", status_code=204)
+async def delete_game(
+    game_id: int,
+    game_service: GameServices = Depends(get_game_service),
+):
+    return await game_service.delete_game(game_id=game_id)

@@ -1,8 +1,8 @@
-"""create tables
+"""Create tables
 
-Revision ID: db1f1460e050
+Revision ID: 10811e364ac4
 Revises:
-Create Date: 2025-08-23 12:52:54.033459
+Create Date: 2025-08-26 15:58:09.570763
 
 """
 
@@ -13,7 +13,7 @@ import sqlalchemy as sa
 from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
-revision: str = "db1f1460e050"
+revision: str = "10811e364ac4"
 down_revision: Union[str, Sequence[str], None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -85,11 +85,11 @@ def upgrade() -> None:
                 "HEALING",
                 "CRYSTAL",
                 "MIGHT",
-                "SPECiAL",
+                "SPECIAL",
                 "TAKE_MERCENARY",
                 "IMMUNITY",
                 "COPY_EFFECT",
-                "DOUBLE_CHOISE",
+                "DOUBLE_CHOICE",
                 "NONE",
                 name="cardaction",
             ),
@@ -120,6 +120,7 @@ def upgrade() -> None:
             ["card_id"],
             ["cards.id"],
             name=op.f("fk_card_effects_card_id_cards"),
+            ondelete="CASCADE",
         ),
         sa.PrimaryKeyConstraint("id", name=op.f("pk_card_effects")),
     )
