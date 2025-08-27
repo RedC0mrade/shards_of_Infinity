@@ -1,12 +1,12 @@
 import random
 from sqlalchemy import Result, select
+from sqlalchemy.orm import selectinload
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.backend.core.models.card import Card
 from app.backend.core.models.game import Game, GameStatus
 from app.backend.core.models.market import MarketSlot
-from app.backend.core.models.play_card_instance import PlayerCardInstance
-from app.backend.core.models.player_state import PlayerState
+
 from app.utils.logger import get_logger
 
 
@@ -23,10 +23,13 @@ class MarketServices:
         game: Game,
         count: int = 6,
     ) -> list[MarketSlot]:
+        """
+        Создаёт рынок для игры: случайные карты -> MarketSlot.
+        Возвращает список слотов с подгруженными card.
+        """
         self.logger.info(
-            "Создание рынка для игры %s (кол-во карт %s)",
+            "Создание рынка для игры id %s",
             game.id,
-            count,
         )
         stmt = select(Card.id).where(Card.start_card == False)
         result: Result = await self.session.execute(stmt)
@@ -57,8 +60,16 @@ class MarketServices:
 
         self.session.add_all(market_cards)
         await self.session.flush()         # Не забыть, что нужно закоммитить
+        stmt = (
+            select(MarketSlot)
+            .where(MarketSlot.game_id == game.id)
+            .options(selectinload(MarketSlot.card))
+            .order_by(MarketSlot.position)
+        )
+        result: Result = await self.session.execute(stmt)
+        market_slots = result.scalars().all()
         self.logger.info(
             "Рынок для игры %s создан. Карты: %s",
-            game.id, available_cards_ids,
+            game.id, [slot.card_id for slot in market_slots],
         )
-        return market_cards
+        return market_slots

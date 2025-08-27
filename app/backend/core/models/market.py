@@ -18,7 +18,7 @@ class MarketSlot(Base):
     position: Mapped[int] = mapped_column(Integer)
     card_id: Mapped[int] = mapped_column(ForeignKey("cards.id"))
 
-    card: Mapped["Card"] = relationship("Card")
+    card: Mapped["Card"] = relationship("Card", lazy="selectin")
     game: Mapped["Game"] = relationship(
         "Game",
         back_populates="market_slots",

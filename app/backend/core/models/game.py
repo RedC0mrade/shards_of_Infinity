@@ -57,6 +57,7 @@ class Game(Base):
     )
     market_slots: Mapped[List["MarketSlot"]] = relationship(
         back_populates="game",
+        lazy="selectin",
         cascade="all, delete-orphan",
     )
     invite_token: Mapped[str] = mapped_column(
