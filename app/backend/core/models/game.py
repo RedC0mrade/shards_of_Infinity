@@ -7,9 +7,7 @@ from sqlalchemy import (
     String,
     func,
     ForeignKey,
-    text,
 )
-from sqlalchemy.dialects.postgresql import JSONB
 
 from .base_model import Base
 from sqlalchemy.orm import Mapped, mapped_column, relationship
@@ -18,6 +16,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 if TYPE_CHECKING:
     from app.backend.core.models.user import TelegramUser
     from app.backend.core.models.player_state import PlayerState
+    from app.backend.core.models.market import MarketSlot
 
 
 class GameStatus(str, enum.Enum):
@@ -51,20 +50,19 @@ class Game(Base):
     non_active_player_id: Mapped[int | None] = mapped_column(
         ForeignKey("users.id"),
         nullable=True,
-        )
+    )
     player_states: Mapped[List["PlayerState"]] = relationship(
-        back_populates="game", cascade="all, delete-orphan"
+        back_populates="game",
+        cascade="all, delete-orphan",
+    )
+    market_slots: Mapped[List["MarketSlot"]] = relationship(
+        back_populates="game",
+        cascade="all, delete-orphan",
     )
     invite_token: Mapped[str] = mapped_column(
         String(32),
         unique=True,
         nullable=True,
-    )
-    market_cards: Mapped[list[int]] = mapped_column(
-        JSONB,
-        default=list,
-        nullable=False,
-        server_default=text("'[]'::jsonb"),
     )
     winner_id: Mapped[int | None] = mapped_column(
         ForeignKey("users.id"),

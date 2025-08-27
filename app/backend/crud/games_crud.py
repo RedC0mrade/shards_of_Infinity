@@ -77,11 +77,16 @@ class GameServices:
             .limit(1)
         )
         result: Result = await self.session.execute(stmt)
-        game: Game | None = result.scalar_one_or_none()
-        if not game:
-            self.logger.critical("game not found")
-        self.logger.info("Game %s status %s", game.id, game.status)
-        return True
+        game = result.scalar_one_or_none()
+        if game:
+            self.logger.critical(
+                "the game %s has already started status %s",
+                game.id,
+                game.status,
+            )
+            return True
+        self.logger.info("game not found")
+        return False
 
     async def join_game_by_code(
         self,
@@ -188,5 +193,4 @@ class GameServices:
         stmt = delete(Game).where(Game.id == game_id)
         await self.session.execute(stmt)
         await self.session.commit()
-        self.logger.info("Игра %s успешно удалена", game_id)
-
+        self.logger.info("Игра с id %s успешно удалена", game_id)

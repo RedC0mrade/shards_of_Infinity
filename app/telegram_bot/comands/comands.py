@@ -128,7 +128,7 @@ async def process_invite_code(message: types.Message, state: FSMContext):
             )
 
             await message.bot.send_message(
-                chat_id=game.active_player,
+                chat_id=game.active_player_id,
                 text="✅ Игра начинается, ваш ход, удачи",
             )
             

@@ -23,14 +23,14 @@ class PlayerCardInstance(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True)
 
-    player_state_id: Mapped[int] = mapped_column(ForeignKey("player_states.id"))
+    player_state_id: Mapped[int] = mapped_column(ForeignKey("player_states.id", ondelete="CASCADE"))
     card_id: Mapped[int] = mapped_column(ForeignKey("cards.id"))
 
     zone: Mapped[CardZone] = mapped_column(Enum(CardZone))
-    order_in_zone: Mapped[int] = mapped_column(Integer, default=0)
+    # order_in_zone: Mapped[int] = mapped_column(Integer, default=0)
 
-    is_exhausted: Mapped[bool] = mapped_column(Boolean, default=False)
-    was_played_this_turn: Mapped[bool] = mapped_column(Boolean, default=False)
+    # is_exhausted: Mapped[bool] = mapped_column(Boolean, default=False)
+    # was_played_this_turn: Mapped[bool] = mapped_column(Boolean, default=False)
 
     # Relationships
     card: Mapped["Card"] = relationship("Card")

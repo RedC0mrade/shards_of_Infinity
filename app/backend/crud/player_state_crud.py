@@ -1,6 +1,9 @@
+import random
 from typing import TYPE_CHECKING
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.backend.core.models.card import Card
 from app.backend.core.models.game import Game
 from app.backend.core.models.play_card_instance import (
     CardZone,
@@ -30,6 +33,13 @@ class PlayerStateServices:
             "Создание play_state для игроков: %s",
             [p.player_id for p in play_datas],
         )
+        stmt = select(Card.id).where(Card.start_card == True)
+        result = await self.session.execute(stmt)
+        start_card_ids: list[int] = result.scalars().all()
+
+        if not start_card_ids:
+            raise ValueError("В базе нет стартовых карт!")
+
         play_states = [
             PlayerState(
                 **play_data.model_dump(),
@@ -38,13 +48,16 @@ class PlayerStateServices:
                         card_id=card_id,
                         zone=CardZone.DECK,
                     )
-                    for card_id in range(1, 11)
+                    for card_id in start_card_ids
                 ]
             )
             for play_data in play_datas
         ]
         self.session.add_all(play_states)
         await self.session.flush()  # Не забыть, что нужно закоммитить
+        self.logger.info(
+            "Создано play_state: %s", [ps.player_id for ps in play_states]
+        )
         return play_states
 
     def assign_mastery(self, game: Game) -> list[CreatePlayStateSchema]:
@@ -77,3 +90,40 @@ class PlayerStateServices:
             "Mastery назначено: %s", {r.player_id: r.mastery for r in res}
         )
         return res
+
+
+    async def draw_cards(self, player_state: PlayerState, count: int = 5,) -> list[PlayerCardInstance]:
+        """Добор карт в руку"""
+        # 1. Сколько карт уже в руке
+        current_hand = [c for c in player_state.cards if c.zone == CardZone.HAND]
+        need_to_draw = count - len(current_hand)
+        if need_to_draw <= 0:
+            return current_hand
+
+        drawn_cards: list[PlayerCardInstance] = []
+
+        while need_to_draw > 0:
+            # Берём карты из DECK
+            deck_cards = [c for c in player_state.cards if c.zone == CardZone.DECK]
+            if not deck_cards:
+                # Если DECK пуст — перемешиваем DISCARD обратно в DECK
+                discard_cards = [c for c in player_state.cards if c.zone == CardZone.DISCARD]
+                if not discard_cards:
+                    break  # вообще нет карт
+                # Перемещаем в DECK
+                for c in discard_cards:
+                    c.zone = CardZone.DECK
+                random.shuffle(discard_cards)  # перемешивание
+                # можно обновить order_in_zone
+                for idx, c in enumerate(discard_cards):
+                    c.order_in_zone = idx
+
+                deck_cards = discard_cards
+
+            # Добираем одну карту
+            card = deck_cards.pop(0)  # верхняя
+            card.zone = CardZone.HAND
+            drawn_cards.append(card)
+            need_to_draw -= 1
+
+        return drawn_cards

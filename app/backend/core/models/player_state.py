@@ -15,7 +15,9 @@ class PlayerState(Base):
     __tablename__ = "player_states"
 
     player = relationship("TelegramUser", back_populates="player_states")
-    game_id: Mapped[int] = mapped_column(Integer, ForeignKey("games.id"))
+    game_id: Mapped[int] = mapped_column(
+        Integer, ForeignKey("games.id", ondelete="CASCADE")
+    )
     player_id: Mapped[int] = mapped_column(BigInteger, ForeignKey("users.id"))
 
     health: Mapped[int] = mapped_column(
@@ -29,17 +31,20 @@ class PlayerState(Base):
     )  # Кристаллы (ресурс)
     power: Mapped[int] = mapped_column(Integer, default=0)  # Урон (боевые очки)
 
-    deck_count: Mapped[int] = mapped_column(
-        Integer, default=0
-    )  # Осталось в колоде
-    discard_count: Mapped[int] = mapped_column(Integer, default=0)  # В сбросе
-    hand_count: Mapped[int] = mapped_column(Integer, default=0)     # В руке
+    # deck_count: Mapped[int] = mapped_column(
+    #     Integer, default=0
+    # )  # Осталось в колоде
+    # discard_count: Mapped[int] = mapped_column(Integer, default=0)  # В сбросе
+    # hand_count: Mapped[int] = mapped_column(Integer, default=0)  # В руке
 
-    is_defeated: Mapped[bool] = mapped_column(Boolean, default=False)
+    # is_defeated: Mapped[bool] = mapped_column(Boolean, default=False)
 
     # relationships
-    game: Mapped["Game"] = relationship("Game", back_populates="player_states",)
-    cards: Mapped[list["PlayerCardInstance"]] = relationship(
-        back_populates="player_state", cascade="all, delete-orphan",
+    game: Mapped["Game"] = relationship(
+        "Game",
+        back_populates="player_states",
     )
-
+    cards: Mapped[list["PlayerCardInstance"]] = relationship(
+        back_populates="player_state",
+        cascade="all, delete-orphan",
+    )
