@@ -11,6 +11,7 @@ from aiogram.fsm.context import FSMContext
 from app.backend.crud.users_crud import UserServices
 from app.backend.schemas.games import CreateGameSchema
 from app.backend.schemas.users import UserCreateSchema
+from app.telegram_bot.keyboards.game_move_keyboard import in_play_card_keyboard
 from app.telegram_bot.keyboards.start_keyboard import (
     start_keyboard,
     StartKBText,
@@ -121,7 +122,7 @@ async def process_invite_code(message: types.Message, state: FSMContext):
             market_cards = await market_service.create_market(game=game)
 
             await session.commit()
-            
+
             await message.bot.send_message(
                 chat_id=game.non_active_player_id,
                 text="✅ Игра начинается, ходит ваш противник, удачи",
@@ -130,8 +131,9 @@ async def process_invite_code(message: types.Message, state: FSMContext):
             await message.bot.send_message(
                 chat_id=game.active_player_id,
                 text="✅ Игра начинается, ваш ход, удачи",
+                reply_markup=in_play_card_keyboard(),
             )
-            
+
         else:
             await message.answer(
                 text="❌ Код приглашения не найден или игра уже началась."
