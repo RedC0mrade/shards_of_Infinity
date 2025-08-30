@@ -44,7 +44,8 @@ class MarketServices:
         if len(available_cards) < count:
             self.logger.warning(
                 "Доступных карт (%s) меньше, чем требуется (%s). Используем все карты.",
-                len(available_cards), count,
+                len(available_cards),
+                count,
             )
             count = len(available_cards)
 
@@ -59,7 +60,7 @@ class MarketServices:
         ]
 
         self.session.add_all(market_cards)
-        await self.session.flush()         # Не забыть, что нужно закоммитить
+        await self.session.flush()  # Не забыть, что нужно закоммитить
         stmt = (
             select(MarketSlot)
             .where(MarketSlot.game_id == game.id)
@@ -70,6 +71,31 @@ class MarketServices:
         market_slots = result.scalars().all()
         self.logger.info(
             "Рынок для игры %s создан. Карты: %s",
-            game.id, [slot.card_id for slot in market_slots],
+            game.id,
+            [slot.card_id for slot in market_slots],
         )
+        return market_slots
+
+    async def get_market_slots(self, game_id: int) -> list[MarketSlot]:
+        """Получаем карты с рынка"""
+        self.logger.info(
+            "Получаем Маркет слоты по game id == %s",
+            game_id,
+        )
+
+        stmt = (
+            select(MarketSlot)
+            .where(MarketSlot.game_id == game_id)
+            .order_by(MarketSlot.position)
+        )
+
+        result: Result = await self.session.execute(stmt)
+        market_slots = result.scalars().all()
+
+        if not market_slots:
+            self.logger.warning(
+                "Нет карт на рынке у игры с id == %s",
+                game_id,
+            )
+            return None
         return market_slots

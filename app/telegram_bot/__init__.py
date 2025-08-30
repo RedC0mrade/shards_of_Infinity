@@ -1,10 +1,12 @@
 __all__ = ("router",)
 from aiogram import Router
 
-from app.telegram_bot.comands.comands import router as comands_router
+from app.telegram_bot.comands.start_comands import router as comands_router
+from app.telegram_bot.comands.game_comands import router as game_router
 
 router = Router()
 
 router.include_routers(
     comands_router,
+    game_router,
 )

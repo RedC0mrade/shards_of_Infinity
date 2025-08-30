@@ -5,6 +5,7 @@ from app.backend.crud.market_crud1 import MarketServices
 from app.backend.crud.player_state_crud import PlayerStateServices
 from app.backend.factories.database import db_helper
 from aiogram import Router, types, F
+from aiogram.types import ReplyKeyboardRemove
 from aiogram.filters import CommandStart, Command
 from aiogram.fsm.context import FSMContext
 
@@ -126,17 +127,17 @@ async def process_invite_code(message: types.Message, state: FSMContext):
             await message.bot.send_message(
                 chat_id=game.non_active_player_id,
                 text="✅ Игра начинается, ходит ваш противник, удачи",
+                reply_markup=in_play_card_keyboard(),
             )
 
             await message.bot.send_message(
                 chat_id=game.active_player_id,
                 text="✅ Игра начинается, ваш ход, удачи",
-                reply_markup=in_play_card_keyboard(),
             )
 
         else:
             await message.answer(
-                text="❌ Код приглашения не найден или игра уже началась."
+                text="❌ Код приглашения не найден или игра уже началась.",
             )
 
     await state.clear()
