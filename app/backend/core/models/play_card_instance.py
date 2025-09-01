@@ -23,7 +23,12 @@ class PlayerCardInstance(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True)
 
-    player_state_id: Mapped[int] = mapped_column(ForeignKey("player_states.id", ondelete="CASCADE"))
+    player_state_id: Mapped[int] = mapped_column(
+        ForeignKey(
+            "player_states.id",
+            ondelete="CASCADE",
+        )
+    )
     card_id: Mapped[int] = mapped_column(ForeignKey("cards.id"))
 
     zone: Mapped[CardZone] = mapped_column(Enum(CardZone))

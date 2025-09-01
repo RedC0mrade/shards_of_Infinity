@@ -1,4 +1,4 @@
-import random
+from random import sample
 from sqlalchemy import Result, select
 from sqlalchemy.orm import selectinload
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -49,7 +49,7 @@ class MarketServices:
             )
             count = len(available_cards)
 
-        available_cards_ids: list[int] = random.sample(available_cards, count)
+        available_cards_ids: list[int] = sample(available_cards, count)
         market_cards = [
             MarketSlot(
                 game_id=game.id,
