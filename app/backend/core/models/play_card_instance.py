@@ -32,14 +32,16 @@ class PlayerCardInstance(Base):
     card_id: Mapped[int] = mapped_column(ForeignKey("cards.id"))
 
     zone: Mapped[CardZone] = mapped_column(Enum(CardZone))
-    # order_in_zone: Mapped[int] = mapped_column(Integer, default=0)
 
-    # is_exhausted: Mapped[bool] = mapped_column(Boolean, default=False)
-    # was_played_this_turn: Mapped[bool] = mapped_column(Boolean, default=False)
-
-    # Relationships
-    card: Mapped["Card"] = relationship("Card")
+    card: Mapped["Card"] = relationship("Card", lazy="selectin")
     player_state: Mapped["PlayerState"] = relationship(
         "PlayerState",
         back_populates="cards",
     )
+
+    def __repr__(self) -> str:
+        return (
+            f"<PlayerCardInstance id={self.id} "
+            f"card_id={self.card_id} "
+            f"zone={self.zone}>"
+        )

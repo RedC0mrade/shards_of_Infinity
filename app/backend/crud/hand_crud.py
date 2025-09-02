@@ -1,5 +1,4 @@
-from random import choice
-from fastapi import HTTPException, status
+from random import choice, sample
 from sqlalchemy import Result, delete, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -19,9 +18,51 @@ class HandServices:
         self.session = session
         self.logger = get_logger(self.__class__.__name__)
 
-    async def get_hand(self, player_id: int):
-        """Страртовая рука перед началом хода."""
+    async def get_hand(
+        self,
+        player_id: int,
+        hand_count: int = 5,
+    ) -> list[PlayerCardInstance]:
+        """Получаем карты, которые в руке"""
 
+        self.logger.info(
+            "Создание руки для игрока с id %s",
+            player_id,
+        )
+        stmt = (
+            select(PlayerCardInstance)
+            .join(
+                PlayerState,
+                PlayerCardInstance.player_state_id == PlayerState.id,
+            )
+            .where(
+                PlayerState.player_id == player_id,
+                PlayerCardInstance.zone == CardZone.HAND,
+            )
+        )
+        result: Result = await self.session.execute(stmt)
+        hand = result.scalars().all()
+
+        self.logger.info("Карты игрока %s", hand)
+        if len(hand) != hand_count:
+            self.logger.warning(
+                "Ошибка в количестве карт в руке! Количество: %s",
+                len(hand),
+            )
+            return None
+        return hand
+
+    async def create_hand(
+        self,
+        player_id: int,
+        hand_count: int = 5,
+    ) -> list[PlayerCardInstance]:
+        """Рука после окончания хода."""
+
+        self.logger.info(
+            "Создание руки для игрока с id %s",
+            player_id,
+        )
         stmt = (
             select(PlayerCardInstance)
             .join(
@@ -34,8 +75,18 @@ class HandServices:
             )
         )
         result: Result = await self.session.execute(stmt)
-        card_instance = result.scalars().all()
-        if len(card_instance < 5):
+        deck = result.scalars().all()
+
+        self.logger.info("Колода игрока %s", deck)
+
+        if len(deck) < hand_count:
+
+            self.logger.info(
+                "Карт в колоде меньше %s: %s",
+                hand_count,
+                len(deck),
+            )
+
             stmt = (
                 select(PlayerCardInstance)
                 .join(
@@ -48,9 +99,38 @@ class HandServices:
                 )
             )
             result: Result = await self.session.execute(stmt)
-            discards = result.scalars().all()
-            
-            while card_instance < 5:
-                card_instance += choice(discards)
-        
-        stmt = 
+            discards: list[PlayerCardInstance] = result.scalars().all()
+
+            self.logger.info("Карты в бросе %s", discards)
+
+            hand_cards = deck
+
+            while len(hand_cards) < hand_count:
+
+                self.logger.info(
+                    "Увеличиваем руку из 5 карт. Карты на данный момент == %s",
+                    hand_cards,
+                )
+
+                card = choice(discards)
+                hand_cards.append(card)
+                discards.remove(card)
+
+            for card in discards:
+                card.zone = CardZone.DECK
+
+        else:
+            hand_cards = sample(
+                deck,
+                hand_count,
+            )
+            self.logger.info("Карты взятые в руку - %s", hand_cards)
+
+        for card in hand_cards:
+            card.zone = CardZone.HAND
+
+        # self.session.add_all(discards + hand_cards)
+        await self.session.commit()
+        self.logger.info("Финальная рука: %s", hand_cards)
+
+        # return hand_cards

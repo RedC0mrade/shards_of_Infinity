@@ -98,6 +98,11 @@ class Card(Base):
         lazy="joined",
     )
 
+    def __repr__(self) -> str:
+        return(
+            f"<Card(id={self.id}), "
+            f"name={self.name}"
+        )
 
 class CardEffect(Base):
     __tablename__ = "card_effects"
