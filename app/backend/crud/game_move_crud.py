@@ -16,3 +16,6 @@ class MoveServices:
     ):
         self.session = session
         self.logger = get_logger(self.__class__.__name__)
+
+    async def get_move(card_id: int):
+        pass

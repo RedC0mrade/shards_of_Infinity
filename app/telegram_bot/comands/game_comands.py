@@ -10,6 +10,7 @@ from app.backend.crud.market_crud1 import MarketServices
 from app.backend.factories.database import db_helper
 
 from app.telegram_bot.keyboards.game_move_keyboard import MoveKBText
+from app.telegram_bot.keyboards.hand_keyboard import make_card_move_keyboard
 
 router = Router(name=__name__)
 
@@ -63,7 +64,7 @@ async def handle_hand(message: types.Message):
             await message.answer("❌ У вас нет активной игры.")
             return
 
-        hand_cards: list[PlayerCardInstance] = await hand_services.create_hand(
+        hand_cards: list[PlayerCardInstance] = await hand_services.get_hand(
             player_id=message.from_user.id
         )
 
@@ -82,3 +83,6 @@ async def handle_hand(message: types.Message):
             )
 
         await message.answer_media_group(cards)
+        await message.answer(
+            "Выберите карту:", reply_markup=make_card_move_keyboard(hand_cards)
+        )

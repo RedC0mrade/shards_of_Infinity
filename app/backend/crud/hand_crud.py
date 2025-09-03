@@ -44,12 +44,12 @@ class HandServices:
         hand = result.scalars().all()
 
         self.logger.info("Карты игрока %s", hand)
-        if len(hand) != hand_count:
-            self.logger.warning(
-                "Ошибка в количестве карт в руке! Количество: %s",
-                len(hand),
-            )
-            return None
+        # if len(hand) != hand_count:
+        #     self.logger.warning(
+        #         "Ошибка в количестве карт в руке! Количество: %s",
+        #         len(hand),
+        #     )
+        #     return None
         return hand
 
     async def create_hand(
@@ -129,8 +129,9 @@ class HandServices:
         for card in hand_cards:
             card.zone = CardZone.HAND
 
+
         # self.session.add_all(discards + hand_cards)
-        await self.session.commit()
+        await self.session.commit() 
         self.logger.info("Финальная рука: %s", hand_cards)
 
         # return hand_cards

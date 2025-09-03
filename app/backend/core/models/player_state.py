@@ -30,16 +30,26 @@ class PlayerState(Base):
         Integer, default=0
     )  # Кристаллы (ресурс)
     power: Mapped[int] = mapped_column(Integer, default=0)  # Урон (боевые очки)
-
-    # deck_count: Mapped[int] = mapped_column(
-    #     Integer, default=0
-    # )  # Осталось в колоде
-    # discard_count: Mapped[int] = mapped_column(Integer, default=0)  # В сбросе
-    # hand_count: Mapped[int] = mapped_column(Integer, default=0)  # В руке
-
-    # is_defeated: Mapped[bool] = mapped_column(Boolean, default=False)
-
-    # relationships
+    wilds_count: Mapped[int] = mapped_column(
+        Integer,
+        default=0,
+        server_default="0",
+    )
+    order_count: Mapped[int] = mapped_column(
+        Integer,
+        default=0,
+        server_default="0",
+    )
+    homodeus_count: Mapped[int] = mapped_column(
+        Integer,
+        default=0,
+        server_default="0",
+    )
+    demirealm_count: Mapped[int] = mapped_column(
+        Integer,
+        default=0,
+        server_default="0",
+    )
     game: Mapped["Game"] = relationship(
         "Game",
         back_populates="player_states",

@@ -1,6 +1,7 @@
 from sqlalchemy import Result, select
 from app.backend.core.models.user import TelegramUser
 from app.backend.crud.games_crud import GameServices
+from app.backend.crud.hand_crud import HandServices
 from app.backend.crud.market_crud1 import MarketServices
 from app.backend.crud.player_state_crud import PlayerStateServices
 from app.backend.factories.database import db_helper
@@ -109,6 +110,7 @@ async def process_invite_code(message: types.Message, state: FSMContext):
         get_player_state_service = PlayerStateServices(session=session)
         market_service = MarketServices(session=session)
         get_game_service = GameServices(session=session)
+        hand_service = HandServices(session=session)
         game = await get_game_service.join_game_by_code(
             token=token,
             player2_id=player2_id,
@@ -116,13 +118,17 @@ async def process_invite_code(message: types.Message, state: FSMContext):
         if game:
             # Назначаем у кого сила 1, у кого 0
             player_states = get_player_state_service.assign_mastery(game=game)
-            play_state = await get_player_state_service.create_play_state(
+            await get_player_state_service.create_play_state(
                 play_datas=player_states
             )
             # Создаем мартет из 6 рандомных карт
-            market_cards = await market_service.create_market(game=game)
+            await market_service.create_market(game=game)
 
             await session.commit()
+
+            # создаем стартовую руку у обоих пользователей
+            await hand_service.create_hand(game.active_player_id)
+            await hand_service.create_hand(game.non_active_player_id)
 
             await message.bot.send_message(
                 chat_id=game.non_active_player_id,
