@@ -91,11 +91,16 @@ class PlayerStateServices:
         )
         return res
 
-
-    async def draw_cards(self, player_state: PlayerState, count: int = 5,) -> list[PlayerCardInstance]:
+    async def draw_cards(
+        self,
+        player_state: PlayerState,
+        count: int = 5,
+    ) -> list[PlayerCardInstance]:
         """Добор карт в руку"""
         # 1. Сколько карт уже в руке
-        current_hand = [c for c in player_state.cards if c.zone == CardZone.HAND]
+        current_hand = [
+            c for c in player_state.cards if c.zone == CardZone.HAND
+        ]
         need_to_draw = count - len(current_hand)
         if need_to_draw <= 0:
             return current_hand
@@ -104,10 +109,14 @@ class PlayerStateServices:
 
         while need_to_draw > 0:
             # Берём карты из DECK
-            deck_cards = [c for c in player_state.cards if c.zone == CardZone.DECK]
+            deck_cards = [
+                c for c in player_state.cards if c.zone == CardZone.DECK
+            ]
             if not deck_cards:
                 # Если DECK пуст — перемешиваем DISCARD обратно в DECK
-                discard_cards = [c for c in player_state.cards if c.zone == CardZone.DISCARD]
+                discard_cards = [
+                    c for c in player_state.cards if c.zone == CardZone.DISCARD
+                ]
                 if not discard_cards:
                     break  # вообще нет карт
                 # Перемещаем в DECK

@@ -41,3 +41,9 @@ class CardServices:
         for card in cards_data:
             cards.append(await self.create_card(card))
         return cards
+
+    async def get_card(self, card_id: int) -> Card:
+        stmt = select(Card).where(Card.id==card_id)
+        result: Result = await self.session.execute(stmt)
+        card = result.unique().scalar_one_or_none()
+        return card
