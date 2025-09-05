@@ -2,7 +2,9 @@ from aiogram import Router, F
 from aiogram.types import CallbackQuery, FSInputFile
 
 from app.backend.core.models.card import Card
+from app.backend.core.models.player_state import PlayerState
 from app.backend.crud.card_crud import CardServices
+from app.backend.crud.player_state_crud import PlayerStateServices
 from app.telegram_bot.keyboards.hand_keyboard import CallBackCard
 
 from app.backend.factories.database import db_helper
@@ -16,18 +18,23 @@ async def handle_play_card(
     callback: CallbackQuery,
     callback_data: CallBackCard,
 ):
-    
-    async with db_helper.session_context() as session:
-        card_servises = CardServices(session=session)
 
-        card: Card = await card_servises.get_card(card_id=callback_data.id)
+    async with db_helper.session_context() as session:
+        card_services = CardServices(session=session)
+        player_state_services = PlayerStateServices(session=session)
+
+        player_state: PlayerState = await player_state_services.get_game(
+            player_id=callback.from_user.id
+        )
+        if player_state.game.active_player_id != callback.from_user.id:
+            await callback.answer(text="Пожалуйста, дождитесь своего хода")
+        
+        card: Card = await card_services.get_card(card_id=callback_data.id)
 
         photo = FSInputFile(card.icon)
 
-        
         await callback.message.answer_photo(
-            photo=photo,
-            caption=f"Карта {card.name} в вашей колоде"
+            photo=photo, caption=f"Вы сыграли карту {card.name}"
         )
         # answer(text=f"Ты сыграл карту {id}, name {name}")
         await callback.from_user.id

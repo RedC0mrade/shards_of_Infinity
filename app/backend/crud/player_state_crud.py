@@ -1,6 +1,7 @@
 import random
 from typing import TYPE_CHECKING
-from sqlalchemy import select
+from sqlalchemy import Result, select
+from sqlalchemy.orm import joinedload
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.backend.core.models.card import Card
@@ -136,3 +137,15 @@ class PlayerStateServices:
             need_to_draw -= 1
 
         return drawn_cards
+
+    async def get_game(self, player_id: int) -> Game:
+
+        stmt = (
+            select(PlayerState)
+            .options(joinedload(PlayerState.game))
+            .where(PlayerState.player_id == player_id)
+        )
+        result: Result = self.session.execute(stmt)
+        player_state = result.scalar_one_or_none()
+
+        return player_state
