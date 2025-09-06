@@ -145,7 +145,7 @@ class PlayerStateServices:
             .options(joinedload(PlayerState.game))
             .where(PlayerState.player_id == player_id)
         )
-        result: Result = self.session.execute(stmt)
+        result: Result = await self.session.execute(stmt)
         player_state = result.scalar_one_or_none()
 
         return player_state

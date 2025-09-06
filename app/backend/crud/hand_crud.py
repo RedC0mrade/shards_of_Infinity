@@ -26,7 +26,7 @@ class HandServices:
         """Получаем карты, которые в руке"""
 
         self.logger.info(
-            "Создание руки для игрока с id %s",
+            "Полчение руки для игрока с id %s",
             player_id,
         )
         stmt = (
