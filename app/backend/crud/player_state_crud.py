@@ -31,8 +31,9 @@ class PlayerStateServices:
         play_datas: list[CreatePlayStateSchema],
     ) -> list[PlayerState]:
         self.logger.info(
-            "Создание play_state для игроков: %s",
-            [p.player_id for p in play_datas],
+            "Создание play_state для игроков: %s, %s",
+            play_datas[0],
+            play_datas,
         )
         stmt = select(Card.id).where(Card.start_card == True)
         result = await self.session.execute(stmt)
@@ -56,8 +57,8 @@ class PlayerStateServices:
         ]
         self.session.add_all(play_states)
         await self.session.flush()  # Не забыть, что нужно закоммитить
-        self.logger.info(
-            "Создано play_state: %s", [ps.player_id for ps in play_states]
+        self.logger.debug(
+            "Создано play_state: %s", play_states
         )
         return play_states
 

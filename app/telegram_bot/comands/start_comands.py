@@ -20,9 +20,10 @@ from app.telegram_bot.keyboards.start_keyboard import (
 )
 from app.telegram_bot.stats.start_state import AcceptInvitationStates
 from app.utils.generate_token import generate_invite_token
+from app.utils.logger import get_logger
 
 router = Router(name=__name__)
-
+logger = get_logger(__name__)
 
 @router.message(CommandStart())
 async def handle_start(message: types.Message):
@@ -139,6 +140,7 @@ async def process_invite_code(message: types.Message, state: FSMContext):
             await message.bot.send_message(
                 chat_id=game.active_player_id,
                 text="✅ Игра начинается, ваш ход, удачи",
+                reply_markup=in_play_card_keyboard(),
             )
 
         else:
