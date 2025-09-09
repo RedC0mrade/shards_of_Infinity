@@ -36,3 +36,20 @@ def in_play_card_keyboard():
         resize_keyboard=True,
     )
     return markup
+
+def non_play_card_keyboard():
+    market_button = KeyboardButton(text=MoveKBText.MARKET)
+    hand_button = KeyboardButton(text=MoveKBText.HAND)
+    defeat_button = KeyboardButton(text=MoveKBText.DEFEAT)
+    button_row = [
+        market_button,
+        hand_button,
+        defeat_button,
+    ]
+    markup = ReplyKeyboardMarkup(
+        keyboard=[
+            button_row,
+        ],
+        resize_keyboard=True,
+    )
+    return markup

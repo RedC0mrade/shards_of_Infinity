@@ -13,7 +13,7 @@ from aiogram.fsm.context import FSMContext
 from app.backend.crud.users_crud import UserServices
 from app.backend.schemas.games import CreateGameSchema
 from app.backend.schemas.users import UserCreateSchema
-from app.telegram_bot.keyboards.game_move_keyboard import in_play_card_keyboard
+from app.telegram_bot.keyboards.game_move_keyboard import in_play_card_keyboard, non_play_card_keyboard
 from app.telegram_bot.keyboards.start_keyboard import (
     start_keyboard,
     StartKBText,
@@ -134,7 +134,7 @@ async def process_invite_code(message: types.Message, state: FSMContext):
             await message.bot.send_message(
                 chat_id=game.non_active_player_id,
                 text="✅ Игра начинается, ходит ваш противник, удачи",
-                reply_markup=in_play_card_keyboard(),
+                reply_markup=non_play_card_keyboard(),
             )
 
             await message.bot.send_message(
