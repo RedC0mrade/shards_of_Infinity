@@ -1,4 +1,5 @@
 from sqlalchemy import Result, select
+from app.backend.core.models.game import Game
 from app.backend.core.models.user import TelegramUser
 from app.backend.crud.games_crud import GameServices
 from app.backend.crud.hand_crud import HandServices
@@ -13,7 +14,10 @@ from aiogram.fsm.context import FSMContext
 from app.backend.crud.users_crud import UserServices
 from app.backend.schemas.games import CreateGameSchema
 from app.backend.schemas.users import UserCreateSchema
-from app.telegram_bot.keyboards.game_move_keyboard import in_play_card_keyboard, non_play_card_keyboard
+from app.telegram_bot.keyboards.game_move_keyboard import (
+    in_play_card_keyboard,
+    non_play_card_keyboard,
+)
 from app.telegram_bot.keyboards.start_keyboard import (
     start_keyboard,
     StartKBText,
@@ -24,6 +28,7 @@ from app.utils.logger import get_logger
 
 router = Router(name=__name__)
 logger = get_logger(__name__)
+
 
 @router.message(CommandStart())
 async def handle_start(message: types.Message):
@@ -133,7 +138,7 @@ async def process_invite_code(message: types.Message, state: FSMContext):
 
             await message.bot.send_message(
                 chat_id=game.non_active_player_id,
-                text="✅ Игра начинается, ходит ваш противник, удачи",
+                text="🤖 Игра начинается, ходит ваш противник, удачи",
                 reply_markup=non_play_card_keyboard(),
             )
 
@@ -149,3 +154,29 @@ async def process_invite_code(message: types.Message, state: FSMContext):
             )
 
     await state.clear()
+
+
+@router.message(Command("play_keyboard"))
+async def keyboard_return(message: types.Message):
+    async with db_helper.session_context() as session:
+        game_service = GameServices(session=session)
+
+        game: Game = await game_service.has_active_game(
+            player_id=message.from_user.id
+        )
+
+        if game.active_player_id == message.from_user.id:
+            await message.answer(
+                text="Игровая клавиатура",
+                reply_markup=in_play_card_keyboard(),
+            )
+            return
+        elif game.non_active_player_id == message.from_user.id:
+            await message.answer(
+                text="Игровая клавиатура",
+                reply_markup=non_play_card_keyboard(),
+            )
+            return
+        return await message.answer(
+                text="У вас нет активной партии",
+            )
