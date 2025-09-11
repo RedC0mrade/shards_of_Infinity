@@ -79,12 +79,12 @@ class GameServices:
         result: Result = await self.session.execute(stmt)
         game = result.scalar_one_or_none()
         if game:
-            self.logger.critical(
+            self.logger.debug(
                 "the game %s has already started status %s",
                 game.id,
                 game.status,
             )
-            return game
+            return True
         self.logger.warning("game not found")
         return False
 
@@ -195,7 +195,7 @@ class GameServices:
         await self.session.commit()
         self.logger.info("Игра с id %s успешно удалена", game_id)
 
-    async def get_active_game(self, player_id: int):
+    async def get_active_game(self, player_id: int) -> Game:
         self.logger.info("Получение id игры пользователем id - %s", player_id)
         stmt = select(Game).where(
             Game.status == GameStatus.IN_PROGRESS,

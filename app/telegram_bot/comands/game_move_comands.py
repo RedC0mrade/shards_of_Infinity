@@ -4,6 +4,7 @@ from aiogram.types import CallbackQuery, FSInputFile
 from app.backend.core.models.card import Card
 from app.backend.core.models.player_state import PlayerState
 from app.backend.crud.card_crud import CardServices
+from app.backend.crud.game_move_crud import MoveServices
 from app.backend.crud.player_state_crud import PlayerStateServices
 from app.telegram_bot.keyboards.hand_keyboard import CallBackCard
 
@@ -24,6 +25,7 @@ async def handle_play_card(
     async with db_helper.session_context() as session:
         card_services = CardServices(session=session)
         player_state_services = PlayerStateServices(session=session)
+        move_services = MoveServices(session=session)
 
         player_state: PlayerState = await player_state_services.get_game(
             player_id=callback.from_user.id
@@ -39,11 +41,20 @@ async def handle_play_card(
 
         card: Card = await card_services.get_card(card_id=callback_data.id)
 
+        await move_services.make_move(
+            card=card,
+            game=player_state.game,
+            player_state=player_state,
+            player_id=callback.from_user.id,
+        )
+
         photo = FSInputFile(card.icon)
 
         await callback.message.answer_photo(
             photo=photo, caption=f"Вы сыграли карту {card.name}"
         )
         await callback.bot.send_photo(
-            photo=photo, caption=f"Ваш противник разыграл карту: {card.name}"
+            photo=photo,
+            caption=f"Ваш противник разыграл карту: {card.name}",
+            chat_id=player_state.game.non_active_player_id,
         )

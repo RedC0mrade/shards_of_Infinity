@@ -161,7 +161,7 @@ async def keyboard_return(message: types.Message):
     async with db_helper.session_context() as session:
         game_service = GameServices(session=session)
 
-        game: Game = await game_service.has_active_game(
+        game: Game = await game_service.get_active_game(
             player_id=message.from_user.id
         )
 

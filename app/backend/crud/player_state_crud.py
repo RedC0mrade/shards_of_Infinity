@@ -139,7 +139,7 @@ class PlayerStateServices:
 
         return drawn_cards
 
-    async def get_game(self, player_id: int) -> Game:
+    async def get_game(self, player_id: int) -> PlayerState:
 
         stmt = (
             select(PlayerState)

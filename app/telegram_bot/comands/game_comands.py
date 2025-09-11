@@ -89,3 +89,15 @@ async def handle_hand(message: types.Message):
                 instance_data=hand_cards,
             ),
         )
+
+@router.message(F.text == MoveKBText.GAME_PARAMETERS)
+async def handle_game_parametrs(message: types.Message):
+    """Выводим информацию о состояния игрока"""
+    async with db_helper.session_context() as session:
+        game_service = GameServices(session=session)
+        game: Game = await game_service.get_active_game(
+            player_id=message.from_user.id
+        )
+        if not game:
+            await message.answer("❌ У вас нет активной игры.")
+            !return

@@ -30,6 +30,11 @@ class PlayerState(Base):
         Integer, default=0
     )  # Кристаллы (ресурс)
     power: Mapped[int] = mapped_column(Integer, default=0)  # Урон (боевые очки)
+    shield: Mapped[int] = mapped_column(
+        Integer,
+        default=0,
+        server_default="0",
+    )
     wilds_count: Mapped[int] = mapped_column(
         Integer,
         default=0,

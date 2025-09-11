@@ -99,10 +99,8 @@ class Card(Base):
     )
 
     def __repr__(self) -> str:
-        return(
-            f"<Card(id={self.id}), "
-            f"name={self.name}"
-        )
+        return f"<Card(id={self.id}), " f"name={self.name}"
+
 
 class CardEffect(Base):
     __tablename__ = "card_effects"
@@ -114,12 +112,19 @@ class CardEffect(Base):
     )
     card: Mapped[Card] = relationship(back_populates="effects")
     action: Mapped["CardAction"] = mapped_column(Enum(CardAction))
-    value: Mapped[int] = mapped_column(Integer, nullable=True)
+    value: Mapped[int] = mapped_column(
+        Integer,
+        nullable=True,
+    )
     effect_type: Mapped[EffectType] = mapped_column(
-        Enum(EffectType), nullable=False
+        Enum(EffectType),
+        nullable=False,
     )
     condition_type: Mapped[ConditionType | None] = mapped_column(
         Enum(ConditionType),
         nullable=True,
     )
-    condition_value: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    condition_value: Mapped[int | None] = mapped_column(
+        Integer,
+        nullable=True,
+    )
