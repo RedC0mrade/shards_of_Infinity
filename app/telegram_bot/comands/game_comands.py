@@ -4,9 +4,11 @@ from aiogram.types import FSInputFile, InputMediaPhoto
 from app.backend.core.models.game import Game
 from app.backend.core.models.market import MarketSlot
 from app.backend.core.models.play_card_instance import PlayerCardInstance
+from app.backend.core.models.player_state import PlayerState
 from app.backend.crud.games_crud import GameServices
 from app.backend.crud.hand_crud import HandServices
 from app.backend.crud.market_crud1 import MarketServices
+from app.backend.crud.player_state_crud import PlayerStateServices
 from app.backend.factories.database import db_helper
 
 from app.telegram_bot.keyboards.game_move_keyboard import MoveKBText
@@ -90,14 +92,35 @@ async def handle_hand(message: types.Message):
             ),
         )
 
+
 @router.message(F.text == MoveKBText.GAME_PARAMETERS)
 async def handle_game_parametrs(message: types.Message):
     """Выводим информацию о состояния игрока"""
     async with db_helper.session_context() as session:
-        game_service = GameServices(session=session)
-        game: Game = await game_service.get_active_game(
+        play_state_service = PlayerStateServices(session=session)
+
+        play_state: PlayerState = await play_state_service.get_game(
             player_id=message.from_user.id
         )
-        if not game:
+        if not play_state:
             await message.answer("❌ У вас нет активной игры.")
-            !return
+            return
+
+        if play_state.game.active_player_id == message.from_user.id:
+            await message.answer(
+                text=(
+                    f"Здоровье ❤️ = {play_state.health}\n"
+                    f"Мастерство ⚡ = {play_state.mastery}\n"
+                    f"Кристалы = 💎 {play_state.crystals}\n"
+                    f"Атака ⚔️ = {play_state.power}\n"
+                )
+            )
+            return
+        else:
+            await message.answer(
+                text=(
+                    f"Здоровье ❤️ = {play_state.health}\n"
+                    f"Мастерство ⚡ = {play_state.mastery}\n"
+                    f"Щит 🛡️ = {play_state.shield}\n"
+                )
+            )

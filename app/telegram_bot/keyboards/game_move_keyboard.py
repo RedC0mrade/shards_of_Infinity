@@ -58,6 +58,6 @@ def non_play_card_keyboard():
         keyboard=[
             button_row,
         ],
-        resize_keyboard=True,
+        resize_keyboard=False,
     )
     return markup

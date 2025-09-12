@@ -5,7 +5,7 @@ from sqlalchemy.orm import joinedload
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.backend.core.models.card import Card
-from app.backend.core.models.game import Game
+from app.backend.core.models.game import Game, GameStatus
 from app.backend.core.models.play_card_instance import (
     CardZone,
     PlayerCardInstance,
@@ -57,9 +57,7 @@ class PlayerStateServices:
         ]
         self.session.add_all(play_states)
         await self.session.flush()  # Не забыть, что нужно закоммитить
-        self.logger.debug(
-            "Создано play_state: %s", play_states
-        )
+        self.logger.debug("Создано play_state: %s", play_states)
         return play_states
 
     def assign_mastery(self, game: Game) -> list[CreatePlayStateSchema]:
@@ -144,7 +142,10 @@ class PlayerStateServices:
         stmt = (
             select(PlayerState)
             .options(joinedload(PlayerState.game))
-            .where(PlayerState.player_id == player_id)
+            .where(
+                PlayerState.player_id == player_id,
+                PlayerState.game.has(Game.status == GameStatus.IN_PROGRESS),
+            )
         )
         result: Result = await self.session.execute(stmt)
         player_state = result.scalar_one_or_none()
