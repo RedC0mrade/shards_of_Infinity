@@ -51,7 +51,8 @@ async def handle_play_card(
         photo = FSInputFile(card.icon)
 
         await callback.message.answer_photo(
-            photo=photo, caption=f"Вы сыграли карту {card.name}"
+            photo=photo,
+            caption=f"Вы сыграли карту {card.name}",
         )
         await callback.bot.send_photo(
             photo=photo,

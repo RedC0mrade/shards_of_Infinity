@@ -1,7 +1,7 @@
 from sqlalchemy import Result, delete, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.backend.core.models.card import Card
+from app.backend.core.models.card import Card, CardAction, EffectType
 from app.backend.core.models.game import Game
 from app.backend.core.models.play_card_instance import (
     CardZone,
@@ -33,4 +33,15 @@ class MoveServices:
             card.effects,
             game.id,
         )
-        # for effect in card.effects:
+        for effect in card.effects:
+            if (
+                effect.action == CardAction.CRYSTAL
+                and effect.effect_type == EffectType.BASE
+            ):
+                player_state.crystals += effect.value
+
+            if (
+                effect.action == CardAction.CRYSTAL
+                and effect.effect_type == EffectType.CONDITIONAL
+            ):
+                pass
