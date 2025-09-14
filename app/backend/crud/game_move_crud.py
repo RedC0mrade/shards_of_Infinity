@@ -40,7 +40,7 @@ class MoveServices:
             ):
                 player_state.crystals += effect.value
 
-            if (
+            elif (
                 effect.action == CardAction.CRYSTAL
                 and effect.effect_type == EffectType.CONDITIONAL
             ):
