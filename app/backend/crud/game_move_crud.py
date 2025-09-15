@@ -8,6 +8,7 @@ from app.backend.core.models.play_card_instance import (
     PlayerCardInstance,
 )
 from app.backend.core.models.player_state import PlayerState
+from app.backend.crud.effects_crud import EffectExecutor
 from app.utils.logger import get_logger
 
 
@@ -33,15 +34,9 @@ class MoveServices:
             card.effects,
             game.id,
         )
-        for effect in card.effects:
-            if (
-                effect.action == CardAction.CRYSTAL
-                and effect.effect_type == EffectType.BASE
-            ):
-                player_state.crystals += effect.value
+        executor = EffectExecutor(player_state, game, self.session)
 
-            elif (
-                effect.action == CardAction.CRYSTAL
-                and effect.effect_type == EffectType.CONDITIONAL
-            ):
-                pass
+        for effect in card.effects:
+            await executor.execute(effect)
+
+        await self.session.commit()

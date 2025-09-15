@@ -19,14 +19,14 @@
             },
             {
                 "action": "crystal",
-                "value": 3,
+                "value": 1,
                 "effect_type": "conditional",
                 "condition_type": "mastery",
                 "condition_value": 10
             },
             {
                 "action": "crystal",
-                "value": 4,
+                "value": 1,
                 "effect_type": "conditional",
                 "condition_type": "mastery",
                 "condition_value": 15
