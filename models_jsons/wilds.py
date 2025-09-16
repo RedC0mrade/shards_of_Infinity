@@ -19,10 +19,10 @@
       },
       {
         "action": "attack",
-        "value": 5,
+        "value": 2,
         "effect_type": "conditional",
         "condition_type": "card_on_table",
-        "condition_value": 0
+        "condition_value": 1
       }
     ]
   },
@@ -56,7 +56,7 @@
   {
     "name": "Споровый клерик",
     "crystals_cost": 2,
-    "description": "Получите 2 здоровья.",
+    "description": "Получите 4 здоровья.",
     "shield": 0,
     "champion_health": 0,
     "faction": "Ветвь",

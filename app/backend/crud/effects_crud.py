@@ -54,5 +54,26 @@ class EffectExecutor:
         value: int,
         condition_value: int,
     ):
-        if self.player_state.mastery >= 10:
+        if self.player_state.mastery >= condition_value:
             self.player_state.power += value
+
+    async def do_healing_base_none(
+            self,
+            value: int,
+            condition_value: int,
+    ):
+        if self.player_state.health + value > 50:
+            self.player_state.health = 50
+        else:
+            self.player_state.health += value
+    
+    async def do_healing_conditional_card_on_table(
+            self,
+            value: int,
+            condition_value: int,
+    ):
+        if self.player_state.wilds_count >= condition_value:
+            if self.player_state.health + value > 50:
+                self.player_state.health = 50
+            else:
+                self.player_state.health += value
