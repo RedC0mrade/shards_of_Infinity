@@ -96,7 +96,7 @@
         "value": 3,
         "effect_type": "conditional",
         "condition_type": "card_on_table",
-        "condition_value": 0
+        "condition_value": 1
       }
     ]
   }
