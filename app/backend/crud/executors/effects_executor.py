@@ -8,21 +8,24 @@ from app.utils.logger import get_logger
 
 class EffectExecutor:
     def __init__(
-        self, player_state: PlayerState, game: Game, session: AsyncSession
+        self,
+        session: AsyncSession,
+        player_state: PlayerState,
+        game: Game,
     ):
+        self.session = session
         self.player_state = player_state
         self.game = game
-        self.session = session
         self.logger = get_logger(self.__class__.__name__)
 
     async def execute(self, effect: CardEffect):
-        self.logger.info("Эффект %s", effect)
+        self.logger.info("Эффект %s", effect.action)
         method_name = (
             f"do_{effect.action.name.lower()}_"
             f"{effect.effect_type.name.lower()}_"
             f"{effect.condition_type.name.lower()}"
         )
-        self.logger.info("method_name %s", method_name)
+        self.logger.info("method_name - %s", method_name)
         method = getattr(self, method_name, None)
         if method:
             await method(
@@ -39,7 +42,7 @@ class EffectExecutor:
     ):
         self.player_state.crystals += value
         self.logger.info(
-            "do_crystal_base_none %s",
+            " функция - do_crystal_base_none, значение - %s",
             self.player_state.crystals,
         )
 
@@ -51,7 +54,7 @@ class EffectExecutor:
         if self.player_state.mastery >= condition_value:
             self.player_state.crystals += value
         self.logger.info(
-            "do_crystal_conditional_mastery %s",
+            " функция - do_crystal_conditional_mastery, значение - %s",
             self.player_state.crystals,
         )
 
@@ -70,7 +73,7 @@ class EffectExecutor:
         if self.player_state.mastery >= condition_value:
             self.player_state.power += value
         self.logger.info(
-            "do_attack_conditional_mastery %s",
+            " функция - do_attack_conditional_mastery, значение - %s",
             self.player_state.power,
         )
 
@@ -82,7 +85,7 @@ class EffectExecutor:
         if self.player_state.wilds_count >= condition_value:
             self.player_state.power += value
         self.logger.info(
-            "do_attack_conditional_card_on_table %s",
+            " функция - do_attack_conditional_card_on_table, значение - %s",
             self.player_state.power,
         )
 
@@ -96,7 +99,7 @@ class EffectExecutor:
         else:
             self.player_state.health += value
         self.logger.info(
-            "do_healing_base_none %s",
+            " функция - do_healing_base_none, значение - %s",
             self.player_state.health,
         )
 
@@ -111,6 +114,6 @@ class EffectExecutor:
             else:
                 self.player_state.health += value
         self.logger.info(
-            "do_healing_conditional_card_on_table %s",
+            " функция - do_healing_conditional_card_on_table, значение - %s",
             self.player_state.health,
         )

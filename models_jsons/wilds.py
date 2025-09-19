@@ -5,8 +5,8 @@
     "description": "Получите 3 здоровья. Единение - получите 5 атаки, если в этот ход сыграли другого Союзника природы.",
     "shield": 0,
     "champion_health": 0,
-    "card_type": "Союзник",
-    "faction": "Ветвь",
+    "card_type": "ally",
+    "faction": "wilds",
     "icon": "C:/telegram/card_1.jpeg",
     "start_card": "False",
     "effects": [
@@ -32,8 +32,8 @@
     "description": "Получите 2 атаки и возьмите карту. Единение - получите 6 здоровья если в этот ход сыграли другого Союзника природы.",
     "shield": 0,
     "champion_health": 0,
-    "faction": "Ветвь",
-    "card_type": "Союзник",
+    "faction": "wilds",
+    "card_type": "ally",
     "icon": "c:/telegram/card_6.jpeg",
     "start_card": "False",
     "effects": [
@@ -59,8 +59,8 @@
     "description": "Получите 4 здоровья.",
     "shield": 0,
     "champion_health": 0,
-    "faction": "Ветвь",
-    "card_type": "Наёмник",
+    "faction": "wilds",
+    "card_type": "mercenary",
     "icon": "c:/telegram/card_7.jpeg",
     "start_card": "False",
     "effects": [
@@ -79,8 +79,8 @@
     "description": "Получите 3 атаки. Единение - вместо этого получите 6 атаки, если в этот ход сыграли другого Союзника природы.",
     "shield": 0,
     "champion_health": 0,
-    "faction": "Ветвь",
-    "card_type": "Наёмник",
+    "faction": "wilds",
+    "card_type": "mercenary",
     "icon": "c:/telegram/card_10.jpeg",
     "start_card": "False",
     "effects": [

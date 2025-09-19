@@ -138,7 +138,7 @@ class PlayerStateServices:
         return drawn_cards
 
     async def get_game(self, player_id: int) -> PlayerState:
-
+        """Получаем актуальную игру."""
         stmt = (
             select(PlayerState)
             .options(joinedload(PlayerState.game))

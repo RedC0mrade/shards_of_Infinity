@@ -14,18 +14,18 @@ from .base_model import Base
 
 
 class CardFaction(str, enum.Enum):
-    WILDS = "Ветвь"
-    ORDER = "Орден"
-    HOMODEUS = "Хомо Деус"
-    DEMIREALM = "Демиреал"
-    NEUTRAL = "Нейтральная"
+    WILDS = "wilds"
+    ORDER = "order"
+    HOMODEUS = "homodeus"
+    DEMIREALM = "demirealm"
+    NEUTRAL = "neutral"
 
 
 class CardType(str, enum.Enum):
-    ALLY = "Союзник"
-    CHAMPION = "Чемпион"
-    MERCENARY = "Наёмник"
-    RELIC = "Реликвия"
+    ALLY = "ally"
+    CHAMPION = "champion"
+    MERCENARY = "mercenary"
+    RELIC = "relic"
 
 
 class CardAction(str, enum.Enum):

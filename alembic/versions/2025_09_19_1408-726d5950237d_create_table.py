@@ -1,8 +1,8 @@
 """Create table
 
-Revision ID: d17d3e3cb456
+Revision ID: 726d5950237d
 Revises:
-Create Date: 2025-08-27 22:29:44.205568
+Create Date: 2025-09-19 14:08:01.613753
 
 """
 
@@ -13,7 +13,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = "d17d3e3cb456"
+revision: str = "726d5950237d"
 down_revision: Union[str, Sequence[str], None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -194,6 +194,19 @@ def upgrade() -> None:
         sa.Column("mastery", sa.Integer(), nullable=False),
         sa.Column("crystals", sa.Integer(), nullable=False),
         sa.Column("power", sa.Integer(), nullable=False),
+        sa.Column("shield", sa.Integer(), server_default="0", nullable=False),
+        sa.Column(
+            "wilds_count", sa.Integer(), server_default="0", nullable=False
+        ),
+        sa.Column(
+            "order_count", sa.Integer(), server_default="0", nullable=False
+        ),
+        sa.Column(
+            "homodeus_count", sa.Integer(), server_default="0", nullable=False
+        ),
+        sa.Column(
+            "demirealm_count", sa.Integer(), server_default="0", nullable=False
+        ),
         sa.Column("id", sa.Integer(), nullable=False),
         sa.ForeignKeyConstraint(
             ["game_id"],

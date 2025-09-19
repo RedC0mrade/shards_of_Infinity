@@ -8,7 +8,8 @@ from app.backend.core.models.play_card_instance import (
     PlayerCardInstance,
 )
 from app.backend.core.models.player_state import PlayerState
-from app.backend.crud.effects_crud import EffectExecutor
+from app.backend.crud.executors.effects_executor import EffectExecutor
+from app.backend.crud.executors.ps_count_executor import PlayStateExecutor
 from app.utils.logger import get_logger
 
 
@@ -27,16 +28,36 @@ class MoveServices:
         player_id: int,
         player_state: PlayerState,
     ):
+        """Игрок разыгрывает карту."""
         self.logger.info(
-            "Игрок с id - %s делает ход картой - %s, c эффектами - %s в игре с id - %s",
+            "Игрок с id - %s делает ход картой - %s, в игре с id - %s",
             player_id,
             card.name,
-            card.effects,
             game.id,
         )
-        executor = EffectExecutor(player_state, game, self.session)
+
+        effect_executor = EffectExecutor(
+            session=self.session,
+            player_state=player_state,
+            game=game,
+        )
 
         for effect in card.effects:
-            await executor.execute(effect)
+            await effect_executor.execute(effect)
 
+        self.logger.info("Все эффекты обработаны. Переходим к faction_count")
+        
+        play_state_executor = PlayStateExecutor(
+            session=self.session,
+            player_state=player_state,
+        )
+        await play_state_executor.faction_count(card=card)
+        
         await self.session.commit()
+
+
+# Розыгрыш карты:
+# - Проверить есть ли карта в руке
+# - Отыграть эффект
+# - Обновить счетчик фрацкий сыграных в этом ходу
+# - Поместить карту в сброс
