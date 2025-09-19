@@ -46,12 +46,13 @@ class MoveServices:
             await effect_executor.execute(effect)
 
         self.logger.info("Все эффекты обработаны. Переходим к faction_count")
-        
+
         play_state_executor = PlayStateExecutor(
             session=self.session,
             player_state=player_state,
         )
         await play_state_executor.faction_count(card=card)
+        self.logger.info("Все эффекты обработаны. Переходим к faction_count")
         
         await self.session.commit()
 
