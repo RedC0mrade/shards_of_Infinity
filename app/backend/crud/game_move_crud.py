@@ -8,6 +8,7 @@ from app.backend.core.models.play_card_instance import (
     PlayerCardInstance,
 )
 from app.backend.core.models.player_state import PlayerState
+from app.backend.crud.card_crud import CardServices
 from app.backend.crud.executors.effects_executor import EffectExecutor
 from app.backend.crud.executors.ps_count_executor import PlayStateExecutor
 from app.utils.logger import get_logger
@@ -43,17 +44,31 @@ class MoveServices:
         )
 
         for effect in card.effects:
-            await effect_executor.execute(effect)
+            await effect_executor.execute(effect) # Отрабатываем эффекты
 
-        self.logger.info("Все эффекты обработаны. Переходим к faction_count")
+        self.logger.info(
+            "Все эффекты обработаны. Переходим к faction_count"
+        )
 
         play_state_executor = PlayStateExecutor(
             session=self.session,
             player_state=player_state,
         )
-        await play_state_executor.faction_count(card=card)
-        self.logger.info("Все эффекты обработаны. Переходим к faction_count")
-        
+        await play_state_executor.faction_count(card=card) # Считаем разыранные карты
+        self.logger.info(
+            "faction_count отработала. Переходим к функции change_card_zone"
+        )
+
+        card_service = CardServices(session=self.session)
+        await card_service.change_card_zone(
+            card_id=card.id,
+            player_state=player_state,
+            card_zone=CardZone.IN_PLAY,
+        )
+        self.logger.info(
+            "Функция change_card_zone отработала. делаем commit"
+        )
+
         await self.session.commit()
 
 

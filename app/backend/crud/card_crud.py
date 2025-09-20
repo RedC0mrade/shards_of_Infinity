@@ -1,10 +1,15 @@
-from sqlalchemy import Result, select
+from sqlalchemy import Result, select, update
 from sqlalchemy.orm import joinedload
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.backend.core.models.card import Card, CardEffect
-from app.backend.core.models.play_card_instance import CardZone, PlayerCardInstance
+from app.backend.core.models.play_card_instance import (
+    CardZone,
+    PlayerCardInstance,
+)
+from app.backend.core.models.player_state import PlayerState
 from app.backend.schemas.card import CreateCardSchema
+from app.utils.logger import get_logger
 
 
 class CardServices:
@@ -13,6 +18,7 @@ class CardServices:
         session: AsyncSession,
     ):
         self.session = session
+        self.logger = get_logger(self.__class__.__name__)
 
     async def get_all_cards_in_the_deck(self) -> list[Card]:
         stmt = select(Card)
@@ -22,8 +28,7 @@ class CardServices:
 
     async def create_card(self, card_data: CreateCardSchema) -> Card:
         effects = [
-            CardEffect(**effect.model_dump())
-            for effect in card_data.effects
+            CardEffect(**effect.model_dump()) for effect in card_data.effects
         ]
         card = Card(
             **card_data.model_dump(exclude={"effects"}),
@@ -45,11 +50,11 @@ class CardServices:
         return cards
 
     async def get_card(self, card_id: int) -> Card:
-        stmt = select(Card).where(Card.id==card_id)
+        stmt = select(Card).where(Card.id == card_id)
         result: Result = await self.session.execute(stmt)
         card = result.unique().scalar_one_or_none()
         return card
-    
+
     async def get_hand_card(self, card_id: int) -> Card | None:
         stmt = (
             select(Card)
@@ -63,3 +68,34 @@ class CardServices:
         result: Result = await self.session.execute(stmt)
         card = result.unique().scalar_one_or_none()
         return card
+
+    async def change_card_zone(
+        self,
+        card_id: int,
+        player_state: PlayerState,
+        card_zone: CardZone,
+    ):
+        """Меняем положение карты"""
+        self.logger.info(
+            "Карта с id %s, меняем зону на %s",
+            card_id,
+            card_zone,
+        )
+        stmt = select(PlayerCardInstance).where(
+            PlayerCardInstance.card_id == card_id,
+            PlayerCardInstance.player_state_id == player_state.id,
+        )
+
+        result: Result = await self.session.execute(stmt)
+        instance: PlayerCardInstance = result.scalar_one_or_none()
+
+        if not instance:
+            self.logger.error(
+                "Не правильный id - %s, player_state - %s",
+                card_id,
+                player_state.id,
+            )
+        if instance.zone != CardZone.HAND:
+            self.logger.info("Не правильная зона - %s", instance.zone)
+        
+        instance.zone = card_zone

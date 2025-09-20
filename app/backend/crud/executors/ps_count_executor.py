@@ -31,6 +31,7 @@ class PlayStateExecutor:
                 card.faction,
                 card.name,
             )
+            return
         await handler()
 
     async def _inc_wilds(self):
