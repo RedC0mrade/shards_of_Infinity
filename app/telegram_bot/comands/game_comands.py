@@ -3,7 +3,10 @@ from aiogram.types import FSInputFile, InputMediaPhoto
 
 from app.backend.core.models.game import Game
 from app.backend.core.models.market import MarketSlot
-from app.backend.core.models.play_card_instance import PlayerCardInstance
+from app.backend.core.models.play_card_instance import (
+    CardZone,
+    PlayerCardInstance,
+)
 from app.backend.core.models.player_state import PlayerState
 from app.backend.crud.games_crud import GameServices
 from app.backend.crud.hand_crud import HandServices
@@ -52,7 +55,7 @@ async def handle_market(message: types.Message):
         await message.answer_media_group(media)
 
 
-@router.message(F.text == MoveKBText.HAND)
+@router.message(F.text.in_([MoveKBText.HAND, MoveKBText.CARDS_IN_PLAY]))
 async def handle_hand(message: types.Message):
     """Выводим карты в руке"""
     async with db_helper.session_context() as session:
@@ -65,13 +68,21 @@ async def handle_hand(message: types.Message):
         if not game:
             await message.answer("❌ У вас нет активной игры.")
             return
+        
+        if message.text == MoveKBText.HAND:
+            card_zone = CardZone.HAND
+        elif message.text == MoveKBText.CARDS_IN_PLAY:
+            card_zone = CardZone.IN_PLAY
 
-        hand_cards: list[PlayerCardInstance] = await hand_services.get_hand(
-            player_id=message.from_user.id
+        hand_cards: list[PlayerCardInstance] = (
+            await hand_services.get_cards_in_zone(
+                card_zone=card_zone,
+                player_id=message.from_user.id,
+            )
         )
 
         if not hand_cards:
-            await message.answer("❌ Нет карт в руке.")
+            await message.answer(f"❌ Нет карт в {message.text}.")
             return
 
         cards = []  # переделать дублирующийся код
@@ -83,14 +94,14 @@ async def handle_hand(message: types.Message):
                     media=FSInputFile(card.icon),
                 )
             )
-
-        await message.answer_media_group(cards)
-        await message.answer(
-            "Выберите карту:",
-            reply_markup=make_card_move_keyboard(
-                instance_data=hand_cards,
-            ),
-        )
+        if message.text == MoveKBText.HAND:
+            await message.answer_media_group(cards)
+            await message.answer(
+                "Выберите карту:",
+                reply_markup=make_card_move_keyboard(
+                    instance_data=hand_cards,
+                ),
+            )
 
 
 @router.message(F.text == MoveKBText.GAME_PARAMETERS)

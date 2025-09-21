@@ -18,9 +18,10 @@ class HandServices:
         self.session = session
         self.logger = get_logger(self.__class__.__name__)
 
-    async def get_hand(
+    async def get_cards_in_zone(
         self,
         player_id: int,
+        card_zone: CardZone,
         hand_count: int = 5,
     ) -> list[PlayerCardInstance]:
         """Получаем карты, которые в руке"""
@@ -37,7 +38,7 @@ class HandServices:
             )
             .where(
                 PlayerState.player_id == player_id,
-                PlayerCardInstance.zone == CardZone.HAND,
+                PlayerCardInstance.zone == card_zone,
             )
         )
         result: Result = await self.session.execute(stmt)
@@ -129,9 +130,8 @@ class HandServices:
         for card in hand_cards:
             card.zone = CardZone.HAND
 
-
         # self.session.add_all(discards + hand_cards)
-        await self.session.commit() 
+        await self.session.commit()
         self.logger.info("Финальная рука: %s", hand_cards)
 
         # return hand_cards

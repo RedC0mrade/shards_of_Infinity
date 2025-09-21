@@ -7,6 +7,7 @@ from aiogram.types import (
 class MoveKBText:
     MARKET = "Рынок"
     HAND = "Рука"
+    CARDS_IN_PLAY = "Сыгранные карты"
     ATTACK = "Атака Игрока"
     ATTACK_CHAMPION = "Атака чемпиона"
     GAME_PARAMETERS = "Игравые параметры"
@@ -18,6 +19,7 @@ class MoveKBText:
 def in_play_card_keyboard():
     market_button = KeyboardButton(text=MoveKBText.MARKET)
     hand_button = KeyboardButton(text=MoveKBText.HAND)
+    cards_in_play = KeyboardButton(text=MoveKBText.CARDS_IN_PLAY)
     attack_button = KeyboardButton(text=MoveKBText.ATTACK)
     attack_champion_button = KeyboardButton(text=MoveKBText.ATTACK_CHAMPION)
     end_button = KeyboardButton(text=MoveKBText.END)
@@ -27,6 +29,7 @@ def in_play_card_keyboard():
     button_row = [
         market_button,
         hand_button,
+        cards_in_play,
         attack_button,
         attack_champion_button,
         end_button,
@@ -44,12 +47,14 @@ def in_play_card_keyboard():
 def non_play_card_keyboard():
     market_button = KeyboardButton(text=MoveKBText.MARKET)
     hand_button = KeyboardButton(text=MoveKBText.HAND)
+    cards_in_play = KeyboardButton(text=MoveKBText.CARDS_IN_PLAY)
     defeat_button = KeyboardButton(text=MoveKBText.DEFEAT)
     shild_button = KeyboardButton(text=MoveKBText.SHILD)
     parameters_button = KeyboardButton(text=MoveKBText.GAME_PARAMETERS)
     button_row = [
         market_button,
         hand_button,
+        cards_in_play,
         defeat_button,
         shild_button,
         parameters_button
