@@ -94,8 +94,9 @@ async def handle_hand(message: types.Message):
                     media=FSInputFile(card.icon),
                 )
             )
+        await message.answer_media_group(cards)
         if message.text == MoveKBText.HAND:
-            await message.answer_media_group(cards)
+            
             await message.answer(
                 "Выберите карту:",
                 reply_markup=make_card_move_keyboard(
