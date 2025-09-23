@@ -68,7 +68,7 @@ async def handle_hand(message: types.Message):
         if not game:
             await message.answer("❌ У вас нет активной игры.")
             return
-        
+
         if message.text == MoveKBText.HAND:
             card_zone = CardZone.HAND
         elif message.text == MoveKBText.CARDS_IN_PLAY:
@@ -96,7 +96,7 @@ async def handle_hand(message: types.Message):
             )
         await message.answer_media_group(cards)
         if message.text == MoveKBText.HAND:
-            
+
             await message.answer(
                 "Выберите карту:",
                 reply_markup=make_card_move_keyboard(
@@ -125,6 +125,10 @@ async def handle_game_parametrs(message: types.Message):
                     f"Мастерство ⚡ = {play_state.mastery}\n"
                     f"Кристалы = 💎 {play_state.crystals}\n"
                     f"Атака ⚔️ = {play_state.power}\n"
+                    f"Разыграно карт фракции Ветвь 🌿 = {play_state.wilds_count}\n"
+                    f"Разыграно карт фракции Порядок  ⚖️ = {play_state.order_count}\n"
+                    f"Разыграно карт фракции Хомодеус 🤖 = {play_state.homodeus_count}\n"
+                    f"Разыграно карт фракции Демириалм 👾= {play_state.demirealm_count}\n"
                 )
             )
             return
