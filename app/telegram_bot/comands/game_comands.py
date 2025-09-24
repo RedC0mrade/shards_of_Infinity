@@ -111,8 +111,10 @@ async def handle_game_parametrs(message: types.Message):
     async with db_helper.session_context() as session:
         play_state_service = PlayerStateServices(session=session)
 
-        play_state: PlayerState = await play_state_service.get_game(
-            player_id=message.from_user.id
+        play_state: PlayerState = (
+            await play_state_service.get_player_state_with_game(
+                player_id=message.from_user.id
+            )
         )
         if not play_state:
             await message.answer("❌ У вас нет активной игры.")
@@ -140,3 +142,27 @@ async def handle_game_parametrs(message: types.Message):
                     f"Щит 🛡️ = {play_state.shield}\n"
                 )
             )
+
+
+@router.message(F.text == MoveKBText.ENEMY_PARAMETERS)
+async def enemy_game_parametrs(message: types.Message):
+    """Выводим состояние противника"""
+
+    async with db_helper.session_context() as session:
+        play_state_service = PlayerStateServices(session=session)
+
+        enemy_play_state: PlayerState = (
+            await play_state_service.get_enemy_player_state_with_game(
+                player_id=message.from_user.id
+            )
+        )
+        if not enemy_play_state:
+            await message.answer("❌ У вас нет активной игры.")
+            return
+        
+        await message.answer(
+                text=(
+                    f"Здоровье ❤️ = {enemy_play_state.health}\n"
+                    f"Мастерство ⚡ = {enemy_play_state.mastery}\n"
+                )
+        )

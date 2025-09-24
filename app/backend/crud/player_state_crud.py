@@ -137,14 +137,37 @@ class PlayerStateServices:
 
         return drawn_cards
 
-    async def get_game(self, player_id: int) -> PlayerState:
-        """Получаем актуальную игру."""
+    async def get_player_state_with_game(self, player_id: int) -> PlayerState:
+        """Получаем параметры игрока."""
         stmt = (
             select(PlayerState)
             .options(joinedload(PlayerState.game))
             .where(
                 PlayerState.player_id == player_id,
                 PlayerState.game.has(Game.status == GameStatus.IN_PROGRESS),
+            )
+        )
+        result: Result = await self.session.execute(stmt)
+        player_state = result.scalar_one_or_none()
+
+        return player_state
+
+    async def get_enemy_player_state_with_game(
+        self,
+        player_id: int,
+    ) -> PlayerState:
+        """Получаем параметры противника."""
+        stmt = (
+            select(PlayerState)
+            .join(Game, Game.id == PlayerState.game_id)
+            .where(
+                Game.status == GameStatus.IN_PROGRESS,
+                PlayerState.game_id.in_(
+                    select(PlayerState.game_id).where(
+                        PlayerState.player_id == player_id
+                    )
+                ),
+                PlayerState.player_id != player_id,
             )
         )
         result: Result = await self.session.execute(stmt)

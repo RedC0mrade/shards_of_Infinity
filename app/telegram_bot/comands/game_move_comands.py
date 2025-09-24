@@ -27,8 +27,10 @@ async def handle_play_card(
         player_state_services = PlayerStateServices(session=session)
         move_services = MoveServices(session=session)
 
-        player_state: PlayerState = await player_state_services.get_game(
-            player_id=callback.from_user.id
+        player_state: PlayerState = (
+            await player_state_services.get_player_state_with_game(
+                player_id=callback.from_user.id
+            )
         )
         if player_state.game.active_player_id != callback.from_user.id:
             logger.warning(
@@ -40,14 +42,16 @@ async def handle_play_card(
                 text="Пожалуйста, дождитесь своего хода"
             )
 
-        card: Card = await card_services.get_hand_card(card_id=callback_data.id) # Получаем карту, проверем в руке ли она
+        card: Card = await card_services.get_hand_card(
+            card_id=callback_data.id
+        )  # Получаем карту, проверем в руке ли она
 
         if not card:
             logger.warning("Нет карты в руке id - %s", callback_data.id)
             return await callback.answer(
                 text=(
                     "Скорее всего эта карта было уже разыграна, ",
-                    'сделайте новый запрос карт в руке, ',
+                    "сделайте новый запрос карт в руке, ",
                     'с помощью кнопки "Рука"',
                 )
             )
@@ -58,7 +62,7 @@ async def handle_play_card(
             game=player_state.game,
             player_id=callback.from_user.id,
         )
-        
+
         photo = FSInputFile(card.icon)
 
         await callback.message.answer_photo(
