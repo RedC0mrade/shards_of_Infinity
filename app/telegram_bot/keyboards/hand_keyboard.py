@@ -5,7 +5,7 @@ from aiogram.filters.callback_data import CallbackData
 from app.backend.core.models.play_card_instance import PlayerCardInstance
 
 
-class CallBackCard(
+class CardCallback(
     CallbackData,
     prefix="card",
 ):
@@ -13,18 +13,32 @@ class CallBackCard(
     name: str
 
 
+class MarketCallback(
+    CallbackData,
+    prefix="market",
+):
+    id: int
+    name: str
+
+
 def make_card_move_keyboard(
     instance_data: list[PlayerCardInstance],
+    market: bool = False,
 ) -> InlineKeyboardMarkup:
-    card_btns = []
+    card_buttons = []
+    
+    callback_class = MarketCallback if market else CardCallback
+
     for card_instance in instance_data:
         button = InlineKeyboardButton(
             text=card_instance.card.name,
-            callback_data=CallBackCard(
+            callback_data=callback_class(
                 id=card_instance.card.id,
                 name=card_instance.card.name,
-                ).pack(),
+            ).pack(),
         )
-        card_btns.append(button)
-    markup = InlineKeyboardMarkup(inline_keyboard=[card_btns])
-    return markup
+        card_buttons.append(button)
+
+    keyboard_layout = [card_buttons[i:i+2] for i in range(0, len(card_buttons), 2)]
+    
+    return InlineKeyboardMarkup(inline_keyboard=keyboard_layout)

@@ -6,7 +6,7 @@ from app.backend.core.models.player_state import PlayerState
 from app.backend.crud.card_crud import CardServices
 from app.backend.crud.game_move_crud import MoveServices
 from app.backend.crud.player_state_crud import PlayerStateServices
-from app.telegram_bot.keyboards.hand_keyboard import CallBackCard
+from app.telegram_bot.keyboards.hand_keyboard import CardCallback
 
 from app.backend.factories.database import db_helper
 from app.utils.logger import get_logger
@@ -16,10 +16,10 @@ router = Router(name=__name__)
 logger = get_logger(__name__)
 
 
-@router.callback_query(CallBackCard.filter())
+@router.callback_query(CardCallback.filter())
 async def handle_play_card(
     callback: CallbackQuery,
-    callback_data: CallBackCard,
+    callback_data: CardCallback,
 ):
 
     async with db_helper.session_context() as session:
@@ -38,9 +38,7 @@ async def handle_play_card(
                 player_state.game.active_player_id,
                 callback.from_user.id,
             )
-            return await callback.answer(
-                text="Пожалуйста, дождитесь своего хода"
-            )
+            return await callback.answer(text="Пожалуйста, дождитесь своего хода")
 
         card: Card = await card_services.get_hand_card(
             card_id=callback_data.id
