@@ -55,14 +55,14 @@ class CardServices:
         card = result.unique().scalar_one_or_none()
         return card
 
-    async def get_hand_card(self, card_id: int) -> Card | None:
+    async def get_hand_card(self, card_id: int, card_zone: str) -> Card | None:
         stmt = (
             select(Card)
             .join(PlayerCardInstance, PlayerCardInstance.card_id == Card.id)
             .options(joinedload(Card.effects))
             .where(
                 Card.id == card_id,
-                PlayerCardInstance.zone == CardZone.HAND,
+                PlayerCardInstance.zone == card_zone,
             )
         )
         result: Result = await self.session.execute(stmt)

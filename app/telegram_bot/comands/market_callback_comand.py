@@ -7,7 +7,7 @@ from app.backend.core.models.player_state import PlayerState
 from app.backend.crud.card_crud import CardServices
 from app.backend.crud.game_move_crud import MoveServices
 from app.backend.crud.player_state_crud import PlayerStateServices
-from app.telegram_bot.keyboards.hand_keyboard import CardCallback
+from app.telegram_bot.keyboards.hand_keyboard import MarketCallback
 
 from app.backend.factories.database import db_helper
 from app.utils.logger import get_logger
@@ -17,16 +17,16 @@ router = Router(name=__name__)
 logger = get_logger(__name__)
 
 
-@router.callback_query(CardCallback.filter())
-async def handle_play_card(
+@router.callback_query(MarketCallback.filter())
+async def handle_bye_card(
     callback: CallbackQuery,
-    callback_data: CardCallback,
+    callback_data: MarketCallback,
 ):
 
     async with db_helper.session_context() as session:
         card_services = CardServices(session=session)
         player_state_services = PlayerStateServices(session=session)
-        move_services = MoveServices(session=session)
+        # move_services = MoveServices(session=session)
 
         player_state: PlayerState = (
             await player_state_services.get_player_state_with_game(
