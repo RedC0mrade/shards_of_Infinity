@@ -18,7 +18,7 @@ logger = get_logger(__name__)
 
 
 @router.callback_query(MarketCallback.filter())
-async def handle_bye_card(
+async def handle_buy_card(
     callback: CallbackQuery,
     callback_data: MarketCallback,
 ):
@@ -39,20 +39,22 @@ async def handle_bye_card(
                 player_state.game.active_player_id,
                 callback.from_user.id,
             )
-            return await callback.answer(text="Пожалуйста, дождитесь своего хода")
+            return await callback.answer(
+                text="Пожалуйста, дождитесь своего хода"
+            )
 
         card: Card = await card_services.get_hand_card(
             card_id=callback_data.id,
-            card_zone=CardZone.HAND,
-        )  # Получаем карту, проверем в руке ли она
+            card_zone=CardZone.MARKET,
+        )  # Получаем id карты, проверем находится ли она на рынке
 
         if not card:
-            logger.warning("Нет карты в руке id - %s", callback_data.id)
+            logger.warning("Нет карты на рынке с id - %s", callback_data.id)
             return await callback.answer(
                 text=(
-                    "Скорее всего эта карта было уже разыграна, ",
-                    "сделайте новый запрос карт в руке, ",
-                    'с помощью кнопки "Рука"',
+                    "Скорее всего эта карта было уже куплена, ",
+                    "сделайте новый запрос карт рынка, ",
+                    'с помощью кнопки "Рынок"',
                 )
             )
 
