@@ -8,9 +8,6 @@ from app.backend.core.models.play_card_instance import (
     PlayerCardInstance,
 )
 from app.backend.core.models.player_state import PlayerState
-from app.backend.crud.card_crud import CardServices
-from app.backend.crud.executors.effects_executor import EffectExecutor
-from app.backend.crud.executors.ps_count_executor import PlayStateExecutor
 from app.utils.logger import get_logger
 
 
@@ -25,6 +22,23 @@ class BuyServices:
     async def buy_card_from_market(
         self,
         player_state: PlayerState,
-        card_id: int,
+        card: Card,
+        game: Game,
+        player_id: int,
     ):
-        pass
+        """Игрок покупает карту с рынка"""
+        self.logger.info(
+            "Игрок с id - %s покупает карту - %s, в игре с id - %s",
+            player_id,
+            card.name,
+            game.id,
+        )
+
+# Покупка карты с рынка
+# 1 Проверяем на рынке ли карта
+# 2 проверяем хватает ли кристалов
+# 3 онимаем кристалы из банка ирока
+# 4 проверяем наёмлик это или нет
+# 4.1 разыгрываем
+# 4.2 переносим карту в сброс
+# 5 переносим карту в сброс

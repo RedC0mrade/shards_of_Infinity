@@ -44,7 +44,7 @@ async def handle_play_card(
         card: Card = await card_services.get_hand_card(
             card_id=callback_data.id,
             card_zone=CardZone.HAND,
-        )  # Получаем карту, проверем в руке ли она
+        )  # Получаем карту, только если она в руке
 
         if not card:
             logger.warning("Нет карты в руке id - %s", callback_data.id)
