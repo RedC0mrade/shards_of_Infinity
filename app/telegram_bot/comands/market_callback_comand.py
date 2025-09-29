@@ -43,7 +43,7 @@ async def handle_buy_card(
             )
             return await callback.answer(text="Пожалуйста, дождитесь своего хода")
 
-        card_inctance: PlayerCardInstance = (
+        card_instance: PlayerCardInstance = (
             await card_instanse_service.get_card_instance(
                 player_state_id=player_state.id,
                 card_id=callback_data.id,
@@ -51,7 +51,7 @@ async def handle_buy_card(
             )
         )  # Получаем id карты, проверем находится ли она на рынке
 
-        if not card_inctance:
+        if not card_instance:
             logger.warning("Нет карты на рынке с id - %s", callback_data.id)
             return await callback.answer(
                 text=(
@@ -62,13 +62,14 @@ async def handle_buy_card(
             )
 
         await buy_service.buy_card_from_market(
-            card=card_inctance.card,
+            card_instance=card_instance,
+            card=card_instance.card,
             player_state=player_state,
             game=player_state.game,
             player_id=callback.from_user.id,
         )
 
-        photo = FSInputFile(card_inctance.card.icon)
+        photo = FSInputFile(card_instance.card.icon)
 
         await callback.message.answer_photo(
             photo=photo,
