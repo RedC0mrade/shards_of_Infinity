@@ -26,23 +26,40 @@ class BuyServices:
         card_instance: PlayerCardInstance,
         game: Game,
         player_id: int,
+        mercenary: bool,
     ):
         """Игрок покупает карту с рынка"""
         self.logger.info(
-            "Игрок с id - %s покупает карту - %s, в игре с id - %s, она в зоне - %s",
+            "Игрок id - %s покупает карту - %s, в игре id - %s, зоне - %s",
             player_id,
             card.name,
             game.id,
-            card_instance.zone
+            card_instance.zone,
         )
         if player_state.crystals < card.crystals_cost:
-            self.logger.warning("Недостаточно кристалов - всего %s, для покупки необходимо - %s")
-            return f"Недостаточно кристалов({player_state.crystals}) для покупки карты{card.name} за {card.crystals_cost}"
+            self.logger.warning(
+                "Недостаточно кристалов (%s), для покупки необходимо - %s",
+                player_state.crystals,
+                card.crystals_cost,
+            )
+            return (
+                f"Недостаточно кристалов({player_state.crystals}) "
+                f"для покупки карты {card.name} за {card.crystals_cost}"
+            )
 
         if card_instance.zone != CardZone.MARKET:
-            self.logger.warning("Не правильная зона карты %s", card_instance.zone)
+            self.logger.warning(
+                "Не правильная зона карты %s",
+                card_instance.zone,
+            )
             return "ошибка зоны карты"
-        
+
+        player_state.crystals -= card.crystals_cost
+        self.logger.info(
+            "оставщееся количество кристалов",
+            player_state.crystals,
+        )
+
 
 # Покупка карты с рынка
 # 1 Проверяем на рынке ли карта

@@ -67,16 +67,17 @@ async def handle_buy_card(
             player_state=player_state,
             game=player_state.game,
             player_id=callback.from_user.id,
+            mercenary=...,
         )
 
         photo = FSInputFile(card_instance.card.icon)
 
         await callback.message.answer_photo(
             photo=photo,
-            caption=f"Вы сыграли карту {card.name}",
+            caption=f"Вы сыграли карту {card_instance.card.name}",
         )
         await callback.bot.send_photo(
             photo=photo,
-            caption=f"Ваш противник разыграл карту: {card.name}",
+            caption=f"Ваш противник разыграл карту: {card_instance.card.name}",
             chat_id=player_state.game.non_active_player_id,
         )
