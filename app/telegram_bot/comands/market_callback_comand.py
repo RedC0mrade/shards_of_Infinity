@@ -2,7 +2,10 @@ from aiogram import Router, F
 from aiogram.types import CallbackQuery, FSInputFile
 
 from app.backend.core.models.card import Card
-from app.backend.core.models.play_card_instance import CardZone, PlayerCardInstance
+from app.backend.core.models.play_card_instance import (
+    CardZone,
+    PlayerCardInstance,
+)
 from app.backend.core.models.player_state import PlayerState
 from app.backend.crud.buy_move import BuyServices
 from app.backend.crud.card_crud import CardServices
@@ -41,7 +44,9 @@ async def handle_buy_card(
                 player_state.game.active_player_id,
                 callback.from_user.id,
             )
-            return await callback.answer(text="Пожалуйста, дождитесь своего хода")
+            return await callback.answer(
+                text="Пожалуйста, дождитесь своего хода"
+            )
 
         card_instance: PlayerCardInstance = (
             await card_instanse_service.get_card_instance(
