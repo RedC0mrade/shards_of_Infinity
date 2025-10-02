@@ -1,7 +1,7 @@
 from aiogram import Router, F
 from aiogram.types import CallbackQuery, FSInputFile
 
-from app.backend.core.models.card import Card
+from app.backend.core.models.card import Card, CardType
 from app.backend.core.models.play_card_instance import (
     CardZone,
     PlayerCardInstance,
@@ -15,6 +15,7 @@ from app.backend.crud.player_state_crud import PlayerStateServices
 from app.telegram_bot.keyboards.hand_keyboard import MarketCallback
 
 from app.backend.factories.database import db_helper
+from app.telegram_bot.keyboards.mersery_keyboard import play_mercenary
 from app.utils.logger import get_logger
 
 
@@ -66,23 +67,34 @@ async def handle_buy_card(
                 )
             )
 
-        await buy_service.buy_card_from_market(
+        photo = FSInputFile(card_instance.card.icon)
+
+        if card_instance.card.card_type == CardType.MERCENARY:
+            await callback.message.answer_photo(
+                photo=photo,
+                caption="Вы купили карту наемника, выберите как её сыграть",
+                reply_markup=play_mercenary(
+                    card_instance_id=card_instance.id,
+                    player_state_id=player_state.id,
+                    game_id=player_state.game_id,
+                    card_id = card_instance.card.id,
+                ),
+            )
+
+        answer = await buy_service.buy_card_from_market(
             card_instance=card_instance,
             card=card_instance.card,
             player_state=player_state,
             game=player_state.game,
             player_id=callback.from_user.id,
-            mercenary=...,
         )
 
-        photo = FSInputFile(card_instance.card.icon)
-
-        await callback.message.answer_photo(
-            photo=photo,
-            caption=f"Вы сыграли карту {card_instance.card.name}",
-        )
-        await callback.bot.send_photo(
-            photo=photo,
-            caption=f"Ваш противник разыграл карту: {card_instance.card.name}",
-            chat_id=player_state.game.non_active_player_id,
-        )
+        # await callback.message.answer_photo(
+        #     photo=photo,
+        #     caption=f"Вы купили карту {card_instance.card.name}",
+        # )
+        # await callback.bot.send_photo(
+        #     photo=photo,
+        #     caption=f"Ваш противник купил карту: {card_instance.card.name}",
+        #     chat_id=player_state.game.non_active_player_id,
+        # )

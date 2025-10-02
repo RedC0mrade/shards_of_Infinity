@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from sqlalchemy import ForeignKey, Integer, String, Enum, Boolean
+from sqlalchemy import ForeignKey, Integer, String, Enum, Boolean, text
 
 from app.backend.core.models.card import Card
 from app.backend.core.models.player_state import PlayerState
@@ -32,6 +32,11 @@ class PlayerCardInstance(Base):
     card_id: Mapped[int] = mapped_column(ForeignKey("cards.id"))
 
     zone: Mapped[CardZone] = mapped_column(Enum(CardZone))
+    delete_mercenamy: Mapped[bool] = mapped_column(
+        Boolean,
+        default=False,
+        server_default=text("FALSE"),
+    )
 
     card: Mapped["Card"] = relationship("Card", lazy="selectin")
     player_state: Mapped["PlayerState"] = relationship(

@@ -1,15 +1,24 @@
 from aiogram import Router, F
 from aiogram.types import CallbackQuery, FSInputFile
 
-from app.backend.core.models.card import Card
-from app.backend.core.models.play_card_instance import CardZone
+from app.backend.core.models.card import Card, CardType
+from app.backend.core.models.play_card_instance import (
+    CardZone,
+    PlayerCardInstance,
+)
 from app.backend.core.models.player_state import PlayerState
+from app.backend.crud.buy_move import BuyServices
 from app.backend.crud.card_crud import CardServices
+from app.backend.crud.card_instance_crud import CardInstanceServices
 from app.backend.crud.game_move_crud import MoveServices
 from app.backend.crud.player_state_crud import PlayerStateServices
-from app.telegram_bot.keyboards.hand_keyboard import CardCallback
+from app.telegram_bot.keyboards.hand_keyboard import MarketCallback
 
 from app.backend.factories.database import db_helper
+from app.telegram_bot.keyboards.mersery_keyboard import (
+    MercenaryCallback,
+    play_mercenary,
+)
 from app.utils.logger import get_logger
 
 
@@ -17,16 +26,16 @@ router = Router(name=__name__)
 logger = get_logger(__name__)
 
 
-@router.callback_query(CardCallback.filter())
-async def handle_play_card(
+@router.callback_query(MercenaryCallback.filter())
+async def mercenary_play(
     callback: CallbackQuery,
-    callback_data: CardCallback,
+    callback_data: MercenaryCallback,
 ):
-
     async with db_helper.session_context() as session:
-        card_services = CardServices(session=session)
-        player_state_services = PlayerStateServices(session=session)
-        move_services = MoveServices(session=session)
+        if callback_data.play_now:
+            card_services = CardServices(session=session)
+            player_state_services = PlayerStateServices(session=session)
+            move_services = MoveServices(session=session)
 
         player_state: PlayerState = (
             await player_state_services.get_player_state_with_game(
@@ -42,29 +51,27 @@ async def handle_play_card(
             return await callback.answer(
                 text="Пожалуйста, дождитесь своего хода"
             )
-
         card: Card = await card_services.get_hand_card(
-            card_id=callback_data.id,
-            card_zone=CardZone.HAND,
-        )  # Получаем карту, только если она в руке
-
+            card_id=callback_data.card_id,
+            card_zone=CardZone.MARKET,
+        )
         if not card:
-            logger.warning("Нет карты в руке id - %s", callback_data.id)
+            logger.warning(
+                "Нет карты наёмника на рынке - id - %s", callback_data.id
+            )
             return await callback.answer(
                 text=(
                     "Скорее всего эта карта было уже разыграна, ",
-                    "сделайте новый запрос карт в руке, ",
-                    'с помощью кнопки "Рука"',
+                    "сделайте новый запрос рынка, ",
+                    'с помощью кнопки "Рынок"',
                 )
             )
-
         await move_services.make_move(
             card=card,
             player_state=player_state,
             game=player_state.game,
             player_id=callback.from_user.id,
         )
-
         photo = FSInputFile(card.icon)
 
         await callback.message.answer_photo(

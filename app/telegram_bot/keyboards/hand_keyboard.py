@@ -26,6 +26,8 @@ def make_card_move_keyboard(
     market: bool = False,
 ) -> InlineKeyboardMarkup:
     card_buttons = []
+    """Клавиатура отвечает за отображение клавиатуры
+        выбора карт. Флаг market указывает это карта с руки или с рынка."""
     
     callback_class = MarketCallback if market else CardCallback
 
@@ -40,5 +42,5 @@ def make_card_move_keyboard(
         card_buttons.append(button)
 
     keyboard_layout = [card_buttons[i:i+2] for i in range(0, len(card_buttons), 2)]
-    
-    return InlineKeyboardMarkup(inline_keyboard=keyboard_layout)
+    markup = InlineKeyboardMarkup(inline_keyboard=keyboard_layout)
+    return markup

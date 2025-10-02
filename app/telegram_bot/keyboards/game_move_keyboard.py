@@ -18,6 +18,7 @@ class MoveKBText:
 
 
 def in_play_card_keyboard():
+    """Клавиату для общеигрового меню, активного игрока"""
     market_button = KeyboardButton(text=MoveKBText.MARKET)
     hand_button = KeyboardButton(text=MoveKBText.HAND)
     cards_in_play = KeyboardButton(text=MoveKBText.CARDS_IN_PLAY)
@@ -51,6 +52,7 @@ def in_play_card_keyboard():
     return markup
 
 def non_play_card_keyboard():
+    """Клавиатура общеигравого меню, для игрока ждущего своего хода"""
     market_button = KeyboardButton(text=MoveKBText.MARKET)
     hand_button = KeyboardButton(text=MoveKBText.HAND)
     cards_in_play = KeyboardButton(text=MoveKBText.CARDS_IN_PLAY)
