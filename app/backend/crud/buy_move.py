@@ -27,7 +27,7 @@ class BuyServices:
         game: Game,
         player_id: int,
         mercenary: bool,
-    ):
+    ) -> tuple[bool, str]:
         """Игрок покупает карту с рынка"""
         self.logger.info(
             "Игрок id - %s покупает карту - %s, в игре id - %s, зоне - %s",
@@ -43,8 +43,12 @@ class BuyServices:
                 card.crystals_cost,
             )
             return (
-                f"Недостаточно кристалов({player_state.crystals}) "
-                f"для покупки карты {card.name} за {card.crystals_cost}"
+                False,
+                (
+                    f"Недостаточно кристалов({player_state.crystals}) ",
+                    f"для покупки карты {card.name} за ",
+                    f"{card.crystals_cost} кристалов",
+                ),
             )
 
         if card_instance.zone != CardZone.MARKET:
@@ -52,7 +56,7 @@ class BuyServices:
                 "Не правильная зона карты %s",
                 card_instance.zone,
             )
-            return "ошибка зоны карты"
+            return (False, f"Не правильно выбрана карта")
 
         player_state.crystals -= card.crystals_cost
         self.logger.info(
@@ -60,7 +64,9 @@ class BuyServices:
             player_state.crystals,
         )
         card_instance.zone = CardZone.DISCARD
-        return "Карта куплена с рынка"
+        await self.session.commit()
+        return (True, "")
+
 
 # Покупка карты с рынка
 # 1 Проверяем на рынке ли карта

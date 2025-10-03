@@ -88,13 +88,17 @@ async def handle_buy_card(
             game=player_state.game,
             player_id=callback.from_user.id,
         )
-
-        # await callback.message.answer_photo(
-        #     photo=photo,
-        #     caption=f"Вы купили карту {card_instance.card.name}",
-        # )
-        # await callback.bot.send_photo(
-        #     photo=photo,
-        #     caption=f"Ваш противник купил карту: {card_instance.card.name}",
-        #     chat_id=player_state.game.non_active_player_id,
-        # )
+        if answer[0]:
+            await callback.message.answer_photo(
+                photo=photo,
+                caption=f"Вы купили карту {card_instance.card.name}",
+            )
+            await callback.bot.send_photo(
+                photo=photo,
+                caption=f"Ваш противник купил карту: {card_instance.card.name}",
+                chat_id=player_state.game.non_active_player_id,
+            )
+        else:
+            await callback.message.answer(
+                text=answer[1]
+            )
