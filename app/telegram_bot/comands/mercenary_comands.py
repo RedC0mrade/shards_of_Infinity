@@ -32,54 +32,73 @@ async def mercenary_play(
     callback_data: MercenaryCallback,
 ):
     async with db_helper.session_context() as session:
+
         if callback_data.play_now:
             card_services = CardServices(session=session)
             player_state_services = PlayerStateServices(session=session)
             move_services = MoveServices(session=session)
 
-        player_state: PlayerState = (
-            await player_state_services.get_player_state_with_game(
-                player_id=callback.from_user.id
-            )
-        )
-        if player_state.game.active_player_id != callback.from_user.id:
-            logger.warning(
-                "active_player_id = %s, callback.from_user.id = %s",
-                player_state.game.active_player_id,
-                callback.from_user.id,
-            )
-            return await callback.answer(
-                text="Пожалуйста, дождитесь своего хода"
-            )
-        card: Card = await card_services.get_hand_card(
-            card_id=callback_data.card_id,
-            card_zone=CardZone.MARKET,
-        )
-        if not card:
-            logger.warning(
-                "Нет карты наёмника на рынке - id - %s", callback_data.id
-            )
-            return await callback.answer(
-                text=(
-                    "Скорее всего эта карта было уже разыграна, ",
-                    "сделайте новый запрос рынка, ",
-                    'с помощью кнопки "Рынок"',
+            player_state: PlayerState = (
+                await player_state_services.get_player_state_with_game(
+                    player_id=callback.from_user.id
                 )
             )
-        await move_services.make_move(
-            card=card,
-            player_state=player_state,
-            game=player_state.game,
-            player_id=callback.from_user.id,
-        )
-        photo = FSInputFile(card.icon)
+            if player_state.game.active_player_id != callback.from_user.id:
+                logger.warning(
+                    "active_player_id = %s, callback.from_user.id = %s",
+                    player_state.game.active_player_id,
+                    callback.from_user.id,
+                )
+                return await callback.answer(text="Пожалуйста, дождитесь своего хода")
+            card: Card = await card_services.get_hand_card(
+                card_id=callback_data.card_id,
+                card_zone=CardZone.MARKET,
+            )
+            if not card:
+                logger.warning(
+                    "Нет карты наёмника на рынке - id - %s", callback_data.id
+                )
+                return await callback.answer(
+                    text=(
+                        "Скорее всего эта карта было уже разыграна, ",
+                        "сделайте новый запрос рынка, ",
+                        'с помощью кнопки "Рынок"',
+                    )
+                )
+            await move_services.make_move(
+                card=card,
+                player_state=player_state,
+                game=player_state.game,
+                player_id=callback.from_user.id,
+            )
+            photo = FSInputFile(card.icon)
 
-        await callback.message.answer_photo(
-            photo=photo,
-            caption=f"Вы сыграли карту {card.name}",
-        )
-        await callback.bot.send_photo(
-            photo=photo,
-            caption=f"Ваш противник разыграл карту: {card.name}",
-            chat_id=player_state.game.non_active_player_id,
-        )
+            await callback.message.answer_photo(
+                photo=photo,
+                caption=f"Вы сыграли карту {card.name}",
+            )
+            await callback.bot.send_photo(
+                photo=photo,
+                caption=f"Ваш противник разыграл карту: {card.name}",
+                chat_id=player_state.game.non_active_player_id,
+            )
+        else:
+            answer = await buy_service.buy_card_from_market(
+                card_instance=card_instance,
+                card=card_instance.card,
+                player_state=player_state,
+                game=player_state.game,
+                player_id=callback.from_user.id,
+            )
+            if answer[0]:
+                await callback.message.answer_photo(
+                    photo=photo,
+                    caption=f"Вы купили карту {card_instance.card.name}",
+                )
+                await callback.bot.send_photo(
+                    photo=photo,
+                    caption=f"Ваш противник купил карту: {card_instance.card.name}",
+                    chat_id=player_state.game.non_active_player_id,
+                )
+            else:
+                await callback.message.answer(text=answer[1])
