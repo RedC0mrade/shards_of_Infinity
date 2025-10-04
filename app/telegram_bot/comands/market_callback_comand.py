@@ -45,9 +45,7 @@ async def handle_buy_card(
                 player_state.game.active_player_id,
                 callback.from_user.id,
             )
-            return await callback.answer(
-                text="Пожалуйста, дождитесь своего хода"
-            )
+            return await callback.answer(text="Пожалуйста, дождитесь своего хода")
 
         card_instance: PlayerCardInstance = (
             await card_instanse_service.get_card_instance(
@@ -77,7 +75,7 @@ async def handle_buy_card(
                     card_instance_id=card_instance.id,
                     player_state_id=player_state.id,
                     game_id=player_state.game_id,
-                    card_id = card_instance.card.id,
+                    card_id=card_instance.card.id,
                 ),
             )
 
@@ -99,8 +97,4 @@ async def handle_buy_card(
                 chat_id=player_state.game.non_active_player_id,
             )
         else:
-            await callback.message.answer(
-                text=answer[1]
-            )
-
-async m
+            await callback.message.answer(text=answer[1])
