@@ -97,5 +97,9 @@ class CardServices:
             )
         if instance.zone != CardZone.HAND:
             self.logger.info("Не правильная зона - %s", instance.zone)
+            return
         
         instance.zone = card_zone
+        self.logger.info("Зона карты изменена, теперь она %s", instance.zone)
+        await 
+        self.session.commit()

@@ -12,13 +12,9 @@ from app.backend.crud.card_crud import CardServices
 from app.backend.crud.card_instance_crud import CardInstanceServices
 from app.backend.crud.game_move_crud import MoveServices
 from app.backend.crud.player_state_crud import PlayerStateServices
-from app.telegram_bot.keyboards.hand_keyboard import MarketCallback
 
 from app.backend.factories.database import db_helper
-from app.telegram_bot.keyboards.mersery_keyboard import (
-    MercenaryCallback,
-    play_mercenary,
-)
+from app.telegram_bot.keyboards.mersery_keyboard import MercenaryCallback
 from app.utils.logger import get_logger
 
 
@@ -33,38 +29,37 @@ async def mercenary_play(
 ):
     async with db_helper.session_context() as session:
 
-        if callback_data.play_now:
-            card_services = CardServices(session=session)
-            player_state_services = PlayerStateServices(session=session)
-            move_services = MoveServices(session=session)
+        card_services = CardServices(session=session)
+        player_state_services = PlayerStateServices(session=session)
+        move_services = MoveServices(session=session)
 
-            player_state: PlayerState = (
-                await player_state_services.get_player_state_with_game(
-                    player_id=callback.from_user.id
+        player_state: PlayerState = (
+            await player_state_services.get_player_state_with_game(
+                player_id=callback.from_user.id
+            )
+        )
+        if player_state.game.active_player_id != callback.from_user.id:
+            logger.warning(
+                "active_player_id = %s, callback.from_user.id = %s",
+                player_state.game.active_player_id,
+                callback.from_user.id,
+            )
+            return await callback.answer(text="Пожалуйста, дождитесь своего хода")
+        card: Card = await card_services.get_hand_card(
+            card_id=callback_data.card_id,
+            card_zone=CardZone.MARKET,
+        )
+        if not card:
+            logger.warning("Нет карты наёмника на рынке - id - %s", callback_data.id)
+            return await callback.answer(
+                text=(
+                    "Скорее всего эта карта было уже разыграна, ",
+                    "сделайте новый запрос рынка, ",
+                    'с помощью кнопки "Рынок"',
                 )
             )
-            if player_state.game.active_player_id != callback.from_user.id:
-                logger.warning(
-                    "active_player_id = %s, callback.from_user.id = %s",
-                    player_state.game.active_player_id,
-                    callback.from_user.id,
-                )
-                return await callback.answer(text="Пожалуйста, дождитесь своего хода")
-            card: Card = await card_services.get_hand_card(
-                card_id=callback_data.card_id,
-                card_zone=CardZone.MARKET,
-            )
-            if not card:
-                logger.warning(
-                    "Нет карты наёмника на рынке - id - %s", callback_data.id
-                )
-                return await callback.answer(
-                    text=(
-                        "Скорее всего эта карта было уже разыграна, ",
-                        "сделайте новый запрос рынка, ",
-                        'с помощью кнопки "Рынок"',
-                    )
-                )
+        if callback_data.play_now:
+
             await move_services.make_move(
                 card=card,
                 player_state=player_state,
@@ -83,6 +78,15 @@ async def mercenary_play(
                 chat_id=player_state.game.non_active_player_id,
             )
         else:
+            buy_service = BuyServices(session=session)
+            card_instance_service = CardInstanceServices(session=session)
+
+            card_instance: PlayerCardInstance = (
+                card_instance_service.get_card_inctance_for_id(
+                    card_id=callback_data.card_id
+                )
+            )
+
             answer = await buy_service.buy_card_from_market(
                 card_instance=card_instance,
                 card=card_instance.card,

@@ -9,6 +9,7 @@ from app.backend.core.models.play_card_instance import (
 )
 from app.backend.core.models.player_state import PlayerState
 from app.backend.crud.card_crud import CardServices
+from app.backend.crud.card_instance_crud import CardInstanceServices
 from app.backend.crud.executors.effects_executor import EffectExecutor
 from app.backend.crud.executors.ps_count_executor import PlayStateExecutor
 from app.utils.logger import get_logger
@@ -37,6 +38,8 @@ class MoveServices:
             game.id,
         )
 
+        # card_instance_service = CardInstanceServices(session=self.session)
+        
         effect_executor = EffectExecutor(
             session=self.session,
             player_state=player_state,

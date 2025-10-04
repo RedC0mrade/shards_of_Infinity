@@ -2,9 +2,10 @@ from aiogram import Router, F
 from aiogram.types import CallbackQuery, FSInputFile
 
 from app.backend.core.models.card import Card
-from app.backend.core.models.play_card_instance import CardZone
+from app.backend.core.models.play_card_instance import CardZone, PlayerCardInstance
 from app.backend.core.models.player_state import PlayerState
 from app.backend.crud.card_crud import CardServices
+from app.backend.crud.card_instance_crud import CardInstanceServices
 from app.backend.crud.game_move_crud import MoveServices
 from app.backend.crud.player_state_crud import PlayerStateServices
 from app.telegram_bot.keyboards.hand_keyboard import CardCallback
@@ -25,6 +26,7 @@ async def handle_play_card(
 
     async with db_helper.session_context() as session:
         card_services = CardServices(session=session)
+        # card_instance_services = CardInstanceServices(session=session)
         player_state_services = PlayerStateServices(session=session)
         move_services = MoveServices(session=session)
 

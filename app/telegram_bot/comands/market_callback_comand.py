@@ -48,7 +48,7 @@ async def handle_buy_card(
             return await callback.answer(text="Пожалуйста, дождитесь своего хода")
 
         card_instance: PlayerCardInstance = (
-            await card_instanse_service.get_card_instance(
+            await card_instanse_service.get_card_instance_in_some_card_zone(
                 player_state_id=player_state.id,
                 card_id=callback_data.id,
                 card_zone=CardZone.MARKET,

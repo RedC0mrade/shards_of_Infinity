@@ -23,13 +23,13 @@ class CardInstanceServices:
         self.session = session
         self.logger = get_logger(self.__class__.__name__)
 
-    async def get_card_instance(
+    async def get_card_instance_in_some_card_zone(
         self,
         card_id: int,
         player_state_id: int,
         card_zone: CardZone,
-    ) -> PlayerCardInstance:
-        """Получаем информацию о состоянии карты."""
+    ) -> PlayerCardInstance | str:
+        """Получаем информацию о состоянии карты в определенной зоне."""
 
         self.logger.info(
             "card_id - %s, player_state_id - %s, card_zone - %s",
@@ -45,9 +45,35 @@ class CardInstanceServices:
         result: Result = await self.session.execute(stmt)
         card_instance = result.scalar_one_or_none()
 
+        if not card_instance:
+            self.logger.info(
+                "card_instance c card_id -%s, player_state_id - %s и card_zone - %s  не найден",
+                card_id,
+                player_state_id,
+                card_zone,
+            )
+            return "Карта в руке не найдена"
         self.logger.info(
             "Получен card_instance с картой - %s",
             card_instance.card.name,
         )
 
         return card_instance
+
+    async def get_card_inctance_for_id(
+        self,
+        card_instanse_id: int,
+    ) -> PlayerCardInstance:
+
+        self.logger.info("Получаем id - %s состояния карты", card_instanse_id)
+        stmt = select(PlayerCardInstance).where(
+            PlayerCardInstance.id == card_instanse_id
+        )
+
+        result: Result = self.session.execute(stmt)
+        card_instanse = result.scalar_one_or_none()
+
+        if not card_instanse:
+            self.logger.warning("Нет состояния казты с id -%s", card_instanse)
+
+        return card_instanse
