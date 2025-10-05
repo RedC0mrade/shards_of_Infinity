@@ -43,7 +43,7 @@ class CardInstanceServices:
             PlayerCardInstance.zone == card_zone,
         )
         result: Result = await self.session.execute(stmt)
-        card_instance = result.scalar_one_or_none()
+        card_instance: PlayerCardInstance = result.scalar_one_or_none()
 
         if not card_instance:
             self.logger.info(
@@ -57,7 +57,10 @@ class CardInstanceServices:
             "Получен card_instance с картой - %s",
             card_instance.card.name,
         )
-
+        self.logger.debug(
+            "Обратить внимание. Где то тут баг должна быть  зона маркет %s",
+            card_instance.zone
+        )
         return card_instance
 
     async def get_card_inctance_for_id(
@@ -74,6 +77,6 @@ class CardInstanceServices:
         card_instanse = result.scalar_one_or_none()
 
         if not card_instanse:
-            self.logger.warning("Нет состояния казты с id -%s", card_instanse)
+            self.logger.warning("Нет состояния карты с id -%s", card_instanse)
 
         return card_instanse

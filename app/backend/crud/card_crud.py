@@ -101,5 +101,4 @@ class CardServices:
         
         instance.zone = card_zone
         self.logger.info("Зона карты изменена, теперь она %s", instance.zone)
-        await 
-        self.session.commit()
+        await self.session.commit()

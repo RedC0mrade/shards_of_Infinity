@@ -54,6 +54,10 @@ async def handle_buy_card(
                 card_zone=CardZone.MARKET,
             )
         )  # Получаем id карты, проверем находится ли она на рынке
+        logger.debug(
+            "Обратить внимание. Где то тут баг должна быть  зона маркет %s",
+            card_instance.zone
+        )
 
         if not card_instance:
             logger.warning("Нет карты на рынке с id - %s", callback_data.id)
