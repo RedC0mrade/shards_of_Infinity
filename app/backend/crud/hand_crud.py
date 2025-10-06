@@ -44,13 +44,12 @@ class HandServices:
         result: Result = await self.session.execute(stmt)
         hand = result.scalars().all()
 
-        self.logger.info("Карты игрока %s", hand)
-        # if len(hand) != hand_count:
-        #     self.logger.warning(
-        #         "Ошибка в количестве карт в руке! Количество: %s",
-        #         len(hand),
-        #     )
-        #     return None
+        for card in hand:
+            self.logger.info(
+                "Карты игрока id - %s, zone - %s",
+                card.id,
+                card.zone,
+            )
         return hand
 
     async def create_hand(

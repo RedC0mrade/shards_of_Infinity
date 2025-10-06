@@ -31,7 +31,7 @@ class MarketServices:
             "Создание рынка для игры id %s",
             game.id,
         )
-        stmt = select(Card.id).where(Card.start_card == False)
+        stmt = select(Card.id).where(Card.start_card == False) # Получаем все id, которые не являются стартовыми картами
         result: Result = await self.session.execute(stmt)
         available_cards = result.scalars().all()
 

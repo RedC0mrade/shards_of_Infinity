@@ -26,7 +26,9 @@ async def handle_market(message: types.Message):
     async with db_helper.session_context() as session:
         game_service = GameServices(session=session)
         market_servise = MarketServices(session=session)
-        game: Game = await game_service.get_active_game(player_id=message.from_user.id)
+        game: Game = await game_service.get_active_game(
+            player_id=message.from_user.id
+        )
 
         if not game:
             await message.answer("❌ У вас нет активной игры.")
@@ -65,7 +67,9 @@ async def handle_hand(message: types.Message):
     async with db_helper.session_context() as session:
         game_service = GameServices(session=session)
         hand_services = HandServices(session=session)
-        game: Game = await game_service.get_active_game(player_id=message.from_user.id)
+        game: Game = await game_service.get_active_game(
+            player_id=message.from_user.id
+        )
 
         if not game:
             await message.answer("❌ У вас нет активной игры.")
@@ -76,9 +80,11 @@ async def handle_hand(message: types.Message):
         elif message.text == MoveKBText.CARDS_IN_PLAY:
             card_zone = CardZone.IN_PLAY
 
-        hand_cards: list[PlayerCardInstance] = await hand_services.get_cards_in_zone(
-            card_zone=card_zone,
-            player_id=message.from_user.id,
+        hand_cards: list[PlayerCardInstance] = (
+            await hand_services.get_cards_in_zone(
+                card_zone=card_zone,
+                player_id=message.from_user.id,
+            )
         )
 
         if not hand_cards:
@@ -111,8 +117,10 @@ async def handle_game_parametrs(message: types.Message):
     async with db_helper.session_context() as session:
         play_state_service = PlayerStateServices(session=session)
 
-        play_state: PlayerState = await play_state_service.get_player_state_with_game(
-            player_id=message.from_user.id
+        play_state: PlayerState = (
+            await play_state_service.get_player_state_with_game(
+                player_id=message.from_user.id
+            )
         )
         if not play_state:
             await message.answer("❌ У вас нет активной игры.")

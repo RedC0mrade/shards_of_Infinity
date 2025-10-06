@@ -67,6 +67,8 @@ class CardServices:
         )
         result: Result = await self.session.execute(stmt)
         card = result.unique().scalar_one_or_none()
+        self.logger.debug("SQL запрос: %s", stmt)
+        self.logger.debug("Где то здесь происходит баг карта должна быть в зоне HAND")
         return card
 
     async def change_card_zone(

@@ -23,6 +23,37 @@ class CardInstanceServices:
         self.session = session
         self.logger = get_logger(self.__class__.__name__)
 
+    async def create_card_instance_for_all_cards(
+        self,
+        game_id: int,
+    ):
+        self.logger.info(
+            "Создаем стартовые экземпляры карт для игры с id - %s",
+            game_id,
+        )
+        stmt = select(Card.id).where(Card.start_card == False)
+        result: Result = await self.session.execute(stmt)
+        cards_ids = result.scalars().all
+        self.logger.info(
+            "Получаем id карт - %s",
+            cards_ids,
+        )
+        cards_instances = []
+        for card_id in cards_ids:
+            card_instance = PlayerCardInstance(
+                player_state_id=None,
+                game_id=game_id,
+                card_id=card_id,
+                zone=CardZone.COMMON_DECK,
+                delete_mercenamy=False,
+            )
+            self.logger.info(
+                "Создаем экземпляр карты - %s",
+                )
+            cards_instances.append(card_instance)
+        self.session.add_all(cards_instances)
+        await self.session.commit()
+
     async def get_card_instance_in_some_card_zone(
         self,
         card_id: int,
@@ -46,20 +77,20 @@ class CardInstanceServices:
         card_instance: PlayerCardInstance = result.scalar_one_or_none()
 
         if not card_instance:
-            self.logger.info(
+            self.logger.warning(
                 "card_instance c card_id -%s, player_state_id - %s и card_zone - %s  не найден",
                 card_id,
                 player_state_id,
                 card_zone,
             )
-            return "Карта в руке не найдена"
+            return None
         self.logger.info(
             "Получен card_instance с картой - %s",
             card_instance.card.name,
         )
         self.logger.debug(
-            "Обратить внимание. Где то тут баг должна быть  зона маркет %s",
-            card_instance.zone
+            "Обратить внимание. Где то тут баг должна быть зона маркет %s",
+            card_instance.zone,
         )
         return card_instance
 

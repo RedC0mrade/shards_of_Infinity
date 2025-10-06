@@ -41,6 +41,6 @@ def make_card_move_keyboard(
         )
         card_buttons.append(button)
 
-    keyboard_layout = [card_buttons[i:i+2] for i in range(0, len(card_buttons), 2)]
+    keyboard_layout = [card_buttons[i:i+3] for i in range(0, len(card_buttons), 3)]
     markup = InlineKeyboardMarkup(inline_keyboard=keyboard_layout)
     return markup

@@ -66,10 +66,3 @@ class BuyServices:
         card_instance.zone = CardZone.DISCARD
         await self.session.commit()
         return (True, "")
-
-
-# Покупка карты с рынка
-# 1 Проверяем на рынке ли карта
-# 2 проверяем хватает ли кристалов
-# 3 отнимаем кристалы из банка игрока
-# 5 переносим карту в сброс

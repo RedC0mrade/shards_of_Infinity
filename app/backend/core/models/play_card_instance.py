@@ -1,3 +1,4 @@
+from typing import Optional
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import ForeignKey, Integer, String, Enum, Boolean, text
 
@@ -8,7 +9,8 @@ import enum
 
 
 class CardZone(str, enum.Enum):
-    DECK = "deck"
+    PLAYER_DECK = "player_deck"
+    COMMON_DECK = "common_deck"
     HAND = "hand"
     DISCARD = "discard"
     IN_PLAY = "in_play"
@@ -21,15 +23,25 @@ class CardZone(str, enum.Enum):
 class PlayerCardInstance(Base):
     __tablename__ = "player_card_instances"
 
-    id: Mapped[int] = mapped_column(primary_key=True)
-
-    player_state_id: Mapped[int] = mapped_column(
+    player_state_id: Mapped[Optional[int]] = mapped_column(
         ForeignKey(
             "player_states.id",
             ondelete="CASCADE",
+        ),
+        nullable=True,
+    )
+    game_id: Mapped[int] = mapped_column(
+        ForeignKey(
+            "games.id",
+            ondelete="CASCADE",
+        ),
+        nullable=False,
+    )
+    card_id: Mapped[int] = mapped_column(
+        ForeignKey(
+            "cards.id"
         )
     )
-    card_id: Mapped[int] = mapped_column(ForeignKey("cards.id"))
 
     zone: Mapped[CardZone] = mapped_column(Enum(CardZone))
     delete_mercenamy: Mapped[bool] = mapped_column(
@@ -39,7 +51,7 @@ class PlayerCardInstance(Base):
     )
 
     card: Mapped["Card"] = relationship("Card", lazy="selectin")
-    player_state: Mapped["PlayerState"] = relationship(
+    player_state: Mapped[Optional["PlayerState"]] = relationship(
         "PlayerState",
         back_populates="cards",
     )

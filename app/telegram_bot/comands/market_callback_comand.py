@@ -54,20 +54,20 @@ async def handle_buy_card(
                 card_zone=CardZone.MARKET,
             )
         )  # Получаем id карты, проверем находится ли она на рынке
-        logger.debug(
-            "Обратить внимание. Где то тут баг должна быть  зона маркет %s",
-            card_instance.zone
-        )
 
         if not card_instance:
             logger.warning("Нет карты на рынке с id - %s", callback_data.id)
             return await callback.answer(
                 text=(
-                    "Скорее всего эта карта было уже куплена, ",
-                    "сделайте новый запрос карт рынка, ",
-                    'с помощью кнопки "Рынок"',
+                    "Эта карта было уже куплена, "
+                    "сделайте новый запрос карт рынка, "
+                    'с помощью кнопки "Рынок"'
                 )
             )
+        logger.debug(
+            "Обратить внимание. Где то тут баг должна быть  зона маркет %s",
+            card_instance.zone
+        )
 
         photo = FSInputFile(card_instance.card.icon)
 

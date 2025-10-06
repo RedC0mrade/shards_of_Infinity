@@ -42,7 +42,7 @@ class EffectExecutor:
     ):
         self.player_state.crystals += value
         self.logger.info(
-            " функция - do_crystal_base_none, значение - %s",
+            " функция - do_crystal_base_none, общее значение - %s",
             self.player_state.crystals,
         )
 

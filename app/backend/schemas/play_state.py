@@ -1,8 +1,5 @@
 from pydantic import BaseModel
 
-from app.backend.schemas.play_card_instance import CreatePCISchema
-
-
 class CreatePlayStateSchema(BaseModel):
     game_id: int
     player_id: int
