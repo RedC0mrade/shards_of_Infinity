@@ -74,17 +74,17 @@ class Game(Base):
         foreign_keys=[player1_id],
     )
 
-    player2: Mapped[Optional["TelegramUser"]] = relationship(
+    player2: Mapped["TelegramUser" | None] = relationship(
         "TelegramUser",
         foreign_keys=[player2_id],
     )
 
-    active_player: Mapped[Optional["TelegramUser"]] = relationship(
+    active_player: Mapped["TelegramUser"| None] = relationship(
         "TelegramUser",
         foreign_keys=[active_player_id],
     )
 
-    winner: Mapped[Optional["TelegramUser"]] = relationship(
+    winner: Mapped["TelegramUser" | None] = relationship(
         "TelegramUser",
         foreign_keys=[winner_id],
     )
