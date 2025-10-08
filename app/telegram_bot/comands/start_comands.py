@@ -47,8 +47,6 @@ async def handle_start(message: types.Message):
         await message.answer(
             text=(
                 f"Привет, {user.first_name}!\n"
-                f"Твой ID: {user.id}.\n"
-                f"Твой Chat_id: {user.chat_id}\n"
                 f"Количество побед: {user.victories}\n"
                 f"Количество поражений: {user.defeats}"
             ),
@@ -86,9 +84,10 @@ async def new_game(message: types.Message):
     await message.answer(
         text=(
             f"\U0001f3ae Игра создана!\n"
-            f"🔗 Отправь этот токен другу для подключения:\n{invite_token}"
+            f"🔗 Отправь этот токен другу для подключения:"
         )
     )
+    await message.answer(text=f"{invite_token}")
 
 
 @router.message(F.text == StartKBText.ACCEPT_INVITATION)
@@ -127,7 +126,7 @@ async def process_invite_code(message: types.Message, state: FSMContext):
             await get_player_state_service.create_play_state(
                 play_datas=player_states
             )
-            # Создаем мартет из 6 рандомных карт
+            # Создаем маркет из 6 рандомных карт
             await market_service.create_market(game=game)
 
             await session.commit()

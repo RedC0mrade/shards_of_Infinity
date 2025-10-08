@@ -12,6 +12,7 @@ if TYPE_CHECKING:
     from app.backend.core.models.game import Game
     from app.backend.core.models.player_state import PlayerState
 
+
 class CardZone(str, enum.Enum):
     PLAYER_DECK = "player_deck"
     COMMON_DECK = "common_deck"
@@ -41,11 +42,7 @@ class PlayerCardInstance(Base):
         ),
         nullable=False,
     )
-    card_id: Mapped[int] = mapped_column(
-        ForeignKey(
-            "cards.id"
-        )
-    )
+    card_id: Mapped[int] = mapped_column(ForeignKey("cards.id"))
 
     zone: Mapped[CardZone] = mapped_column(Enum(CardZone))
     delete_mercenary: Mapped[bool] = mapped_column(

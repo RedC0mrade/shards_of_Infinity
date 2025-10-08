@@ -48,7 +48,7 @@ class PlayerStateServices:
                 cards=[
                     PlayerCardInstance(
                         card_id=card_id,
-                        zone=CardZone.DECK,
+                        zone=CardZone.PLAYER_DECK,
                     )
                     for card_id in start_card_ids
                 ]
@@ -99,7 +99,7 @@ class PlayerStateServices:
         """Добор карт в руку"""
         # 1. Сколько карт уже в руке
         current_hand = [
-            c for c in player_state.cards if c.zone == CardZone.HAND
+            card for card in player_state.cards if card.zone == CardZone.HAND
         ]
         need_to_draw = count - len(current_hand)
         if need_to_draw <= 0:
@@ -110,7 +110,7 @@ class PlayerStateServices:
         while need_to_draw > 0:
             # Берём карты из DECK
             deck_cards = [
-                c for c in player_state.cards if c.zone == CardZone.DECK
+                c for c in player_state.cards if c.zone == CardZone.PLAYER_DECK
             ]
             if not deck_cards:
                 # Если DECK пуст — перемешиваем DISCARD обратно в DECK
@@ -120,12 +120,12 @@ class PlayerStateServices:
                 if not discard_cards:
                     break  # вообще нет карт
                 # Перемещаем в DECK
-                for c in discard_cards:
-                    c.zone = CardZone.DECK
+                for card in discard_cards:
+                    card.zone = CardZone.PLAYER_DECK
                 random.shuffle(discard_cards)  # перемешивание
                 # можно обновить order_in_zone
-                for idx, c in enumerate(discard_cards):
-                    c.order_in_zone = idx
+                for idx, card in enumerate(discard_cards):
+                    card.order_in_zone = idx
 
                 deck_cards = discard_cards
 
