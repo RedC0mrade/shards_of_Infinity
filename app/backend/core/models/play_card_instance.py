@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import TYPE_CHECKING, Optional
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import ForeignKey, Integer, String, Enum, Boolean, text
@@ -17,7 +19,7 @@ class CardZone(str, enum.Enum):
     DISCARD = "discard"
     IN_PLAY = "in_play"
     EXILED = "exiled"
-    MARKET = "market"  # если потребуется
+    MARKET = "market"
     CHAMPION = "champion"  # если карта активирована
     OTHER = "other"  # на будущее
 
@@ -54,7 +56,7 @@ class PlayerCardInstance(Base):
 
     card: Mapped["Card"] = relationship("Card", lazy="selectin")
     game: Mapped["Game"] = relationship("Game")
-    player_state: Mapped["PlayerState" | None] = relationship(
+    player_state: Mapped["PlayerState"] = relationship(
         "PlayerState",
         back_populates="cards",
     )

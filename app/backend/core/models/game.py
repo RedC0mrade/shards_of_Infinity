@@ -1,4 +1,6 @@
+from __future__ import annotations
 import enum
+
 from datetime import datetime
 from typing import TYPE_CHECKING, List, Optional
 from sqlalchemy import (
@@ -74,17 +76,17 @@ class Game(Base):
         foreign_keys=[player1_id],
     )
 
-    player2: Mapped["TelegramUser" | None] = relationship(
+    player2: Mapped["TelegramUser"] = relationship(
         "TelegramUser",
         foreign_keys=[player2_id],
     )
 
-    active_player: Mapped["TelegramUser"| None] = relationship(
+    active_player: Mapped["TelegramUser"] = relationship(
         "TelegramUser",
         foreign_keys=[active_player_id],
     )
 
-    winner: Mapped["TelegramUser" | None] = relationship(
+    winner: Mapped["TelegramUser"] = relationship(
         "TelegramUser",
         foreign_keys=[winner_id],
     )
