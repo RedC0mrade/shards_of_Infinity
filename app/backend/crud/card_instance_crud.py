@@ -33,7 +33,7 @@ class CardInstanceServices:
         )
         stmt = select(Card.id).where(Card.start_card == False)
         result: Result = await self.session.execute(stmt)
-        cards_ids = result.scalars().all
+        cards_ids = result.scalars().all()
         self.logger.info(
             "Получаем id карт - %s",
             cards_ids,
@@ -45,10 +45,11 @@ class CardInstanceServices:
                 game_id=game_id,
                 card_id=card_id,
                 zone=CardZone.COMMON_DECK,
-                delete_mercenamy=False,
+                delete_mercenary=False,
             )
             self.logger.info(
                 "Создаем экземпляр карты - %s",
+                card_instance.card_id
                 )
             cards_instances.append(card_instance)
         self.session.add_all(cards_instances)

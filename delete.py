@@ -1,7 +1,7 @@
 # alembic init -t async alembic
 # alembic downgrade -1
 # alembic upgrade head
-# alembic revision --autogenerate -m "Create table"
+# alembic revision --autogenerate -m "Create tables"
 
 
 # docker-compose up --build -d

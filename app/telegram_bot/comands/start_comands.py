@@ -1,6 +1,7 @@
 from sqlalchemy import Result, select
 from app.backend.core.models.game import Game
 from app.backend.core.models.user import TelegramUser
+from app.backend.crud.card_instance_crud import CardInstanceServices
 from app.backend.crud.games_crud import GameServices
 from app.backend.crud.hand_crud import HandServices
 from app.backend.crud.market_crud1 import MarketServices
@@ -116,6 +117,8 @@ async def process_invite_code(message: types.Message, state: FSMContext):
         market_service = MarketServices(session=session)
         get_game_service = GameServices(session=session)
         hand_service = HandServices(session=session)
+        card_instance_service = CardInstanceServices(session=session)
+
         game = await get_game_service.join_game_by_code(
             token=token,
             player2_id=player2_id,
@@ -124,7 +127,8 @@ async def process_invite_code(message: types.Message, state: FSMContext):
             # Назначаем у кого сила 1, у кого 0
             player_states = get_player_state_service.assign_mastery(game=game)
             await get_player_state_service.create_play_state(
-                play_datas=player_states
+                play_datas=player_states,
+                game_id=game.id,
             )
             # Создаем маркет из 6 рандомных карт
             await market_service.create_market(game=game)
@@ -134,6 +138,11 @@ async def process_invite_code(message: types.Message, state: FSMContext):
             # создаем стартовую руку у обоих пользователей
             await hand_service.create_hand(game.active_player_id)
             await hand_service.create_hand(game.non_active_player_id)
+
+            # создаем состояние для всех карт кроме стартовых
+            await card_instance_service.create_card_instance_for_all_cards(
+                game_id=game.id
+            )
 
             await message.bot.send_message(
                 chat_id=game.non_active_player_id,
@@ -177,5 +186,5 @@ async def keyboard_return(message: types.Message):
             )
             return
         return await message.answer(
-                text="У вас нет активной партии",
-            )
+            text="У вас нет активной партии",
+        )

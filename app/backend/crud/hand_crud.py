@@ -71,7 +71,7 @@ class HandServices:
             )
             .where(
                 PlayerState.player_id == player_id,
-                PlayerCardInstance.zone == CardZone.DECK,
+                PlayerCardInstance.zone == CardZone.PLAYER_DECK,
             )
         )
         result: Result = await self.session.execute(stmt)
@@ -117,7 +117,7 @@ class HandServices:
                 discards.remove(card)
 
             for card in discards:
-                card.zone = CardZone.DECK
+                card.zone = CardZone.PLAYER_DECK
 
         else:
             hand_cards = sample(

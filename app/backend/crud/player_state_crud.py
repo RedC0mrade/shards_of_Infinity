@@ -29,6 +29,7 @@ class PlayerStateServices:
     async def create_play_state(
         self,
         play_datas: list[CreatePlayStateSchema],
+        game_id: int,
     ) -> list[PlayerState]:
         self.logger.info(
             "Создание play_state для игроков: %s, %s",
@@ -49,6 +50,7 @@ class PlayerStateServices:
                     PlayerCardInstance(
                         card_id=card_id,
                         zone=CardZone.PLAYER_DECK,
+                        game_id=game_id,
                     )
                     for card_id in start_card_ids
                 ]
