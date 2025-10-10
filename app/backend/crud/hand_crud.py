@@ -22,7 +22,6 @@ class HandServices:
         self,
         player_id: int,
         card_zone: CardZone,
-        hand_count: int = 5,
     ) -> list[PlayerCardInstance]:
         """Получаем карты, которые в руке"""
 
@@ -51,6 +50,27 @@ class HandServices:
                 card.zone,
             )
         return hand
+
+    async def get_cards_in_play(
+        self,
+        card_zone: CardZone,
+        game_id: int,
+    ) -> list[PlayerCardInstance]:
+        """Получаем разыгранные карты."""
+        stmt = select(PlayerCardInstance).where(
+            PlayerCardInstance.game_id == game_id,
+            PlayerCardInstance.zone == card_zone,
+        )
+
+        result: Result = await self.session.execute(stmt)
+        cards = result.scalars().all()
+        for card in cards:
+            self.logger.info(
+                "Картa id - %s, zone - %s",
+                card.id,
+                card.zone,
+            )
+        return cards
 
     async def create_hand(
         self,

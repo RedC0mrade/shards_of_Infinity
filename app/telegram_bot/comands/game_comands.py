@@ -76,16 +76,20 @@ async def handle_hand(message: types.Message):
             return
 
         if message.text == MoveKBText.HAND:
-            card_zone = CardZone.HAND
-        elif message.text == MoveKBText.CARDS_IN_PLAY:
-            card_zone = CardZone.IN_PLAY
-
-        hand_cards: list[PlayerCardInstance] = (
-            await hand_services.get_cards_in_zone(
-                card_zone=card_zone,
-                player_id=message.from_user.id,
+            hand_cards: list[PlayerCardInstance] = (
+                await hand_services.get_cards_in_zone(
+                    card_zone=CardZone.HAND,
+                    player_id=message.from_user.id,
+                )
             )
-        )
+
+        elif message.text == MoveKBText.CARDS_IN_PLAY:
+            hand_cards: list[PlayerCardInstance] = (
+                await hand_services.get_cards_in_play(
+                    card_zone=CardZone.IN_PLAY,
+                    game_id=game.id,
+                )
+            )
 
         if not hand_cards:
             await message.answer(f"❌ Нет карт в {message.text}.")

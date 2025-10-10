@@ -41,9 +41,10 @@ async def handle_play_card(
                 player_state.game.active_player_id,
                 callback.from_user.id,
             )
-            return await callback.answer(
+            await callback.answer(
                 text="Пожалуйста, дождитесь своего хода"
             )
+            return
 
         card: Card = await card_services.get_hand_card(
             card_id=callback_data.id,
