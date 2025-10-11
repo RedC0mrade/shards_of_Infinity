@@ -34,16 +34,16 @@ async def handle_market(message: types.Message):
             await message.answer("❌ У вас нет активной игры.")
             return
 
-        market_slots: list[MarketSlot] = await market_servise.get_market_slots(
-            game_id=game.id
+        market_cards: list[PlayerCardInstance] = (
+            await market_servise.get_market_cards(game_id=game.id)
         )
 
-        if not market_slots:
+        if not market_cards:
             await message.answer("❌ Нет карт на рынке.")
             return
 
         media = []  # переделать дублирующийся код
-        for slot in market_slots:
+        for slot in market_cards:
             card = slot.card
 
             media.append(
@@ -56,7 +56,7 @@ async def handle_market(message: types.Message):
         await message.answer(
             text="Выберите карту для покупки",
             reply_markup=make_card_move_keyboard(
-                instance_data=market_slots, market=True
+                instance_data=market_cards, market=True
             ),
         )
 

@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Optional
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from sqlalchemy import ForeignKey, Integer, String, Enum, Boolean, text
+from sqlalchemy import CheckConstraint, ForeignKey, Integer, String, Enum, Boolean, text
 
 from .base_model import Base
 import enum
@@ -27,6 +27,16 @@ class CardZone(str, enum.Enum):
 
 class PlayerCardInstance(Base):
     __tablename__ = "player_card_instances"
+    __table_args__ = (
+        CheckConstraint(
+            "(zone != 'MARKET') OR (position_on_market IS NOT NULL)",
+            name="market_position_required"
+        ),
+        CheckConstraint(
+            "(zone = 'MARKET') OR (position_on_market IS NULL)",
+            name="position_only_for_market"
+        )
+    )
 
     player_state_id: Mapped[int | None] = mapped_column(
         ForeignKey(
@@ -45,6 +55,12 @@ class PlayerCardInstance(Base):
     card_id: Mapped[int] = mapped_column(ForeignKey("cards.id"))
 
     zone: Mapped[CardZone] = mapped_column(Enum(CardZone))
+    position_on_market: Mapped[int | None] = mapped_column(
+        Integer,
+        default=None,
+        server_default=text("NULL"),
+        nullable=True,
+    )
     delete_mercenary: Mapped[bool] = mapped_column(
         Boolean,
         default=False,

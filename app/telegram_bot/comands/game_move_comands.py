@@ -23,7 +23,7 @@ async def handle_play_card(
     callback: CallbackQuery,
     callback_data: CardCallback,
 ):
-
+    """Обрабатываем команду розыгрыша карт"""
     async with db_helper.session_context() as session:
         card_services = CardServices(session=session)
         # card_instance_services = CardInstanceServices(session=session)
@@ -47,8 +47,10 @@ async def handle_play_card(
             return
 
         card: Card = await card_services.get_hand_card(
+            player_state_id=player_state.id,
             card_id=callback_data.id,
             card_zone=CardZone.HAND,
+            game_id=player_state.game_id,
         )  # Получаем карту, только если она в руке
 
         if not card:
@@ -56,7 +58,7 @@ async def handle_play_card(
             logger.warning("Нет карты в руке id - %s", callback_data.id)
             return await callback.answer(
                 text=(
-                    "Скорее всего эта карта было уже разыграна, "
+                    "Эта карта была уже разыграна, "
                     "сделайте новый запрос карт в руке, "
                     'с помощью кнопки "Рука"'
                 )

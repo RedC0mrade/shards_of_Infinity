@@ -55,20 +55,27 @@ class CardServices:
         card = result.unique().scalar_one_or_none()
         return card
 
-    async def get_hand_card(self, card_id: int, card_zone: str) -> Card | None:
+    async def get_hand_card(
+        self,
+        card_id: int,
+        game_id: int,
+        card_zone: str,
+        player_state_id: int,
+    ) -> Card | None:
         stmt = (
             select(Card)
             .join(PlayerCardInstance, PlayerCardInstance.card_id == Card.id)
             .options(joinedload(Card.effects))
             .where(
                 Card.id == card_id,
+                PlayerCardInstance.player_state_id == player_state_id,
                 PlayerCardInstance.zone == card_zone,
+                PlayerCardInstance.game_id == game_id,
             )
         )
         result: Result = await self.session.execute(stmt)
         card = result.unique().scalar_one_or_none()
-        self.logger.debug("SQL запрос: %s", stmt)
-        self.logger.debug("Где то здесь происходит баг карта должна быть в зоне HAND")
+
         return card
 
     async def change_card_zone(
@@ -97,10 +104,11 @@ class CardServices:
                 card_id,
                 player_state.id,
             )
-        if instance.zone != CardZone.HAND:
-            self.logger.info("Не правильная зона - %s", instance.zone)
             return
-        
+        if instance.zone != CardZone.HAND:
+            self.logger.warning("Не правильная зона - %s", instance.zone)
+            return
+
         instance.zone = card_zone
         self.logger.info("Зона карты изменена, теперь она %s", instance.zone)
         await self.session.commit()

@@ -21,6 +21,12 @@ from app.utils.logger import get_logger
 router = Router(name=__name__)
 logger = get_logger(__name__)
 
+#     card_instance_id: int
+#     play_now: bool
+#     player_state_id: int
+#     game_id: int
+#     card_id: int
+
 
 @router.callback_query(MercenaryCallback.filter())
 async def mercenary_play(
@@ -29,7 +35,7 @@ async def mercenary_play(
 ):
     async with db_helper.session_context() as session:
 
-        card_services = CardServices(session=session)
+        card_instance_services = CardInstanceServices(session=session)
         player_state_services = PlayerStateServices(session=session)
         move_services = MoveServices(session=session)
 
@@ -44,48 +50,53 @@ async def mercenary_play(
                 player_state.game.active_player_id,
                 callback.from_user.id,
             )
-            return await callback.answer(text="Пожалуйста, дождитесь своего хода")
-        card: Card = await card_services.get_hand_card(
-            card_id=callback_data.card_id,
-            card_zone=CardZone.MARKET,
+            return await callback.answer(
+                text="Пожалуйста, дождитесь своего хода"
+            )
+
+        card_instance: PlayerCardInstance = (
+            await card_instance_services.get_card_inctance_for_id(
+                card_instanse_id=callback_data.card_instance_id,
+            )
         )
-        if not card:
-            logger.warning("Нет карты наёмника на рынке - id - %s", callback_data.id)
+        if not card_instance:
+            logger.warning(
+                "Нет карты наёмника на рынке - id - %s",
+                callback_data.card_instance_id,
+            )
             return await callback.answer(
                 text=(
-                    "Скорее всего эта карта было уже разыграна, ",
+                    "Эта карта было уже разыграна, ",
                     "сделайте новый запрос рынка, ",
                     'с помощью кнопки "Рынок"',
                 )
             )
+        if card_instance.zone != CardZone.MARKET:
+            logger.warning("Неверная зона карты - %s", card_instance.zone)
+        
+        photo = FSInputFile(card_instance.card.icon)
+        
         if callback_data.play_now:
 
             await move_services.make_move(
-                card=card,
+                card=card_instance.card,
                 player_state=player_state,
                 game=player_state.game,
                 player_id=callback.from_user.id,
             )
-            photo = FSInputFile(card.icon)
+            
 
             await callback.message.answer_photo(
                 photo=photo,
-                caption=f"Вы сыграли карту {card.name}",
+                caption=f"Вы сыграли карту {card_instance.card.name}",
             )
             await callback.bot.send_photo(
                 photo=photo,
-                caption=f"Ваш противник разыграл карту: {card.name}",
+                caption=f"Ваш противник разыграл карту: {card_instance.card.name}",
                 chat_id=player_state.game.non_active_player_id,
             )
         else:
             buy_service = BuyServices(session=session)
-            card_instance_service = CardInstanceServices(session=session)
-
-            card_instance: PlayerCardInstance = (
-                card_instance_service.get_card_inctance_for_id(
-                    card_id=callback_data.card_id
-                )
-            )
 
             answer = await buy_service.buy_card_from_market(
                 card_instance=card_instance,

@@ -49,7 +49,7 @@ async def handle_buy_card(
 
         card_instance: PlayerCardInstance = (
             await card_instanse_service.get_card_instance_in_some_card_zone(
-                player_state_id=player_state.id,
+                game_id=player_state.game_id,
                 card_id=callback_data.id,
                 card_zone=CardZone.MARKET,
             )
@@ -71,6 +71,7 @@ async def handle_buy_card(
 
         photo = FSInputFile(card_instance.card.icon)
 
+        # Обрабатываем случай, если карта наёмник
         if card_instance.card.card_type == CardType.MERCENARY:
             await callback.message.answer_photo(
                 photo=photo,
@@ -82,6 +83,7 @@ async def handle_buy_card(
                     card_id=card_instance.card.id,
                 ),
             )
+            return
 
         answer = await buy_service.buy_card_from_market(
             card_instance=card_instance,

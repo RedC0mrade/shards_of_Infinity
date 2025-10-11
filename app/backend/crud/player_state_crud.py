@@ -60,7 +60,7 @@ class PlayerStateServices:
         self.session.add_all(play_states)
         await self.session.flush()  # Не забыть, что нужно закоммитить
         self.logger.debug("Создано play_state: %s", play_states)
-        return play_states
+        # return play_states
 
     def assign_mastery(self, game: Game) -> list[CreatePlayStateSchema]:
         """Назначает mastery игрокам в зависимости от того, чей ход первый."""

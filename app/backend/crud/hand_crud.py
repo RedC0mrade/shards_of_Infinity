@@ -150,7 +150,7 @@ class HandServices:
             card.zone = CardZone.HAND
 
         # self.session.add_all(discards + hand_cards)
-        await self.session.commit()
+        # await self.session.commit()
         self.logger.info("Финальная рука: %s", hand_cards)
 
         # return hand_cards

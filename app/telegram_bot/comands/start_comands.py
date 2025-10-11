@@ -113,27 +113,25 @@ async def process_invite_code(message: types.Message, state: FSMContext):
     player2_id = message.from_user.id
 
     async with db_helper.session_context() as session:
-        get_player_state_service = PlayerStateServices(session=session)
+        player_state_service = PlayerStateServices(session=session)
         market_service = MarketServices(session=session)
-        get_game_service = GameServices(session=session)
+        game_service = GameServices(session=session)
         hand_service = HandServices(session=session)
         card_instance_service = CardInstanceServices(session=session)
 
-        game = await get_game_service.join_game_by_code(
+        game = await game_service.join_game_by_code(
             token=token,
             player2_id=player2_id,
         )
         if game:
             # Назначаем у кого сила 1, у кого 0
-            player_states = get_player_state_service.assign_mastery(game=game)
-            await get_player_state_service.create_play_state(
+            player_states = player_state_service.assign_mastery(game=game)
+            await player_state_service.create_play_state(
                 play_datas=player_states,
                 game_id=game.id,
             )
             # Создаем маркет из 6 рандомных карт
-            await market_service.create_market(game=game)
-
-            await session.commit()
+            # await market_service.create_market(game=game)
 
             # создаем стартовую руку у обоих пользователей
             await hand_service.create_hand(game.active_player_id)
@@ -143,6 +141,8 @@ async def process_invite_code(message: types.Message, state: FSMContext):
             await card_instance_service.create_card_instance_for_all_cards(
                 game_id=game.id
             )
+
+            await session.commit()
 
             await message.bot.send_message(
                 chat_id=game.non_active_player_id,

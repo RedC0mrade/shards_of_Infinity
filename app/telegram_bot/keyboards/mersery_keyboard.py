@@ -41,8 +41,11 @@ def play_mercenary(
         callback_data=MercenaryCallback(
             card_instance_id=card_instance_id,
             play_now=False,
+            player_state_id=player_state_id,
+            game_id=game_id,
+            card_id=card_id, 
         ).pack(),
     )
     mercenary_buttons = [play_mercenary_button, discard_mercenary_button]
-    markup = InlineKeyboardMarkup(inline_keyboard=mercenary_buttons)
+    markup = InlineKeyboardMarkup(inline_keyboard=[mercenary_buttons])
     return markup

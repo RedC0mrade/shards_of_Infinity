@@ -1,3 +1,4 @@
+from random import choice
 from sqlalchemy import Result, delete, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -26,7 +27,6 @@ class BuyServices:
         card_instance: PlayerCardInstance,
         game: Game,
         player_id: int,
-        mercenary: bool,
     ) -> tuple[bool, str]:
         """Игрок покупает карту с рынка"""
         self.logger.info(
@@ -45,9 +45,10 @@ class BuyServices:
             return (
                 False,
                 (
-                    f"Недостаточно кристалов({player_state.crystals}) ",
-                    f"для покупки карты {card.name} за ",
-                    f"{card.crystals_cost} кристалов",
+                    f"Недостаточно кристалов💎 Вы имеете"
+                    f" - {player_state.crystals} "
+                    f"для покупки карты🃏 {card.name} за "
+                    f"{card.crystals_cost} кристалов💎"
                 ),
             )
 
@@ -56,13 +57,55 @@ class BuyServices:
                 "Не правильная зона карты %s",
                 card_instance.zone,
             )
-            return (False, f"Не правильно выбрана карта")
+            return (False, f"Не правильно выбрана карта🃏")
 
         player_state.crystals -= card.crystals_cost
         self.logger.info(
-            "оставщееся количество кристалов",
+            "оставщееся количество кристалов - %s",
             player_state.crystals,
         )
         card_instance.zone = CardZone.DISCARD
+        card_instance.player_state_id = player_state.id
+        position_on_market = card_instance.position_on_market
+        card_instance.position_on_market = None
+        await self.replacement_cards_from_the_market(
+            game_id=game.id,
+            position_on_market=position_on_market,
+        )
         await self.session.commit()
         return (True, "")
+
+    async def replacement_cards_from_the_market(
+        self,
+        game_id: int,
+        position_on_market: int,
+    ):
+        "Заменяем карту купленную с рынка."
+        self.logger.info("Делаем замену карты на рынке")
+        stmt = select(PlayerCardInstance).where(
+            PlayerCardInstance.game_id == game_id,
+            PlayerCardInstance.zone == CardZone.COMMON_DECK,
+        )
+        result: Result = await self.session.execute(stmt)
+        available_cards_instance_id = result.scalars().all()
+        self.logger.info(
+            "Получаем id состояния карты в общей колоде- %s",
+            available_cards_instance_id,
+        )
+        if not available_cards_instance_id:
+            self.logger.error(
+                "Нет доступных состояний карт для рынка в игре %s",
+                game_id,
+            )
+            return []
+
+        replacement_card_instance: PlayerCardInstance = choice(
+            available_cards_instance_id
+        )
+        self.logger.info(
+            "Получаем id состояния карты на замену - %s",
+            replacement_card_instance.id,
+        )
+
+        replacement_card_instance.zone = CardZone.MARKET
+        replacement_card_instance.position_on_market = position_on_market
