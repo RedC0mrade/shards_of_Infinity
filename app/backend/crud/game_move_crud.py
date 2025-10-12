@@ -65,7 +65,7 @@ class MoveServices:
         card_service = CardServices(session=self.session)
         await card_service.change_card_zone(
             card_id=card.id,
-            player_state=player_state,
+            game_id=game.id,
             card_zone=CardZone.IN_PLAY,
         )
         self.logger.info(

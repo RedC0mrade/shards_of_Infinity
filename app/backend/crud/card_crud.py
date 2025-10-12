@@ -81,7 +81,7 @@ class CardServices:
     async def change_card_zone(
         self,
         card_id: int,
-        player_state: PlayerState,
+        game_id: int,
         card_zone: CardZone,
     ):
         """Меняем положение карты"""
@@ -92,7 +92,7 @@ class CardServices:
         )
         stmt = select(PlayerCardInstance).where(
             PlayerCardInstance.card_id == card_id,
-            PlayerCardInstance.player_state_id == player_state.id,
+            PlayerCardInstance.game_id == game_id,
         )
 
         result: Result = await self.session.execute(stmt)
@@ -100,12 +100,12 @@ class CardServices:
 
         if not instance:
             self.logger.error(
-                "Не правильный id - %s, player_state - %s",
+                "Не правильный id - %s, game id - %s",
                 card_id,
-                player_state.id,
+                game_id,
             )
             return
-        if instance.zone != CardZone.HAND:
+        if instance.zone not in (CardZone.HAND, CardZone.MARKET): # ПЕРЕДЕЛАТЬ!!!
             self.logger.warning("Не правильная зона - %s", instance.zone)
             return
 
