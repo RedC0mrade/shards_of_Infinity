@@ -4,7 +4,7 @@ from sqlalchemy import Result, select
 from sqlalchemy.orm import joinedload
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.backend.core.models.card import Card
+from app.backend.core.models.card import Card, StartCardPlayer
 from app.backend.core.models.game import Game, GameStatus
 from app.backend.core.models.play_card_instance import (
     CardZone,
@@ -32,7 +32,7 @@ class CardInstanceServices:
             "Создаем стартовые экземпляры карт для игры с id - %s",
             game_id,
         )
-        stmt = select(Card.id).where(Card.start_card == False)
+        stmt = select(Card.id).where(Card.start_card == StartCardPlayer.OTHER)
         result: Result = await self.session.execute(stmt)
         available_cards_id = result.scalars().all()
 

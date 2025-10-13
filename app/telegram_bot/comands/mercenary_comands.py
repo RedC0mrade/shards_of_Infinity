@@ -83,6 +83,7 @@ async def mercenary_play(
                 player_state=player_state,
                 game=player_state.game,
                 player_id=callback.from_user.id,
+                mercenary=True,
             )
             if answer:
                 return await callback.message.answer(text=answer)

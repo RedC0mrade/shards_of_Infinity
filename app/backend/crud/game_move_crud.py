@@ -29,6 +29,7 @@ class MoveServices:
         game: Game,
         player_id: int,
         player_state: PlayerState,
+        mercenary: bool = False,
     ) -> str:
         """Игрок разыгрывает карту."""
 
@@ -60,12 +61,13 @@ class MoveServices:
         self.logger.info(
             "faction_count отработала. Переходим к функции change_card_zone"
         )
-
         card_service = CardServices(session=self.session)
+        
+        start_zone = CardZone.MARKET if mercenary else CardZone.HAND
         answer = await card_service.change_card_zone(
             card_id=card.id,
             game_id=game.id,
-            start_zone=CardZone.MARKET,
+            start_zone=start_zone,
             end_zone=CardZone.IN_PLAY,
         )
         if not answer[0]:

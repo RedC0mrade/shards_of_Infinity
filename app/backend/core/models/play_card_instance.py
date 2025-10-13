@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Optional
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from sqlalchemy import CheckConstraint, ForeignKey, Integer, String, Enum, Boolean, text
+from sqlalchemy import CheckConstraint, ForeignKey, Integer, String, Enum, Boolean, UniqueConstraint, text
 
 from .base_model import Base
 import enum
@@ -35,6 +35,11 @@ class PlayerCardInstance(Base):
         CheckConstraint(
             "(zone = 'MARKET') OR (position_on_market IS NULL)",
             name="position_only_for_market"
+        ),
+        UniqueConstraint(  # Добавляем уникальность для game_id и card_id
+            "game_id", 
+            "card_id", 
+            name="uq_game_card"
         )
     )
 
@@ -52,7 +57,7 @@ class PlayerCardInstance(Base):
         ),
         nullable=False,
     )
-    card_id: Mapped[int] = mapped_column(ForeignKey("cards.id"), unique=True)
+    card_id: Mapped[int] = mapped_column(ForeignKey("cards.id"))
 
     zone: Mapped[CardZone] = mapped_column(Enum(CardZone))
     position_on_market: Mapped[int | None] = mapped_column(

@@ -34,10 +34,7 @@ class PlayerStateServices:
     ) -> list[PlayerState]:
         """Создаем состояние игры для играков"""
 
-        self.logger.info(
-            "Создание play_state для игрокa: %s",
-            play_data
-        )
+        self.logger.info("Создание play_state для игрокa: %s", play_data)
 
         stmt = select(Card.id).where(Card.start_card == player)
         result = await self.session.execute(stmt)
@@ -46,11 +43,22 @@ class PlayerStateServices:
         if not start_card_ids:
             self.logger.error("В базе нет стартовых карт!")
 
-        play_states = [PlayerState(**play_data.model_dump(), cards=[PlayerCardInstance(card_id=card_id, zone=CardZone.PLAYER_DECK, game_id=game_id,)for card_id in start_card_ids])]
+        play_states = [
+            PlayerState(
+                **play_data.model_dump(),
+                cards=[
+                    PlayerCardInstance(
+                        card_id=card_id,
+                        zone=CardZone.PLAYER_DECK,
+                        game_id=game_id,
+                    )
+                    for card_id in start_card_ids
+                ]
+            )
+        ]
         self.session.add_all(play_states)
         await self.session.flush()  # Не забыть, что нужно закоммитить
         self.logger.debug("Создано play_state: %s", play_states)
-        # return play_states
 
     def assign_mastery(self, game: Game) -> list[CreatePlayStateSchema]:
         """Назначает mastery игрокам в зависимости от того, чей ход первый."""

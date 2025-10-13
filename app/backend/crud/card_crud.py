@@ -106,12 +106,17 @@ class CardServices:
                 game_id,
             )
             return (False, "Не правильно выбрана карта")
-        
+
         if instance.zone != start_zone:
             self.logger.error("Не правильная зона - %s", instance.zone)
             return (False, "Карта уже была разыграна")
 
         instance.zone = end_zone
-        self.logger.info("Зона карты изменена, теперь она %s", instance.zone)
+        instance.position_on_market = None
+        self.logger.info(
+            "Зона карты изменена, теперь она %s позиция на рынке %s",
+            instance.zone,
+            instance.position_on_market,
+        )
         await self.session.commit()
         return (True, "")
