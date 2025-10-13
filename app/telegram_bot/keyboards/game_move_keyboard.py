@@ -7,6 +7,7 @@ from aiogram.types import (
 class MoveKBText:
     MARKET = "Рынок"
     HAND = "Рука"
+    PLAYER_DISCARD = "Карты в сбросе игрока"
     CARDS_IN_PLAY = "Сыгранные карты"
     ATTACK = "Атака Игрока"
     ATTACK_CHAMPION = "Атака чемпиона"
@@ -28,28 +29,36 @@ def in_play_card_keyboard():
     defeat_button = KeyboardButton(text=MoveKBText.DEFEAT)
     parameters_button = KeyboardButton(text=MoveKBText.GAME_PARAMETERS)
     enemy_parameters_button = KeyboardButton(text=MoveKBText.ENEMY_PARAMETERS)
+    player_discard_button = KeyboardButton(text=MoveKBText.PLAYER_DISCARD)
 
     button_row = [
-        market_button,
-        hand_button,
-        cards_in_play,
         attack_button,
         attack_champion_button,
         end_button,
         defeat_button,
     ]
+
+    cards_row = [
+        market_button,
+        hand_button,
+        player_discard_button,
+        cards_in_play,
+    ]
+
     parameters_row = [
         enemy_parameters_button,
         parameters_button,
     ]
-        
+
     markup = ReplyKeyboardMarkup(
         keyboard=[
+            cards_row,
             button_row,
             parameters_row,
         ],
     )
     return markup
+
 
 def non_play_card_keyboard():
     """Клавиатура общеигравого меню, для игрока ждущего своего хода"""
@@ -59,16 +68,21 @@ def non_play_card_keyboard():
     defeat_button = KeyboardButton(text=MoveKBText.DEFEAT)
     shild_button = KeyboardButton(text=MoveKBText.SHILD)
     parameters_button = KeyboardButton(text=MoveKBText.GAME_PARAMETERS)
+    enemy_parameters_button = KeyboardButton(text=MoveKBText.ENEMY_PARAMETERS)
     button_row = [
+        defeat_button,
+        shild_button,
+        parameters_button,
+        enemy_parameters_button,
+    ]
+    button_row_1 = [
         market_button,
         hand_button,
         cards_in_play,
-        defeat_button,
-        shild_button,
-        parameters_button
     ]
     markup = ReplyKeyboardMarkup(
         keyboard=[
+            button_row_1,
             button_row,
         ],
         resize_keyboard=False,

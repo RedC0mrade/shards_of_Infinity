@@ -16,7 +16,7 @@ class PlayerState(Base):
 
     player = relationship("TelegramUser", back_populates="player_states")
     game_id: Mapped[int] = mapped_column(
-        Integer, ForeignKey("games.id", ondelete="CASCADE")
+        Integer, ForeignKey("games.id", ondelete="CASCADE"),
     )
     player_id: Mapped[int] = mapped_column(BigInteger, ForeignKey("users.id"))
 

@@ -14,15 +14,15 @@ if TYPE_CHECKING:
 
 
 class CardZone(str, enum.Enum):
-    PLAYER_DECK = "player_deck"
-    COMMON_DECK = "common_deck"
-    HAND = "hand"
-    DISCARD = "discard"
-    IN_PLAY = "in_play"
-    EXILED = "exiled"
-    MARKET = "market"
-    CHAMPION = "champion"  # если карта активирована
-    OTHER = "other"  # на будущее
+    PLAYER_DECK = "player_deck" # Активные карты В КОЛОДЕ игрока
+    COMMON_DECK = "common_deck" # ОБЩАЯ колода карт
+    HAND = "hand"               # Карты в РУКЕ игрока
+    DISCARD = "discard"         # Карты в СБРОСЕ у игрока
+    IN_PLAY = "in_play"         # Карты которые на СТОЛЕ
+    EXILED = "exiled"           # УДАЛЕННЫЕ карты из игры, наемники или уничтоженные
+    MARKET = "market"           # Карты на РЫНКЕ
+    CHAMPION = "champion"       # ЧЕМПИОНЫ, которые не сбрасываются со стола после конца хода
+    OTHER = "other"             # на будущее
 
 
 class PlayerCardInstance(Base):
@@ -52,7 +52,7 @@ class PlayerCardInstance(Base):
         ),
         nullable=False,
     )
-    card_id: Mapped[int] = mapped_column(ForeignKey("cards.id"))
+    card_id: Mapped[int] = mapped_column(ForeignKey("cards.id"), unique=True)
 
     zone: Mapped[CardZone] = mapped_column(Enum(CardZone))
     position_on_market: Mapped[int | None] = mapped_column(

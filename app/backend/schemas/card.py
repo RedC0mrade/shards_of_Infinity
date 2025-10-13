@@ -6,6 +6,7 @@ from app.backend.core.models.card import (
     CardType,
     ConditionType,
     EffectType,
+    StartCardPlayer,
 )
 
 
@@ -28,7 +29,7 @@ class CreateCardSchema(BaseModel):
     card_type: CardType
     faction: CardFaction
     icon: str
-    start_card: bool = False
+    start_card: StartCardPlayer = StartCardPlayer.OTHER
     effects: list[CreateCardEffectSchema]
 
 

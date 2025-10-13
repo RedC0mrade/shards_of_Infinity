@@ -20,14 +20,16 @@ class HandServices:
 
     async def get_cards_in_zone(
         self,
+        game_id: int,
         player_id: int,
         card_zone: CardZone,
     ) -> list[PlayerCardInstance]:
-        """Получаем карты, которые в руке"""
+        """Получаем карты, из определенной зоны"""
 
         self.logger.info(
-            "Полчение руки для игрока с id %s",
+            "Полчение карт для игрока с id %s в зоне %s",
             player_id,
+            card_zone,
         )
         stmt = (
             select(PlayerCardInstance)
@@ -36,6 +38,7 @@ class HandServices:
                 PlayerCardInstance.player_state_id == PlayerState.id,
             )
             .where(
+                PlayerState.game_id == game_id,
                 PlayerState.player_id == player_id,
                 PlayerCardInstance.zone == card_zone,
             )

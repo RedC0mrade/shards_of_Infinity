@@ -73,18 +73,19 @@ async def mercenary_play(
             )
         if card_instance.zone != CardZone.MARKET:
             logger.warning("Неверная зона карты - %s", card_instance.zone)
-        
+
         photo = FSInputFile(card_instance.card.icon)
-        
+
         if callback_data.play_now:
 
-            await move_services.make_move(
+            answer = await move_services.make_move(
                 card=card_instance.card,
                 player_state=player_state,
                 game=player_state.game,
                 player_id=callback.from_user.id,
             )
-            
+            if answer:
+                return await callback.message.answer(text=answer)
 
             await callback.message.answer_photo(
                 photo=photo,

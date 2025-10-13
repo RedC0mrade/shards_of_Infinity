@@ -7,10 +7,7 @@ class CreatePlayStateSchema(BaseModel):
     mastery: int
     crystals: int = 0
     power: int = 0
-    # deck_count: int = 0
-    # discard_count: int = 0
-    # hand_count: int = 0
-    # is_defeated: bool = False
+
 
 class PlayStateSchema(BaseModel):
     id: int

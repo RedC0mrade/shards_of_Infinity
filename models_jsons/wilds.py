@@ -8,7 +8,6 @@
     "card_type": "ally",
     "faction": "wilds",
     "icon": "C:/telegram/card_1.jpeg",
-    "start_card": "False",
     "effects": [
       {
         "action": "healing",
@@ -35,7 +34,6 @@
     "faction": "wilds",
     "card_type": "ally",
     "icon": "c:/telegram/card_6.jpeg",
-    "start_card": "False",
     "effects": [
       {
         "action": "attack",
@@ -62,7 +60,6 @@
     "faction": "wilds",
     "card_type": "mercenary",
     "icon": "c:/telegram/card_7.jpeg",
-    "start_card": "False",
     "effects": [
       {
         "action": "healing",
@@ -82,7 +79,6 @@
     "faction": "wilds",
     "card_type": "mercenary",
     "icon": "c:/telegram/card_10.jpeg",
-    "start_card": "False",
     "effects": [
       {
         "action": "attack",

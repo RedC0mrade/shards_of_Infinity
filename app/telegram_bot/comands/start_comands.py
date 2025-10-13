@@ -1,4 +1,5 @@
 from sqlalchemy import Result, select
+from app.backend.core.models.card import StartCardPlayer
 from app.backend.core.models.game import Game
 from app.backend.core.models.user import TelegramUser
 from app.backend.crud.card_instance_crud import CardInstanceServices
@@ -126,9 +127,16 @@ async def process_invite_code(message: types.Message, state: FSMContext):
         if game:
             # Назначаем у кого сила 1, у кого 0
             player_states = player_state_service.assign_mastery(game=game)
+
             await player_state_service.create_play_state(
-                play_datas=player_states,
+                play_data=player_states[0],
                 game_id=game.id,
+                player=StartCardPlayer.FIRST_PLAYER,
+            )
+            await player_state_service.create_play_state(
+                play_data=player_states[1],
+                game_id=game.id,
+                player=StartCardPlayer.SECOND_PLAYER,
             )
             # Создаем маркет из 6 рандомных карт
             # await market_service.create_market(game=game)

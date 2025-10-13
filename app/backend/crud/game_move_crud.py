@@ -29,8 +29,9 @@ class MoveServices:
         game: Game,
         player_id: int,
         player_state: PlayerState,
-    ):
+    ) -> str:
         """Игрок разыгрывает карту."""
+
         self.logger.info(
             "Игрок с id - %s делает ход картой - %s, в игре с id - %s",
             player_id,
@@ -38,8 +39,6 @@ class MoveServices:
             game.id,
         )
 
-        # card_instance_service = CardInstanceServices(session=self.session)
-        
         effect_executor = EffectExecutor(
             session=self.session,
             player_state=player_state,
@@ -47,33 +46,35 @@ class MoveServices:
         )
 
         for effect in card.effects:
-            await effect_executor.execute(effect) # Отрабатываем эффекты
+            await effect_executor.execute(effect)  # Отрабатываем эффекты
 
-        self.logger.info(
-            "Все эффекты обработаны. Переходим к faction_count"
-        )
+        self.logger.info("Все эффекты обработаны. Переходим к faction_count")
 
         play_state_executor = PlayStateExecutor(
             session=self.session,
             player_state=player_state,
         )
-        await play_state_executor.faction_count(card=card) # Считаем разыранные карты
+        await play_state_executor.faction_count(
+            card=card
+        )  # Считаем разыранные карты
         self.logger.info(
             "faction_count отработала. Переходим к функции change_card_zone"
         )
 
         card_service = CardServices(session=self.session)
-        await card_service.change_card_zone(
+        answer = await card_service.change_card_zone(
             card_id=card.id,
             game_id=game.id,
-            card_zone=CardZone.IN_PLAY,
+            start_zone=CardZone.MARKET,
+            end_zone=CardZone.IN_PLAY,
         )
-        self.logger.info(
-            "Функция change_card_zone отработала. делаем commit"
-        )
+        if not answer[0]:
+            self.logger.debug("Ошибка - текст ошибки: %s", answer[1])
+            return answer[1]
+
+        self.logger.info("Функция change_card_zone отработала. делаем commit")
 
         await self.session.commit()
-
 
 # Розыгрыш карты:
 # - Проверить есть ли карта в руке

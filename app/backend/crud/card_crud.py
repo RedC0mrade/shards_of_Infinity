@@ -82,13 +82,14 @@ class CardServices:
         self,
         card_id: int,
         game_id: int,
-        card_zone: CardZone,
-    ):
+        end_zone: CardZone,
+        start_zone: CardZone,
+    ) -> tuple[bool, str]:
         """Меняем положение карты"""
         self.logger.info(
             "Карта с id %s, меняем зону на %s",
             card_id,
-            card_zone,
+            end_zone,
         )
         stmt = select(PlayerCardInstance).where(
             PlayerCardInstance.card_id == card_id,
@@ -104,11 +105,13 @@ class CardServices:
                 card_id,
                 game_id,
             )
-            return
-        if instance.zone not in (CardZone.HAND, CardZone.MARKET): # ПЕРЕДЕЛАТЬ!!!
-            self.logger.warning("Не правильная зона - %s", instance.zone)
-            return
+            return (False, "Не правильно выбрана карта")
+        
+        if instance.zone != start_zone:
+            self.logger.error("Не правильная зона - %s", instance.zone)
+            return (False, "Карта уже была разыграна")
 
-        instance.zone = card_zone
+        instance.zone = end_zone
         self.logger.info("Зона карты изменена, теперь она %s", instance.zone)
         await self.session.commit()
+        return (True, "")

@@ -4,7 +4,7 @@ from sqlalchemy import Result, select
 from sqlalchemy.orm import joinedload
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.backend.core.models.card import Card
+from app.backend.core.models.card import Card, StartCardPlayer
 from app.backend.core.models.game import Game, GameStatus
 from app.backend.core.models.play_card_instance import (
     CardZone,
@@ -28,35 +28,25 @@ class PlayerStateServices:
 
     async def create_play_state(
         self,
-        play_datas: list[CreatePlayStateSchema],
+        play_data: CreatePlayStateSchema,
         game_id: int,
+        player: StartCardPlayer,
     ) -> list[PlayerState]:
+        """Создаем состояние игры для играков"""
+
         self.logger.info(
-            "Создание play_state для игроков: %s, %s",
-            play_datas[0],
-            play_datas,
+            "Создание play_state для игрокa: %s",
+            play_data
         )
-        stmt = select(Card.id).where(Card.start_card == True)
+
+        stmt = select(Card.id).where(Card.start_card == player)
         result = await self.session.execute(stmt)
         start_card_ids: list[int] = result.scalars().all()
 
         if not start_card_ids:
-            raise ValueError("В базе нет стартовых карт!")
+            self.logger.error("В базе нет стартовых карт!")
 
-        play_states = [
-            PlayerState(
-                **play_data.model_dump(),
-                cards=[
-                    PlayerCardInstance(
-                        card_id=card_id,
-                        zone=CardZone.PLAYER_DECK,
-                        game_id=game_id,
-                    )
-                    for card_id in start_card_ids
-                ]
-            )
-            for play_data in play_datas
-        ]
+        play_states = [PlayerState(**play_data.model_dump(), cards=[PlayerCardInstance(card_id=card_id, zone=CardZone.PLAYER_DECK, game_id=game_id,)for card_id in start_card_ids])]
         self.session.add_all(play_states)
         await self.session.flush()  # Не забыть, что нужно закоммитить
         self.logger.debug("Создано play_state: %s", play_states)

@@ -1,8 +1,8 @@
-"""Create table
+"""Create tables
 
-Revision ID: 42f1e704a199
+Revision ID: 7b2b640a7dcd
 Revises:
-Create Date: 2025-10-08 21:25:11.872940
+Create Date: 2025-10-13 16:24:00.046648
 
 """
 
@@ -13,7 +13,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = "42f1e704a199"
+revision: str = "7b2b640a7dcd"
 down_revision: Union[str, Sequence[str], None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -47,7 +47,16 @@ def upgrade() -> None:
             nullable=False,
         ),
         sa.Column("icon", sa.String(length=100), nullable=False),
-        sa.Column("start_card", sa.Boolean(), nullable=False),
+        sa.Column(
+            "start_card",
+            sa.Enum(
+                "FIRST_PLAYER",
+                "SECOND_PLAYER",
+                "OTHER",
+                name="startcardplayer",
+            ),
+            nullable=False,
+        ),
         sa.Column("id", sa.Integer(), nullable=False),
         sa.CheckConstraint(
             "champion_health >= 0",
@@ -243,12 +252,26 @@ def upgrade() -> None:
             nullable=False,
         ),
         sa.Column(
+            "position_on_market",
+            sa.Integer(),
+            server_default=sa.text("NULL"),
+            nullable=True,
+        ),
+        sa.Column(
             "delete_mercenary",
             sa.Boolean(),
             server_default=sa.text("FALSE"),
             nullable=False,
         ),
         sa.Column("id", sa.Integer(), nullable=False),
+        sa.CheckConstraint(
+            "(zone != 'MARKET') OR (position_on_market IS NOT NULL)",
+            name=op.f("ck_player_card_instances_market_position_required"),
+        ),
+        sa.CheckConstraint(
+            "(zone = 'MARKET') OR (position_on_market IS NULL)",
+            name=op.f("ck_player_card_instances_position_only_for_market"),
+        ),
         sa.ForeignKeyConstraint(
             ["card_id"],
             ["cards.id"],

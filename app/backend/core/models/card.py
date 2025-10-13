@@ -58,6 +58,12 @@ class ConditionType(str, enum.Enum):
     NONE = "none"
 
 
+class StartCardPlayer(str, enum.Enum):
+    FIRST_PLAYER = "first_player"
+    SECOND_PLAYER = "second_player"
+    OTHER = "other"
+
+
 class Card(Base):
     __tablename__ = "cards"
     __table_args__ = (
@@ -92,7 +98,11 @@ class Card(Base):
         nullable=False,
     )
     icon: Mapped[str] = mapped_column(String(100), nullable=False)
-    start_card: Mapped[bool] = mapped_column(Boolean, default=False)
+    start_card: Mapped[StartCardPlayer] = mapped_column(
+        Enum(StartCardPlayer),
+        nullable=False,
+        default=StartCardPlayer.OTHER,
+    )
     effects: Mapped[list["CardEffect"]] = relationship(
         back_populates="card",
         cascade="all, delete-orphan",

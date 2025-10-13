@@ -8,6 +8,7 @@ from app.backend.core.models.play_card_instance import (
     PlayerCardInstance,
 )
 from app.backend.core.models.player_state import PlayerState
+from app.backend.crud.card_instance_crud import CardInstanceServices
 from app.backend.crud.games_crud import GameServices
 from app.backend.crud.hand_crud import HandServices
 from app.backend.crud.market_crud1 import MarketServices
@@ -61,7 +62,15 @@ async def handle_market(message: types.Message):
         )
 
 
-@router.message(F.text.in_([MoveKBText.HAND, MoveKBText.CARDS_IN_PLAY]))
+@router.message(
+    F.text.in_(
+        [
+            MoveKBText.HAND,
+            MoveKBText.CARDS_IN_PLAY,
+            MoveKBText.PLAYER_DISCARD,
+        ]
+    )
+)
 async def handle_hand(message: types.Message):
     """Выводим карты в руке, на столе"""
     async with db_helper.session_context() as session:
@@ -78,6 +87,7 @@ async def handle_hand(message: types.Message):
         if message.text == MoveKBText.HAND:
             hand_cards: list[PlayerCardInstance] = (
                 await hand_services.get_cards_in_zone(
+                    game_id=game.id,
                     card_zone=CardZone.HAND,
                     player_id=message.from_user.id,
                 )
@@ -91,8 +101,17 @@ async def handle_hand(message: types.Message):
                 )
             )
 
+        elif message.text == MoveKBText.PLAYER_DISCARD:
+            hand_cards: list[PlayerCardInstance] = (
+                await hand_services.get_cards_in_zone(
+                    game_id=game.id,
+                    card_zone=CardZone.DISCARD,
+                    player_id=message.from_user.id,
+                )
+            )
+
         if not hand_cards:
-            await message.answer(f"❌ Нет карт в {message.text}.")
+            await message.answer(f"❌ Нет карт.")
             return
 
         cards = []  # переделать дублирующийся код
