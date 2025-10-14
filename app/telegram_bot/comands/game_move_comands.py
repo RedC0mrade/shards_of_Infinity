@@ -2,7 +2,10 @@ from aiogram import Router, F
 from aiogram.types import CallbackQuery, FSInputFile
 
 from app.backend.core.models.card import Card
-from app.backend.core.models.play_card_instance import CardZone, PlayerCardInstance
+from app.backend.core.models.play_card_instance import (
+    CardZone,
+    PlayerCardInstance,
+)
 from app.backend.core.models.player_state import PlayerState
 from app.backend.crud.card_crud import CardServices
 from app.backend.crud.card_instance_crud import CardInstanceServices
@@ -43,9 +46,7 @@ async def handle_play_card(
                 player_state.game.active_player_id,
                 callback.from_user.id,
             )
-            await callback.answer(
-                text="Пожалуйста, дождитесь своего хода"
-            )
+            await callback.answer(text="Пожалуйста, дождитесь своего хода")
             return
 
         card: Card = await card_services.get_hand_card(
@@ -55,7 +56,7 @@ async def handle_play_card(
             game_id=player_state.game_id,
         )  # Получаем карту, только если она в руке
         if not card:
-            
+
             logger.warning("Нет карты в руке id - %s", callback_data.id)
             return await callback.answer(
                 text=(

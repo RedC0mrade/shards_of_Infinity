@@ -62,7 +62,7 @@ class MoveServices:
             "faction_count отработала. Переходим к функции change_card_zone"
         )
         card_service = CardServices(session=self.session)
-        
+
         start_zone = CardZone.MARKET if mercenary else CardZone.HAND
         answer = await card_service.change_card_zone(
             card_id=card.id,
@@ -77,6 +77,7 @@ class MoveServices:
         self.logger.info("Функция change_card_zone отработала. делаем commit")
 
         await self.session.commit()
+
 
 # Розыгрыш карты:
 # - Проверить есть ли карта в руке
