@@ -64,10 +64,7 @@ async def handle_buy_card(
                     'с помощью кнопки "Рынок"'
                 )
             )
-        logger.debug(
-            "Обратить внимание. Где то тут баг должна быть  зона маркет %s",
-            card_instance.zone
-        )
+
 
         photo = FSInputFile(card_instance.card.icon)
 

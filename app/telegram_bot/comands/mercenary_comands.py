@@ -78,7 +78,7 @@ async def mercenary_play(
         photo = FSInputFile(card_instance.card.icon)
 
         if callback_data.play_now:
-
+            position_on_market = card_instance.position_on_market
             answer = await move_services.make_move(
                 card=card_instance.card,
                 player_state=player_state,
@@ -89,9 +89,8 @@ async def mercenary_play(
             logger.info("Отработка карты покупки наемника ответ %s", answer)
             await buy_service.replacement_cards_from_the_market(
                 game_id=player_state.game_id,
-                position_on_market=card_instance.position_on_market,
+                position_on_market=position_on_market,
             )
-            await session.commit()
             if not answer:
                 return await callback.message.answer(text=answer)
 

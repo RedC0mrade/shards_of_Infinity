@@ -81,7 +81,10 @@ class BuyServices:
         position_on_market: int,
     ):
         "Заменяем карту купленную с рынка."
-        self.logger.info("Делаем замену карты на рынке")
+        self.logger.info(
+            "Делаем замену карты на рынке position_on_market - %s",
+            position_on_market,
+        )
         stmt = select(PlayerCardInstance).where(
             PlayerCardInstance.game_id == game_id,
             PlayerCardInstance.zone == CardZone.COMMON_DECK,
@@ -103,9 +106,11 @@ class BuyServices:
             available_cards_instance_id
         )
         self.logger.info(
-            "Получаем id состояния карты на замену - %s",
+            "Получаем id состояния карты на замену - %s, position_on_market - %s",
             replacement_card_instance.id,
+            position_on_market,
         )
 
         replacement_card_instance.zone = CardZone.MARKET
         replacement_card_instance.position_on_market = position_on_market
+        await self.session.commit()
