@@ -77,7 +77,7 @@ class MoveServices:
         self.logger.info("Функция change_card_zone отработала. делаем commit")
 
         await self.session.commit()
-
+        return answer
 
 # Розыгрыш карты:
 # - Проверить есть ли карта в руке

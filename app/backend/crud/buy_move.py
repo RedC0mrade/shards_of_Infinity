@@ -89,8 +89,8 @@ class BuyServices:
         result: Result = await self.session.execute(stmt)
         available_cards_instance_id = result.scalars().all()
         self.logger.info(
-            "Получаем id состояния карты в общей колоде- %s",
-            available_cards_instance_id,
+            "Получаем id состояния карты в общей колоде, всего карт - %s",
+            len(available_cards_instance_id),
         )
         if not available_cards_instance_id:
             self.logger.error(

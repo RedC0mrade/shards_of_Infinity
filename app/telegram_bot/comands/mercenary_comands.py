@@ -38,6 +38,7 @@ async def mercenary_play(
         card_instance_services = CardInstanceServices(session=session)
         player_state_services = PlayerStateServices(session=session)
         move_services = MoveServices(session=session)
+        buy_service = BuyServices(session=session)
 
         player_state: PlayerState = (
             await player_state_services.get_player_state_with_game(
@@ -85,7 +86,13 @@ async def mercenary_play(
                 player_id=callback.from_user.id,
                 mercenary=True,
             )
-            if answer:
+            logger.info("Отработка карты покупки наемника ответ %s", answer)
+            await buy_service.replacement_cards_from_the_market(
+                game_id=player_state.game_id,
+                position_on_market=card_instance.position_on_market,
+            )
+            await session.commit()
+            if not answer:
                 return await callback.message.answer(text=answer)
 
             await callback.message.answer_photo(
@@ -98,8 +105,6 @@ async def mercenary_play(
                 chat_id=player_state.game.non_active_player_id,
             )
         else:
-            buy_service = BuyServices(session=session)
-
             answer = await buy_service.buy_card_from_market(
                 card_instance=card_instance,
                 card=card_instance.card,
