@@ -30,6 +30,7 @@ class CardType(str, enum.Enum):
 
 
 class CardAction(str, enum.Enum):
+    TAKE_CARD = "take_card"
     CARD = "card"
     CARD_DESTROY = "card_destroy"
     ATTACK = "attack"

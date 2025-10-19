@@ -293,7 +293,7 @@
   {
     "name": "Грибной отшельник",
     "crystals_cost": 3,
-    "description": "Получите 1 могущества.",
+    "description": "Получите 1 могущества. Если у вас 10 могущества получите 5 очков лечения",
     "shield": 0,
     "champion_health": 0,
     "faction": "wilds",
@@ -319,7 +319,7 @@
   {
     "name": "Грибной отшельник",
     "crystals_cost": 3,
-    "description": "Получите 1 могущества.",
+    "description": "Получите 1 могущества. Если у вас 10 могущества получите 5 очков лечения",
     "shield": 0,
     "champion_health": 0,
     "faction": "wilds",
@@ -339,6 +339,39 @@
         "effect_type": "conditional",
         "condition_type": "might",
         "condition_value": 10
+      }
+    ]
+  },
+  {
+    "name": "Бороздящий элементаль",
+    "crystals_cost": 5,
+    "description": "Получите 4 здоровья и возьмите карту. Если у вас 50 здоровья, получите 6 атаки",
+    "shield": 0,
+    "champion_health": 0,
+    "faction": "wilds",
+    "card_type": "ally",
+    "icon": "c:/telegram/card_16.jpeg",
+    "effects": [
+      {
+        "action": "healing",
+        "value": 5,
+        "effect_type": "base",
+        "condition_type": "none",
+        "condition_value": 0
+      },
+      {
+        "action": "take_card",
+        "value": 1,
+        "effect_type": "base",
+        "condition_type": "none",
+        "condition_value": 0
+      },
+      {
+        "action": "attack",
+        "value": 6,
+        "effect_type": "conditional",
+        "condition_type": "healing",
+        "condition_value": 50
       }
     ]
   },
