@@ -33,6 +33,7 @@ class CardAction(str, enum.Enum):
     TAKE_CARD = "take_card"
     CARD = "card"
     CARD_DESTROY = "card_destroy"
+    CHAMPION_DESTROY = "champion_destroy"
     ATTACK = "attack"
     HEALING = "healing"
     CRYSTAL = "crystal"
@@ -56,6 +57,10 @@ class ConditionType(str, enum.Enum):
     ENEMY_HAS_CHAMPION = "enemy_has_champion"
     YOU_HAVE_CARD_IN_RESET = "you_have_card_in_reset"
     CARD_ON_TABLE = "card_on_table"
+    WILDS_ON_TABLE = "wilds_on_table"
+    ORDER_ON_TABLE = "order_on_table"
+    HOMODEUS_ON_TABLE = "homodeus_on_table"
+    DEMIREALM_ON_TABLE = "demirealm_on_table"
     NONE = "none"
 
 
