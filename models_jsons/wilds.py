@@ -487,7 +487,7 @@
     ]
   },
   {
-    "name": "КОрень леса",
+    "name": "Корень леса",
     "crystals_cost": 7,
     "description": "ПОлучите 10 здоровья. ПОлучите 10 очков атаки, если в этот ход сырали другого союзника природы",
     "shield": 0,
@@ -512,5 +512,45 @@
       }
     ]
   },
+  {
+    "name": "Джиан, змей осколков",
+    "crystals_cost": 6,
+    "description": "Чемпион наносит 2 урона и восстанавливает 2 очка здоровья",
+    "shield": 0,
+    "champion_health": 5,
+    "faction": "wilds",
+    "card_type": "champion",
+    "icon": "c:/telegram/card_78.jpeg",
+    "effects": [
+      {
+        "action": "attack",
+        "value": 2,
+        "effect_type": "base",
+        "condition_type": "none",
+        "condition_value": 0
+      },
+      {
+        "action": "healing",
+        "value": 2,
+        "effect_type": "base",
+        "condition_type": "none",
+        "condition_value": 0
+      },
+      {
+        "action": "attack",
+        "value": 3,
+        "effect_type": "conditional",
+        "condition_type": "might",
+        "condition_value": 15
+      },
+      {
+        "action": "healing",
+        "value": 3,
+        "effect_type": "conditional",
+        "condition_type": "might",
+        "condition_value": 15
+      }
+    ]
+  }
 ]
 

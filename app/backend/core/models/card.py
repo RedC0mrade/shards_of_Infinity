@@ -39,7 +39,7 @@ class CardAction(str, enum.Enum):
     CRYSTAL = "crystal"
     MIGHT = "might"
     SPECIAL = "special"
-    TAKE_MERCENARY = "take_mercenary"
+    TAKE_MERCENARY_FROM_RESET = "take_mercenary_from_reset"
     IMMUNITY = "immunity"
     COPY_EFFECT = "copy_effect"
     DOUBLE_CHOICE = "double_choice"
@@ -55,12 +55,16 @@ class ConditionType(str, enum.Enum):
     MASTERY = "mastery"
     PLAYER_HEALTH = "player_health"
     ENEMY_HAS_CHAMPION = "enemy_has_champion"
-    YOU_HAVE_CARD_IN_RESET = "you_have_card_in_reset"
+    DEMIREALM_IN_RESET = "demirealm_in_reset"
     CARD_ON_TABLE = "card_on_table"
     WILDS_ON_TABLE = "wilds_on_table"
     ORDER_ON_TABLE = "order_on_table"
     HOMODEUS_ON_TABLE = "homodeus_on_table"
     DEMIREALM_ON_TABLE = "demirealm_on_table"
+    PLUS_TWO_FOR_EACH_DEMIREALM_IN_RESET = (
+        "plus_two_for_each_demirealm_in_reset"
+    )
+    TAKE
     NONE = "none"
 
 
