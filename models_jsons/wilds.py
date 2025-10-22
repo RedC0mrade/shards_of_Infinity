@@ -487,6 +487,39 @@
     ]
   },
   {
+    "name": "Аддири, властитель Гайи",
+    "crystals_cost": 5,
+    "description": "Получите 3 здоровья. Получите 2 атаки и дополнительно 2 атаки за каждого Союзника природы сыгранного в этот ход.",
+    "shield": 0,
+    "champion_health": 5,
+    "faction": "wilds",
+    "card_type": "champion",
+    "icon": "c:/telegram/card_77.jpeg",
+    "effects": [
+      {
+        "action": "healing",
+        "value": 3,
+        "effect_type": "base",
+        "condition_type": "none",
+        "condition_value": 0
+      },
+      {
+        "action": "attack",
+        "value": 2,
+        "effect_type": "base",
+        "condition_type": "none",
+        "condition_value": 0
+      },
+      {
+        "action": "attack",
+        "value": 2,
+        "effect_type": "conditional",
+        "condition_type": "plus_two_for_each_wilds_in_play",
+        "condition_value": 0
+      }
+    ]
+  },
+  {
     "name": "Корень леса",
     "crystals_cost": 7,
     "description": "ПОлучите 10 здоровья. ПОлучите 10 очков атаки, если в этот ход сырали другого союзника природы",

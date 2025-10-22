@@ -55,6 +55,11 @@ class PlayerState(Base):
         default=0,
         server_default="0",
     )
+    invulnerability: Mapped[bool] = mapped_column(
+        Boolean,
+        default=False,
+        server_default=False,
+    )
     game: Mapped["Game"] = relationship(
         "Game",
         back_populates="player_states",

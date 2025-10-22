@@ -31,19 +31,24 @@ class CardType(str, enum.Enum):
 
 class CardAction(str, enum.Enum):
     TAKE_CARD = "take_card"
-    CARD = "card"
+    # CARD = "card"
     CARD_DESTROY = "card_destroy"
+    CHOOSE_CARD_FROM_MARKET = "choose_card_from_market" # идет в колоду сброса
+    TAKE_CARD_FROM_MARKET = "take_card_from_market"     # идет в руку
     CHAMPION_DESTROY = "champion_destroy"
     ATTACK = "attack"
     HEALING = "healing"
     CRYSTAL = "crystal"
+    INVULNERABILITY = "invulnerability"
     MIGHT = "might"
-    SPECIAL = "special"
+    # SPECIAL = "special"
     TAKE_MERCENARY_FROM_RESET = "take_mercenary_from_reset"
-    IMMUNITY = "immunity"
+    # IMMUNITY = "immunity"
     COPY_EFFECT = "copy_effect"
     DOUBLE_CHOICE = "double_choice"
     NONE = "none"
+    DOUBLE_DAMAGE = "double_damage"
+    TAKE_DEMIREALM_CARD = "take_demirealm_card"
 
 
 class EffectType(str, enum.Enum):
@@ -60,11 +65,13 @@ class ConditionType(str, enum.Enum):
     WILDS_ON_TABLE = "wilds_on_table"
     ORDER_ON_TABLE = "order_on_table"
     HOMODEUS_ON_TABLE = "homodeus_on_table"
+    WILDS_HOMODEUS_DEMIREALM_ON_TABLE = "wilds_homodeus_demirealm_on_table"
     DEMIREALM_ON_TABLE = "demirealm_on_table"
+    PLUS_TWO_FOR_EACH_WILDS_IN_PLAY = "plus_two_for_each_wilds_in_play"
     PLUS_TWO_FOR_EACH_DEMIREALM_IN_RESET = (
         "plus_two_for_each_demirealm_in_reset"
     )
-    TAKE
+
     NONE = "none"
 
 
