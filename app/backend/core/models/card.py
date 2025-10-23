@@ -49,6 +49,7 @@ class CardAction(str, enum.Enum):
     NONE = "none"
     DOUBLE_DAMAGE = "double_damage"
     TAKE_DEMIREALM_CARD = "take_demirealm_card"
+    ALL_FRACTIONS = "all_fractions"
 
 
 class EffectType(str, enum.Enum):
