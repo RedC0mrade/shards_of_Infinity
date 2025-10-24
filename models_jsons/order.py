@@ -436,46 +436,6 @@
     ]
   },
   {
-    "name": "Инквизитор данных",
-    "crystals_cost": 4,
-    "description": "Выберите одно: возьмите 2 карты или получите карту стоимостью 6 или меньше. Если у вас 15 или больше очков мастерства, выполните оба действия.",
-    "shield": 0,
-    "champion_health": 0,
-    "faction": "order",
-    "card_type": "ally",
-    "icon": "c:/telegram/card_83.jpeg",
-    "effects": [
-      {
-        "action": "take_card",
-        "value": 2,
-        "effect_type": "base",
-        "condition_type": "none",
-        "condition_value": 0
-      },
-      {
-        "action": "choose_card_from_market",
-        "value": 6,
-        "effect_type": "base",
-        "condition_type": "none",
-        "condition_value": 0
-      },
-      {
-        "action": "take_card",
-        "value": 2,
-        "effect_type": "conditional",
-        "condition_type": "mastery",
-        "condition_value": 15
-      },
-      {
-        "action": "choose_card_from_market",
-        "value": 6,
-        "effect_type": "conditional",
-        "condition_type": "mastery",
-        "condition_value": 15
-      }
-    ]
-  },
-  {
     "name": "ИИ Система",
     "crystals_cost": 3,
     "description": "Истощить: получите 1 очко мастерства. Если у вас 20 или больше очков мастерства, возьмите две карты.",
@@ -524,6 +484,25 @@
         "effect_type": "conditional",
         "condition_type": "mastery",
         "condition_value": 10
+      }
+    ]
+  },
+  {
+    "name": "Инвизитор данных",
+    "crystals_cost": 4,
+    "description": "Выберите одно. Возьмите 2 карты или получите карту стоимость 6 или меньше. При 15 мастерства выполните оба действия.",
+    "shield": 0,
+    "champion_health": 0,
+    "faction": "order",
+    "card_type": "ally",
+    "icon": "c:/telegram/card_83.jpeg",
+    "effects": [
+      {
+        "action": "special",
+        "value": 0,
+        "effect_type": "base",
+        "condition_type": "none",
+        "condition_value": 0
       }
     ]
   }

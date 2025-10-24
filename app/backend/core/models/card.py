@@ -41,7 +41,7 @@ class CardAction(str, enum.Enum):
     CRYSTAL = "crystal"
     INVULNERABILITY = "invulnerability"
     MIGHT = "might"
-    # SPECIAL = "special"
+    SPECIAL = "special" # Для инквизитора двнных 83 карта
     TAKE_MERCENARY_FROM_RESET = "take_mercenary_from_reset"
     # IMMUNITY = "immunity"
     COPY_EFFECT = "copy_effect"
