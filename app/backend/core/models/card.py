@@ -50,7 +50,7 @@ class CardAction(str, enum.Enum):
     DOUBLE_DAMAGE = "double_damage"
     TAKE_DEMIREALM_CARD = "take_demirealm_card"
     ALL_FRACTIONS = "all_fractions"
-
+    ALL_FRACTIONS_IN_HAND = "all_fractions_in_hand" # для карты 86
 
 class EffectType(str, enum.Enum):
     BASE = "base"

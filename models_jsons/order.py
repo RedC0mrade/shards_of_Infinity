@@ -505,5 +505,31 @@
         "condition_value": 0
       }
     ]
+  },
+  {
+    "name": "Гига, адепт источника",
+    "crystals_cost": 2,
+    "description": "Когда играете эту карту, возьмите карту. Превосходство — Истощить: получите 3 энергии. Используйте это свойство только, если сыграли и/или показали из руки по карте Природы, Пустоты и Синтетики в этот ход.",
+    "shield": 0,
+    "champion_health": 4,
+    "faction": "order",
+    "card_type": "champion",
+    "icon": "c:/telegram/card_86.jpeg",
+    "effects": [
+      {
+        "action": "might",
+        "value": 3,
+        "effect_type": "conditional",
+        "condition_type": "all_fractions_in_hand",
+        "condition_value": 1
+      },
+      {
+        "action": "take_card",
+        "value": 1,
+        "effect_type": "conditional",
+        "condition_type": "play_from_hand",
+        "condition_value": 0
+      }
+    ]
   }
 ]
