@@ -43,6 +43,7 @@ class CardAction(str, enum.Enum):
     MIGHT = "might"
     SPECIAL = "special" # Для инквизитора двнных 83 карта
     TAKE_MERCENARY_FROM_RESET = "take_mercenary_from_reset"
+    TAKE_CHAMPION_FROM_RESET = "take_champion_from_reset"
     # IMMUNITY = "immunity"
     COPY_EFFECT = "copy_effect"
     DOUBLE_CHOICE = "double_choice"
@@ -72,7 +73,11 @@ class ConditionType(str, enum.Enum):
     PLUS_TWO_FOR_EACH_DEMIREALM_IN_RESET = (
         "plus_two_for_each_demirealm_in_reset"
     )
-
+    PLUS_ONE_FOR_EACH_HOMODEUS_CHAMPION_IN_GAME = (
+        "plus_one_for_each_homodeus_champion_in_game"
+    )
+    CHAMPION_ON_TABLE = "champion_on_table"
+    CARD_FROM_HAND = "card_from_hand"
     NONE = "none"
 
 
