@@ -395,6 +395,31 @@
       }
     ]
   },
-
+  {
+    "name": "Разрушитель Оптио",
+    "crystals_cost": 5,
+    "description": "Истощить: Получите 3 атаки. Если у вас 10 или больше здоровья ядра, вместо этого получите 5 атаки.",
+    "shield": 0,
+    "champion_health": 4,
+    "faction": "homodeus",
+    "card_type": "champion",
+    "icon": "c:/telegram/card_71.jpeg",
+    "effects": [
+      {
+        "action": "gain_attack",
+        "value": 3,
+        "effect_type": "exhaust",
+        "condition_type": "core_health_less_than",
+        "condition_value": 10
+      },
+      {
+        "action": "gain_attack",
+        "value": 5,
+        "effect_type": "exhaust",
+        "condition_type": "core_health_greater_or_equal",
+        "condition_value": 10
+      }
+    ]
+  },
 
 ]
