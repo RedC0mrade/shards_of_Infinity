@@ -15,11 +15,11 @@ from .base_model import Base
 
 
 class CardFaction(str, enum.Enum):
-    WILDS = "wilds"
-    ORDER = "order"
-    HOMODEUS = "homodeus"
     DEMIREALM = "demirealm"
+    HOMODEUS = "homodeus"
     NEUTRAL = "neutral"
+    ORDER = "order"
+    WILDS = "wilds"
 
 
 class CardType(str, enum.Enum):
@@ -30,28 +30,27 @@ class CardType(str, enum.Enum):
 
 
 class CardAction(str, enum.Enum):
-    TAKE_CARD = "take_card"
-    # CARD = "card"
-    CARD_DESTROY = "card_destroy"
-    CHOOSE_CARD_FROM_MARKET = "choose_card_from_market" # идет в колоду сброса
-    TAKE_CARD_FROM_MARKET = "take_card_from_market"     # идет в руку
-    CHAMPION_DESTROY = "champion_destroy"
+    ALL_FRACTIONS = "all_fractions"
     ATTACK = "attack"
-    HEALING = "healing"
+    CHAMPION_DESTROY = "champion_destroy"
+    CHOOSE_CARD_FROM_MARKET = "choose_card_from_market"  # идет в колоду сброса
+    COPY_EFFECT = "copy_effect"
     CRYSTAL = "crystal"
+    CARD_DESTROY = "card_destroy"
+    DOUBLE_CHOICE = "double_choice"
+    DOUBLE_DAMAGE = "double_damage"
+    ENEMY_LOSE_MIGHT = "enemy_lose_might"
+    HEALING = "healing"
     INVULNERABILITY = "invulnerability"
     MIGHT = "might"
-    SPECIAL = "special" # Для инквизитора двнных 83 карта
-    TAKE_MERCENARY_FROM_RESET = "take_mercenary_from_reset"
-    TAKE_CHAMPION_FROM_RESET = "take_champion_from_reset"
-    # IMMUNITY = "immunity"
-    COPY_EFFECT = "copy_effect"
-    DOUBLE_CHOICE = "double_choice"
     NONE = "none"
-    DOUBLE_DAMAGE = "double_damage"
+    PLAY_HOMODEUS_CHAMPION_FROM_MARKET = "play_homodeus_champion_from_market"
+    SPECIAL = "special"  # Для инквизитора двнных 83 карта
+    TAKE_CARD = "take_card"
+    TAKE_CARD_FROM_MARKET = "take_card_from_market"  # идет в руку
+    TAKE_CHAMPION_FROM_RESET = "take_champion_from_reset"
     TAKE_DEMIREALM_CARD = "take_demirealm_card"
-    ALL_FRACTIONS = "all_fractions"
-    ALL_FRACTIONS_IN_HAND = "all_fractions_in_hand" # для карты 86
+    TAKE_MERCENARY_FROM_RESET = "take_mercenary_from_reset"
 
 class EffectType(str, enum.Enum):
     BASE = "base"
@@ -59,26 +58,26 @@ class EffectType(str, enum.Enum):
 
 
 class ConditionType(str, enum.Enum):
-    MASTERY = "mastery"
-    PLAYER_HEALTH = "player_health"
-    ENEMY_HAS_CHAMPION = "enemy_has_champion"
-    DEMIREALM_IN_RESET = "demirealm_in_reset"
+    CARD_FROM_HAND = "card_from_hand"
     CARD_ON_TABLE = "card_on_table"
-    WILDS_ON_TABLE = "wilds_on_table"
-    ORDER_ON_TABLE = "order_on_table"
-    HOMODEUS_ON_TABLE = "homodeus_on_table"
-    WILDS_HOMODEUS_DEMIREALM_ON_TABLE = "wilds_homodeus_demirealm_on_table"
+    CHAMPION_ON_TABLE = "champion_on_table"
+    DEMIREALM_IN_RESET = "demirealm_in_reset"
     DEMIREALM_ON_TABLE = "demirealm_on_table"
-    PLUS_TWO_FOR_EACH_WILDS_IN_PLAY = "plus_two_for_each_wilds_in_play"
-    PLUS_TWO_FOR_EACH_DEMIREALM_IN_RESET = (
-        "plus_two_for_each_demirealm_in_reset"
-    )
+    ENEMY_HAS_CHAMPION = "enemy_has_champion"
+    HOMODEUS_ON_TABLE = "homodeus_on_table"
+    MASTERY = "mastery"
+    NONE = "none"
+    ORDER_ON_TABLE = "order_on_table"
+    PLAYER_HEALTH = "player_health"
     PLUS_ONE_FOR_EACH_HOMODEUS_CHAMPION_IN_GAME = (
         "plus_one_for_each_homodeus_champion_in_game"
     )
-    CHAMPION_ON_TABLE = "champion_on_table"
-    CARD_FROM_HAND = "card_from_hand"
-    NONE = "none"
+    PLUS_TWO_FOR_EACH_DEMIREALM_IN_RESET = (
+        "plus_two_for_each_demirealm_in_reset"
+    )
+    PLUS_TWO_FOR_EACH_WILDS_IN_PLAY = "plus_two_for_each_wilds_in_play"
+    WILDS_HOMODEUS_DEMIREALM_ON_TABLE = "wilds_homodeus_demirealm_on_table"
+    WILDS_ON_TABLE = "wilds_on_table"
 
 
 class StartCardPlayer(str, enum.Enum):
