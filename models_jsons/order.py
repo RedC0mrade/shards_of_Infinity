@@ -1,4 +1,9 @@
-[
+from pathlib import Path
+
+
+media_dir = Path(__file__).parent.parent / "media"
+
+order_cards = [
   {
   "name": "Отступник от данных",
   "crystals_cost": 3,
