@@ -34,6 +34,7 @@ class CardAction(str, enum.Enum):
     ATTACK = "attack"
     CHAMPION_DESTROY = "champion_destroy"
     CHOOSE_CARD_FROM_MARKET = "choose_card_from_market"  # идет в колоду сброса
+    COPY_ALL_EFFECTS_HOMODEUS = "copy_all_effects_homodeus"
     COPY_EFFECT = "copy_effect"
     CRYSTAL = "crystal"
     CARD_DESTROY = "card_destroy"
@@ -41,7 +42,8 @@ class CardAction(str, enum.Enum):
     DOUBLE_DAMAGE = "double_damage"
     ENEMY_LOSE_MIGHT = "enemy_lose_might"
     HEALING = "healing"
-    INVULNERABILITY = "invulnerability"
+    INVULNERABILITY_ALL = "invulnerability_all"
+    INVULNERABILITY_CARD = "invulnerability_card"
     MIGHT = "might"
     NONE = "none"
     PLAY_HOMODEUS_CHAMPION_FROM_MARKET = "play_homodeus_champion_from_market"
@@ -64,13 +66,14 @@ class ConditionType(str, enum.Enum):
     DEMIREALM_IN_RESET = "demirealm_in_reset"
     DEMIREALM_ON_TABLE = "demirealm_on_table"
     ENEMY_HAS_CHAMPION = "enemy_has_champion"
+    GENERAL_DRACONARIUS = "general_draconarius"
     HOMODEUS_ON_TABLE = "homodeus_on_table"
     MASTERY = "mastery"
     NONE = "none"
     ORDER_ON_TABLE = "order_on_table"
     PLAYER_HEALTH = "player_health"
-    PLUS_ONE_FOR_EACH_HOMODEUS_CHAMPION_IN_GAME = (
-        "plus_one_for_each_homodeus_champion_in_game"
+    PLUS_VALUE_FOR_EACH_HOMODEUS_CHAMPION_IN_GAME = (
+        "plus_value_for_each_homodeus_champion_in_game"
     )
     PLUS_TWO_FOR_EACH_DEMIREALM_IN_RESET = (
         "plus_two_for_each_demirealm_in_reset"

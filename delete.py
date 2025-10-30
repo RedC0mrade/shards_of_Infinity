@@ -5,9 +5,7 @@
 
 
 # docker-compose up --build -d
-
-
-# python -m actions.create_superuser
+# python scripts/seed_cards.py
 
 
 # INSERT INTO tags (tag_name, tag_color)

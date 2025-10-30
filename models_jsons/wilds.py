@@ -1,4 +1,9 @@
-[
+from pathlib import Path
+
+
+media_dir = Path(__file__).parent.parent / "media"
+
+wilds_data = [
   {
     "name": "Ученик подлесья",
     "crystals_cost": 1,
@@ -7,33 +12,7 @@
     "champion_health": 0,
     "card_type": "ally",
     "faction": "wilds",
-    "icon": "C:/telegram/card_2.jpeg",
-    "effects": [
-      {
-        "action": "healing",
-        "value": 3,
-        "effect_type": "base",
-        "condition_type": "none",
-        "condition_value": 0
-      },
-      {
-        "action": "attack",
-        "value": 2,
-        "effect_type": "conditional",
-        "condition_type": "wilds_on_table",
-        "condition_value": 1
-      }
-    ]
-  },
-  {
-    "name": "Ученик подлесья",
-    "crystals_cost": 1,
-    "description": "Получите 3 здоровья. Единение - получите 5 атаки, если в этот ход сыграли другого Союзника природы.",
-    "shield": 0,
-    "champion_health": 0,
-    "card_type": "ally",
-    "faction": "wilds",
-    "icon": "C:/telegram/card_2.jpeg",
+    "icon": f"{media_dir}/card_2.jpeg",
     "effects": [
       {
         "action": "healing",
@@ -59,7 +38,33 @@
     "champion_health": 0,
     "card_type": "ally",
     "faction": "wilds",
-    "icon": "C:/telegram/card_2.jpeg",
+    "icon": f"{media_dir}/card_2.jpeg",
+    "effects": [
+      {
+        "action": "healing",
+        "value": 3,
+        "effect_type": "base",
+        "condition_type": "none",
+        "condition_value": 0
+      },
+      {
+        "action": "attack",
+        "value": 2,
+        "effect_type": "conditional",
+        "condition_type": "wilds_on_table",
+        "condition_value": 1
+      }
+    ]
+  },
+  {
+    "name": "Ученик подлесья",
+    "crystals_cost": 1,
+    "description": "Получите 3 здоровья. Единение - получите 5 атаки, если в этот ход сыграли другого Союзника природы.",
+    "shield": 0,
+    "champion_health": 0,
+    "card_type": "ally",
+    "faction": "wilds",
+    "icon": f"{media_dir}/card_2.jpeg",
     "effects": [
       {
         "action": "healing",
@@ -85,7 +90,7 @@
     "champion_health": 0,
     "faction": "wilds",
     "card_type": "ally",
-    "icon": "c:/telegram/card_6.jpeg",
+    "icon": f"{media_dir}/card_6.jpeg",
     "effects": [
       {
         "action": "attack",
@@ -111,7 +116,7 @@
     "champion_health": 0,
     "faction": "wilds",
     "card_type": "ally",
-    "icon": "c:/telegram/card_6.jpeg",
+    "icon": f"{media_dir}/card_6.jpeg",
     "effects": [
       {
         "action": "attack",
@@ -137,7 +142,7 @@
     "champion_health": 0,
     "faction": "wilds",
     "card_type": "ally",
-    "icon": "c:/telegram/card_6.jpeg",
+    "icon": f"{media_dir}/card_6.jpeg",
     "effects": [
       {
         "action": "attack",
@@ -163,7 +168,7 @@
     "champion_health": 0,
     "faction": "wilds",
     "card_type": "mercenary",
-    "icon": "c:/telegram/card_7.jpeg",
+    "icon": f"{media_dir}/card_7.jpeg",
     "effects": [
       {
         "action": "healing",
@@ -182,7 +187,7 @@
     "champion_health": 0,
     "faction": "wilds",
     "card_type": "mercenary",
-    "icon": "c:/telegram/card_7.jpeg",
+    "icon": f"{media_dir}/card_7.jpeg",
     "effects": [
       {
         "action": "healing",
@@ -201,7 +206,7 @@
     "champion_health": 0,
     "faction": "wilds",
     "card_type": "mercenary",
-    "icon": "c:/telegram/card_7.jpeg",
+    "icon": f"{media_dir}/card_7.jpeg",
     "effects": [
       {
         "action": "healing",
@@ -220,7 +225,7 @@
     "champion_health": 0,
     "faction": "wilds",
     "card_type": "mercenary",
-    "icon": "c:/telegram/card_11.jpeg",
+    "icon": f"{media_dir}/card_11.jpeg",
     "effects": [
       {
         "action": "attack",
@@ -246,7 +251,7 @@
     "champion_health": 0,
     "faction": "wilds",
     "card_type": "mercenary",
-    "icon": "c:/telegram/card_11.jpeg",
+    "icon": f"{media_dir}/card_11.jpeg",
     "effects": [
       {
         "action": "attack",
@@ -272,7 +277,7 @@
     "champion_health": 0,
     "faction": "wilds",
     "card_type": "mercenary",
-    "icon": "c:/telegram/card_11.jpeg",
+    "icon": f"{media_dir}/card_11.jpeg",
     "effects": [
       {
         "action": "attack",
@@ -298,7 +303,7 @@
     "champion_health": 0,
     "faction": "wilds",
     "card_type": "mercenary",
-    "icon": "c:/telegram/card_13.jpeg",
+    "icon": f"{media_dir}/card_13.jpeg",
     "effects": [
       {
         "action": "might",
@@ -311,7 +316,7 @@
         "action": "healing",
         "value": 5,
         "effect_type": "conditional",
-        "condition_type": "might",
+        "condition_type": "mastery",
         "condition_value": 10
       }
     ]
@@ -324,7 +329,7 @@
     "champion_health": 0,
     "faction": "wilds",
     "card_type": "mercenary",
-    "icon": "c:/telegram/card_13.jpeg",
+    "icon": f"{media_dir}/card_13.jpeg",
     "effects": [
       {
         "action": "might",
@@ -337,7 +342,7 @@
         "action": "healing",
         "value": 5,
         "effect_type": "conditional",
-        "condition_type": "might",
+        "condition_type": "mastery",
         "condition_value": 10
       }
     ]
@@ -350,7 +355,7 @@
     "champion_health": 0,
     "faction": "wilds",
     "card_type": "ally",
-    "icon": "c:/telegram/card_16.jpeg",
+    "icon": f"{media_dir}/card_16.jpeg",
     "effects": [
       {
         "action": "healing",
@@ -370,7 +375,7 @@
         "action": "attack",
         "value": 6,
         "effect_type": "conditional",
-        "condition_type": "healing",
+        "condition_type": "player_health",
         "condition_value": 50
       }
     ]
@@ -383,7 +388,7 @@
     "champion_health": 0,
     "faction": "wilds",
     "card_type": "ally",
-    "icon": "c:/telegram/card_16.jpeg",
+    "icon": f"{media_dir}/card_16.jpeg",
     "effects": [
       {
         "action": "healing",
@@ -403,7 +408,7 @@
         "action": "attack",
         "value": 6,
         "effect_type": "conditional",
-        "condition_type": "healing",
+        "condition_type": "player_health",
         "condition_value": 50
       }
     ]
@@ -416,7 +421,7 @@
     "champion_health": 0,
     "faction": "wilds",
     "card_type": "ally",
-    "icon": "c:/telegram/card_17.jpeg",
+    "icon": f"{media_dir}/card_17.jpeg",
     "effects": [
       {
         "action": "take_card",
@@ -442,7 +447,7 @@
     "champion_health": 0,
     "faction": "wilds",
     "card_type": "ally",
-    "icon": "c:/telegram/card_17.jpeg",
+    "icon": f"{media_dir}/card_17.jpeg",
     "effects": [
       {
         "action": "take_card",
@@ -468,7 +473,7 @@
     "champion_health": 0,
     "faction": "wilds",
     "card_type": "ally",
-    "icon": "c:/telegram/card_80.jpeg",
+    "icon": f"{media_dir}/card_80.jpeg",
     "effects": [
       {
         "action": "copy_effect",
@@ -494,7 +499,7 @@
     "champion_health": 5,
     "faction": "wilds",
     "card_type": "champion",
-    "icon": "c:/telegram/card_77.jpeg",
+    "icon": f"{media_dir}/card_77.jpeg",
     "effects": [
       {
         "action": "healing",
@@ -527,7 +532,7 @@
     "champion_health": 0,
     "faction": "wilds",
     "card_type": "mercenary",
-    "icon": "c:/telegram/card_79.jpeg",
+    "icon": f"{media_dir}/card_79.jpeg",
     "effects": [
       {
         "action": "healing",
@@ -553,7 +558,7 @@
     "champion_health": 5,
     "faction": "wilds",
     "card_type": "champion",
-    "icon": "c:/telegram/card_78.jpeg",
+    "icon": f"{media_dir}/card_78.jpeg",
     "effects": [
       {
         "action": "attack",
@@ -573,17 +578,16 @@
         "action": "attack",
         "value": 3,
         "effect_type": "conditional",
-        "condition_type": "might",
+        "condition_type": "mastery",
         "condition_value": 15
       },
       {
         "action": "healing",
         "value": 3,
         "effect_type": "conditional",
-        "condition_type": "might",
+        "condition_type": "mastery",
         "condition_value": 15
       }
     ]
   }
 ]
-

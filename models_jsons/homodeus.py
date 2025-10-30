@@ -1,4 +1,8 @@
-[
+from pathlib import Path
+
+media_dir = Path(__file__).parent.parent / "media"
+
+homodeus_cards = [
   {
     "name": "Дрон-убийца",
     "crystals_cost": 1,
@@ -7,7 +11,7 @@
     "champion_health": 0,
     "faction": "homodeus",
     "card_type": "ally",
-    "icon": "c:/telegram/card_55.jpeg",
+    "icon": f"{media_dir}/card_55.jpeg",
     "effects": [
       {
         "action": "crystal",
@@ -301,10 +305,10 @@
     "icon": "c:/telegram/card_68.jpeg",
     "effects": [
       {
-        "action": "atack",
+        "action": "attack",
         "value": 1,
         "effect_type": "conditional",
-        "condition_type": "plus_one_for_each_homodeus_champion_in_game",
+        "condition_type": "plus_value_for_each_homodeus_champion_in_game",
         "condition_value": 1
       },
       {
@@ -327,10 +331,10 @@
     "icon": "c:/telegram/card_68.jpeg",
     "effects": [
       {
-        "action": "atack",
+        "action": "attack",
         "value": 1,
         "effect_type": "conditional",
-        "condition_type": "plus_one_for_each_homodeus_champion_in_game",
+        "condition_type": "plus_value_for_each_homodeus_champion_in_game",
         "condition_value": 1
       },
       {
@@ -412,7 +416,7 @@
         "condition_value": 10
       },
       {
-        "action": "gain_attack",
+        "action": "attack",
         "value": 2,
         "effect_type": "conditional",
         "condition_type": "mastery",
@@ -438,7 +442,7 @@
         "condition_value": 10
       },
       {
-        "action": "gain_attack",
+        "action": "attack",
         "value": 2,
         "effect_type": "conditional",
         "condition_type": "mastery",
@@ -488,6 +492,84 @@
         "effect_type": "conditional",
         "condition_type": "champion_on_table",
         "condition_value": 1
+      }
+    ]
+  },
+  {
+    "name": "Драконариус",
+    "crystals_cost": 6,
+    "description": "Если Генерал Декурион находится у вас в игре Драконариус не может быть атакован. Получите 6 очков атаки.",
+    "shield": 0,
+    "champion_health": 2,
+    "faction": "homodeus",
+    "card_type": "champion",
+    "icon": "c:/telegram/card_89.jpeg",
+    "effects": [
+      {
+        "action": "attack",
+        "value": 6,
+        "effect_type": "base",
+        "condition_type": "none",
+        "condition_value": 0
+      },
+      {
+        "action": "invulnerability_card",
+        "value": 0,
+        "effect_type": "conditional",
+        "condition_type": "general_draconarius",
+        "condition_value": 0
+      }
+    ]
+  },
+  {
+    "name": "Генерал Дукурион",
+    "crystals_cost": 7,
+    "description": "Получите 3 кристала. Если 20 мастерства. Скопируйте эффект каждого Союзника Ситетики, Который вы сыграли или сыграете в этот ход.",
+    "shield": 0,
+    "champion_health": 7,
+    "faction": "homodeus",
+    "card_type": "champion",
+    "icon": "c:/telegram/card_90.jpeg",
+    "effects": [
+      {
+        "action": "crystal",
+        "value": 3,
+        "effect_type": "base",
+        "condition_type": "none",
+        "condition_value": 0
+      },
+      {
+        "action": "copy_all_effects_homodeus",
+        "value": 0,
+        "effect_type": "conditional",
+        "condition_type": "mastery",
+        "condition_value": 20
+      }
+    ]
+  },
+  {
+    "name": "Лесав, командир башни",
+    "crystals_cost": 6,
+    "description": "Получите 5 атаки. Если 15 мастерства. Дополнительно получите 5 атаки за каждого Чемпиона Синтетики у вас в игре.",
+    "shield": 0,
+    "champion_health": 5,
+    "faction": "homodeus",
+    "card_type": "champion",
+    "icon": "c:/telegram/card_91.jpeg",
+    "effects": [
+      {
+        "action": "attack",
+        "value": 5,
+        "effect_type": "base",
+        "condition_type": "none",
+        "condition_value": 0
+      },
+      {
+        "action": "attack",
+        "value": 5,
+        "effect_type": "conditional",
+        "condition_type": "plus_value_for_each_homodeus_champion_in_game",
+        "condition_value": 20
       }
     ]
   },

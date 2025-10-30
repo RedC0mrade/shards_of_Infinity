@@ -23,15 +23,14 @@ if TYPE_CHECKING:
 
 
 class CardZone(str, enum.Enum):
-    PLAYER_DECK = "player_deck"  # Активные карты В КОЛОДЕ игрока
-    COMMON_DECK = "common_deck"  # ОБЩАЯ колода карт
-    HAND = "hand"  # Карты в РУКЕ игрока
-    DISCARD = "discard"  # Карты в СБРОСЕ у игрока
-    IN_PLAY = "in_play"  # Карты которые на СТОЛЕ
-    EXILED = "exiled"  # УДАЛЕННЫЕ карты из игры, наемники или уничтоженные
-    MARKET = "market"  # Карты на РЫНКЕ
     CHAMPION = "champion"  # ЧЕМПИОНЫ, которые не сбрасываются со стола после конца хода
-    OTHER = "other"  # на будущее
+    COMMON_DECK = "common_deck"  # ОБЩАЯ колода карт
+    DISCARD = "discard"  # Карты в СБРОСЕ у игрока
+    EXILED = "exiled"  # УДАЛЕННЫЕ карты из игры, наемники или уничтоженные
+    HAND = "hand"  # Карты в РУКЕ игрока
+    IN_PLAY = "in_play"  # Карты которые на СТОЛЕ
+    MARKET = "market"  # Карты на РЫНКЕ
+    PLAYER_DECK = "player_deck"  # Активные карты В КОЛОДЕ игрока
 
 
 class PlayerCardInstance(Base):
@@ -78,7 +77,11 @@ class PlayerCardInstance(Base):
         default=False,
         server_default=text("FALSE"),
     )
-
+    invulnerability: Mapped[bool] = mapped_column(
+        Boolean,
+        default=False,
+        server_default=text("FALSE"),
+    )
     card: Mapped["Card"] = relationship("Card", lazy="selectin")
     game: Mapped["Game"] = relationship("Game")
     player_state: Mapped["PlayerState"] = relationship(

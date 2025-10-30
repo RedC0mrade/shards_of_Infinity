@@ -1,8 +1,8 @@
 """Create tables
 
-Revision ID: 7b2b640a7dcd
+Revision ID: 42476319bbcf
 Revises:
-Create Date: 2025-10-13 16:24:00.046648
+Create Date: 2025-10-30 19:00:55.115042
 
 """
 
@@ -13,7 +13,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = "7b2b640a7dcd"
+revision: str = "42476319bbcf"
 down_revision: Union[str, Sequence[str], None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -32,11 +32,11 @@ def upgrade() -> None:
         sa.Column(
             "faction",
             sa.Enum(
-                "WILDS",
-                "ORDER",
-                "HOMODEUS",
                 "DEMIREALM",
+                "HOMODEUS",
                 "NEUTRAL",
+                "ORDER",
+                "WILDS",
                 name="cardfaction",
             ),
             nullable=False,
@@ -88,18 +88,29 @@ def upgrade() -> None:
         sa.Column(
             "action",
             sa.Enum(
-                "CARD",
-                "CARD_DESTROY",
+                "ALL_FRACTIONS",
                 "ATTACK",
-                "HEALING",
-                "CRYSTAL",
-                "MIGHT",
-                "SPECIAL",
-                "TAKE_MERCENARY",
-                "IMMUNITY",
+                "CHAMPION_DESTROY",
+                "CHOOSE_CARD_FROM_MARKET",
+                "COPY_ALL_EFFECTS_HOMODEUS",
                 "COPY_EFFECT",
+                "CRYSTAL",
+                "CARD_DESTROY",
                 "DOUBLE_CHOICE",
+                "DOUBLE_DAMAGE",
+                "ENEMY_LOSE_MIGHT",
+                "HEALING",
+                "INVULNERABILITY_ALL",
+                "INVULNERABILITY_CARD",
+                "MIGHT",
                 "NONE",
+                "PLAY_HOMODEUS_CHAMPION_FROM_MARKET",
+                "SPECIAL",
+                "TAKE_CARD",
+                "TAKE_CARD_FROM_MARKET",
+                "TAKE_CHAMPION_FROM_RESET",
+                "TAKE_DEMIREALM_CARD",
+                "TAKE_MERCENARY_FROM_RESET",
                 name="cardaction",
             ),
             nullable=False,
@@ -113,12 +124,23 @@ def upgrade() -> None:
         sa.Column(
             "condition_type",
             sa.Enum(
-                "MASTERY",
-                "PLAYER_HEALTH",
-                "ENEMY_HAS_CHAMPION",
-                "YOU_HAVE_CARD_IN_RESET",
+                "CARD_FROM_HAND",
                 "CARD_ON_TABLE",
+                "CHAMPION_ON_TABLE",
+                "DEMIREALM_IN_RESET",
+                "DEMIREALM_ON_TABLE",
+                "ENEMY_HAS_CHAMPION",
+                "GENERAL_DRACONARIUS",
+                "HOMODEUS_ON_TABLE",
+                "MASTERY",
                 "NONE",
+                "ORDER_ON_TABLE",
+                "PLAYER_HEALTH",
+                "PLUS_VALUE_FOR_EACH_HOMODEUS_CHAMPION_IN_GAME",
+                "PLUS_TWO_FOR_EACH_DEMIREALM_IN_RESET",
+                "PLUS_TWO_FOR_EACH_WILDS_IN_PLAY",
+                "WILDS_HOMODEUS_DEMIREALM_ON_TABLE",
+                "WILDS_ON_TABLE",
                 name="conditiontype",
             ),
             nullable=True,
@@ -216,6 +238,12 @@ def upgrade() -> None:
         sa.Column(
             "demirealm_count", sa.Integer(), server_default="0", nullable=False
         ),
+        sa.Column(
+            "invulnerability",
+            sa.Boolean(),
+            server_default=sa.text("FALSE"),
+            nullable=False,
+        ),
         sa.Column("id", sa.Integer(), nullable=False),
         sa.ForeignKeyConstraint(
             ["game_id"],
@@ -238,15 +266,14 @@ def upgrade() -> None:
         sa.Column(
             "zone",
             sa.Enum(
-                "PLAYER_DECK",
-                "COMMON_DECK",
-                "HAND",
-                "DISCARD",
-                "IN_PLAY",
-                "EXILED",
-                "MARKET",
                 "CHAMPION",
-                "OTHER",
+                "COMMON_DECK",
+                "DISCARD",
+                "EXILED",
+                "HAND",
+                "IN_PLAY",
+                "MARKET",
+                "PLAYER_DECK",
                 name="cardzone",
             ),
             nullable=False,
@@ -259,6 +286,12 @@ def upgrade() -> None:
         ),
         sa.Column(
             "delete_mercenary",
+            sa.Boolean(),
+            server_default=sa.text("FALSE"),
+            nullable=False,
+        ),
+        sa.Column(
+            "invulnerability",
             sa.Boolean(),
             server_default=sa.text("FALSE"),
             nullable=False,
@@ -292,6 +325,7 @@ def upgrade() -> None:
             ondelete="CASCADE",
         ),
         sa.PrimaryKeyConstraint("id", name=op.f("pk_player_card_instances")),
+        sa.UniqueConstraint("game_id", "card_id", name="uq_game_card"),
     )
     # ### end Alembic commands ###
 

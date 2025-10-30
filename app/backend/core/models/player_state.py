@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from sqlalchemy import BigInteger, ForeignKey, Integer, Boolean
+from sqlalchemy import BigInteger, ForeignKey, Integer, Boolean, text
 from typing import TYPE_CHECKING
 
 from .base_model import Base
@@ -58,7 +58,7 @@ class PlayerState(Base):
     invulnerability: Mapped[bool] = mapped_column(
         Boolean,
         default=False,
-        server_default=False,
+        server_default=text("FALSE"),
     )
     game: Mapped["Game"] = relationship(
         "Game",

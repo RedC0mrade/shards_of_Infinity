@@ -1,4 +1,9 @@
-[
+from pathlib import Path
+
+
+media_dir = Path(__file__).parent.parent / "media"
+
+start_data = [
     {
         "name": "Осколочный реактор",
         "crystals_cost": 0,
@@ -7,7 +12,7 @@
         "champion_health": 0,
         "card_type": "relic",
         "faction": "neutral",
-        "icon": "c:/telegram/card_95.jpeg",
+        "icon": f"{media_dir}/card_95.jpeg",
         "start_card": "first_player",
         "effects": [
             {
@@ -41,7 +46,7 @@
         "champion_health": 0,
         "card_type": "relic",
         "faction": "neutral",
-        "icon": "c:/telegram/card_100.jpeg",
+        "icon": f"{media_dir}/card_100.jpeg",
         "start_card": "first_player",
         "effects": [
             {
@@ -61,7 +66,7 @@
         "champion_health": 0,
         "card_type": "relic",
         "faction": "neutral",
-        "icon": "c:/telegram/card_100.jpeg",
+        "icon": f"{media_dir}/card_100.jpeg",
         "start_card": "first_player",
         "effects": [
             {
@@ -81,7 +86,7 @@
         "champion_health": 0,
         "card_type": "relic",
         "faction": "neutral",
-        "icon": "c:/telegram/card_100.jpeg",
+        "icon": f"{media_dir}/card_100.jpeg",
         "start_card": "first_player",
         "effects": [
             {
@@ -101,7 +106,7 @@
         "champion_health": 0,
         "card_type": "relic",
         "faction": "neutral",
-        "icon": "c:/telegram/card_100.jpeg",
+        "icon": f"{media_dir}/card_100.jpeg",
         "start_card": "first_player",
         "effects": [
             {
@@ -121,7 +126,7 @@
         "champion_health": 0,
         "card_type": "relic",
         "faction": "neutral",
-        "icon": "c:/telegram/card_100.jpeg",
+        "icon": f"{media_dir}/card_100.jpeg",
         "start_card": "first_player",
         "effects": [
             {
@@ -141,7 +146,7 @@
         "champion_health": 0,
         "card_type": "relic",
         "faction": "neutral",
-        "icon": "c:/telegram/card_100.jpeg",
+        "icon": f"{media_dir}/card_100.jpeg",
         "start_card": "first_player",
         "effects": [
             {
@@ -161,7 +166,7 @@
         "champion_health": 0,
         "card_type": "relic",
         "faction": "neutral",
-        "icon": "c:/telegram/card_100.jpeg",
+        "icon": f"{media_dir}/card_100.jpeg",
         "start_card": "first_player",
         "effects": [
             {
@@ -181,7 +186,7 @@
         "champion_health": 0,
         "card_type": "relic",
         "faction": "neutral",
-        "icon": "c:/telegram/card_107.jpeg",
+        "icon": f"{media_dir}/card_107.jpeg",
         "start_card": "first_player",
         "effects": [
             {
@@ -201,7 +206,7 @@
         "champion_health": 0,
         "card_type": "relic",
         "faction": "neutral",
-        "icon": "c:/telegram/card_108.jpeg",
+        "icon": f"{media_dir}/card_108.jpeg",
         "start_card": "first_player",
         "effects": [
             {
@@ -242,7 +247,7 @@
         "champion_health": 0,
         "card_type": "relic",
         "faction": "neutral",
-        "icon": "c:/telegram/card_95.jpeg",
+        "icon": f"{media_dir}/card_95.jpeg",
         "start_card": "second_player",
         "effects": [
             {
@@ -276,7 +281,7 @@
         "champion_health": 0,
         "card_type": "relic",
         "faction": "neutral",
-        "icon": "c:/telegram/card_100.jpeg",
+        "icon": f"{media_dir}/card_100.jpeg",
         "start_card": "second_player",
         "effects": [
             {
@@ -296,7 +301,7 @@
         "champion_health": 0,
         "card_type": "relic",
         "faction": "neutral",
-        "icon": "c:/telegram/card_100.jpeg",
+        "icon": f"{media_dir}/card_100.jpeg",
         "start_card": "second_player",
         "effects": [
             {
@@ -316,7 +321,7 @@
         "champion_health": 0,
         "card_type": "relic",
         "faction": "neutral",
-        "icon": "c:/telegram/card_100.jpeg",
+        "icon": f"{media_dir}/card_100.jpeg",
         "start_card": "second_player",
         "effects": [
             {
@@ -336,7 +341,7 @@
         "champion_health": 0,
         "card_type": "relic",
         "faction": "neutral",
-        "icon": "c:/telegram/card_100.jpeg",
+        "icon": f"{media_dir}/card_100.jpeg",
         "start_card": "second_player",
         "effects": [
             {
@@ -356,7 +361,7 @@
         "champion_health": 0,
         "card_type": "relic",
         "faction": "neutral",
-        "icon": "c:/telegram/card_100.jpeg",
+        "icon": f"{media_dir}/card_100.jpeg",
         "start_card": "second_player",
         "effects": [
             {
@@ -376,7 +381,7 @@
         "champion_health": 0,
         "card_type": "relic",
         "faction": "neutral",
-        "icon": "c:/telegram/card_100.jpeg",
+        "icon": f"{media_dir}/card_100.jpeg",
         "start_card": "second_player",
         "effects": [
             {
@@ -396,7 +401,7 @@
         "champion_health": 0,
         "card_type": "relic",
         "faction": "neutral",
-        "icon": "c:/telegram/card_100.jpeg",
+        "icon": f"{media_dir}/card_100.jpeg",
         "start_card": "second_player",
         "effects": [
             {
@@ -416,7 +421,7 @@
         "champion_health": 0,
         "card_type": "relic",
         "faction": "neutral",
-        "icon": "c:/telegram/card_107.jpeg",
+        "icon": f"{media_dir}/card_107.jpeg",
         "start_card": "second_player",
         "effects": [
             {
@@ -436,7 +441,7 @@
         "champion_health": 0,
         "card_type": "relic",
         "faction": "neutral",
-        "icon": "c:/telegram/card_108.jpeg",
+        "icon": f"{media_dir}/card_108.jpeg",
         "start_card": "second_player",
         "effects": [
             {

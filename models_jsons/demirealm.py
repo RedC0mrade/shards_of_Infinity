@@ -1,4 +1,9 @@
-[
+from pathlib import Path
+
+
+media_dir = Path(__file__).parent.parent / "media"
+
+demirealm_cards = [
   {
     "name": "Нил, убийца",
     "crystals_cost": 2,
