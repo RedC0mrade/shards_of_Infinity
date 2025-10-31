@@ -12,7 +12,7 @@ order_cards = [
   "champion_health": 0,
   "faction": "order",
   "card_type": "mercenary",
-  "icon": "c:/telegram/card_37.jpeg",
+  "icon": f"{media_dir}/card_37.jpeg",
   "effects": [
       {
         "action": "take_card",
@@ -31,7 +31,7 @@ order_cards = [
   "champion_health": 0,
   "faction": "order",
   "card_type": "mercenary",
-  "icon": "c:/telegram/card_37.jpeg",
+  "icon": f"{media_dir}/card_37.jpeg",
   "effects": [
       {
         "action": "take_card",
@@ -50,7 +50,7 @@ order_cards = [
   "champion_health": 0,
   "faction": "order",
   "card_type": "mercenary",
-  "icon": "c:/telegram/card_37.jpeg",
+  "icon": f"{media_dir}/card_37.jpeg",
   "effects": [
       {
         "action": "take_card",
@@ -69,7 +69,7 @@ order_cards = [
     "champion_health": 0,
     "faction": "order",
     "card_type": "mercenary",
-    "icon": "c:/telegram/card_40.jpeg",
+    "icon": f"{media_dir}/card_40.jpeg",
     "effects": [
       {
         "action": "might",
@@ -88,7 +88,7 @@ order_cards = [
     "champion_health": 0,
     "faction": "order",
     "card_type": "mercenary",
-    "icon": "c:/telegram/card_40.jpeg",
+    "icon": f"{media_dir}/card_40.jpeg",
     "effects": [
       {
         "action": "might",
@@ -107,7 +107,7 @@ order_cards = [
     "champion_health": 0,
     "faction": "order",
     "card_type": "mercenary",
-    "icon": "c:/telegram/card_40.jpeg",
+    "icon": f"{media_dir}/card_40.jpeg",
     "effects": [
       {
         "action": "might",
@@ -121,12 +121,12 @@ order_cards = [
   {
     "name": "Посвящённый ордена",
     "crystals_cost": 1,
-    "description": "Получите 2 очка мастерства. Если сыграли и по карте Природы, Пустоты и Синтетики, получите ещё 2 очка мастерства.",
+    "description": "Получите 2 кристала. Если сыграли и по карте Природы, Пустоты и Синтетики, получите ещё 2 очка мастерства.",
     "shield": 0,
     "champion_health": 0,
     "faction": "order",
     "card_type": "ally",
-    "icon": "c:/telegram/card_44.jpeg",
+    "icon": f"{media_dir}/card_44.jpeg",
     "effects": [
       {
         "action": "crystal",
@@ -136,7 +136,7 @@ order_cards = [
         "condition_value": 0
       },
       {
-        "action": "mastery",
+        "action": "might",
         "value": 2,
         "effect_type": "conditional",
         "condition_type": "wilds_homodeus_demirealm_on_table",
@@ -147,12 +147,12 @@ order_cards = [
   {
     "name": "Посвящённый ордена",
     "crystals_cost": 1,
-    "description": "Получите 2 очка мастерства. Если сыграли и по карте Природы, Пустоты и Синтетики, получите ещё 2 очка мастерства.",
+    "description": "Получите 2 кристала. Если сыграли и по карте Природы, Пустоты и Синтетики, получите ещё 2 очка мастерства.",
     "shield": 0,
     "champion_health": 0,
     "faction": "order",
     "card_type": "ally",
-    "icon": "c:/telegram/card_44.jpeg",
+    "icon": f"{media_dir}/card_44.jpeg",
     "effects": [
       {
         "action": "crystal",
@@ -162,7 +162,7 @@ order_cards = [
         "condition_value": 0
       },
       {
-        "action": "mastery",
+        "action": "might",
         "value": 2,
         "effect_type": "conditional",
         "condition_type": "wilds_homodeus_demirealm_on_table",
@@ -173,12 +173,12 @@ order_cards = [
   {
     "name": "Посвящённый ордена",
     "crystals_cost": 1,
-    "description": "Получите 2 очка мастерства. Если сыграли и по карте Природы, Пустоты и Синтетики, получите ещё 2 очка мастерства.",
+    "description": "Получите 2 кристала. Если сыграли и по карте Природы, Пустоты и Синтетики, получите ещё 2 очка мастерства.",
     "shield": 0,
     "champion_health": 0,
     "faction": "order",
     "card_type": "ally",
-    "icon": "c:/telegram/card_44.jpeg",
+    "icon": f"{media_dir}/card_44.jpeg",
     "effects": [
       {
         "action": "crystal",
@@ -188,7 +188,7 @@ order_cards = [
         "condition_value": 0
       },
       {
-        "action": "mastery",
+        "action": "might",
         "value": 2,
         "effect_type": "conditional",
         "condition_type": "wilds_homodeus_demirealm_on_table",
@@ -204,7 +204,7 @@ order_cards = [
     "champion_health": 0,
     "faction": "order",
     "card_type": "mercenary",
-    "icon": "c:/telegram/card_46.jpeg",
+    "icon": f"{media_dir}/card_47.jpeg",
     "effects": [
       {
         "action": "might",
@@ -214,8 +214,8 @@ order_cards = [
         "condition_value": 0
       },
       {
-        "action": "mastery",
-        "value": 2,
+        "action": "take_card",
+        "value": 1,
         "effect_type": "conditional",
         "condition_type": "mastery",
         "condition_value": 10
@@ -230,7 +230,7 @@ order_cards = [
     "champion_health": 0,
     "faction": "order",
     "card_type": "mercenary",
-    "icon": "c:/telegram/card_47.jpeg",
+    "icon": f"{media_dir}/card_47.jpeg",
     "effects": [
       {
         "action": "might",
@@ -240,8 +240,8 @@ order_cards = [
         "condition_value": 0
       },
       {
-        "action": "mastery",
-        "value": 2,
+        "action": "take_card",
+        "value": 1,
         "effect_type": "conditional",
         "condition_type": "mastery",
         "condition_value": 10
@@ -256,7 +256,7 @@ order_cards = [
     "champion_health": 0,
     "faction": "order",
     "card_type": "ally",
-    "icon": "c:/telegram/card_49.jpeg",
+    "icon": f"{media_dir}/card_49.jpeg",
     "effects": [
       {
         "action": "crystal",
@@ -275,7 +275,7 @@ order_cards = [
     "champion_health": 0,
     "faction": "order",
     "card_type": "ally",
-    "icon": "c:/telegram/card_49.jpeg",
+    "icon": f"{media_dir}/card_49.jpeg",
     "effects": [
       {
         "action": "crystal",
@@ -290,11 +290,11 @@ order_cards = [
     "name": "Монах-криптофист",
     "crystals_cost": 5,
     "description": "Возьмите карту.",
-    "shield": 5,
+    "shield": 8,
     "champion_health": 0,
     "faction": "order",
     "card_type": "ally",
-    "icon": "c:/telegram/card_50.jpeg",
+    "icon": f"{media_dir}/card_50.jpeg",
     "effects": [
       {
         "action": "take_card",
@@ -309,11 +309,11 @@ order_cards = [
     "name": "Монах-криптофист",
     "crystals_cost": 5,
     "description": "Возьмите карту.",
-    "shield": 5,
+    "shield": 8,
     "champion_health": 0,
     "faction": "order",
     "card_type": "ally",
-    "icon": "c:/telegram/card_50.jpeg",
+    "icon": f"{media_dir}/card_50.jpeg",
     "effects": [
       {
         "action": "take_card",
@@ -327,16 +327,16 @@ order_cards = [
   {
     "name": "Портальный монах",
     "crystals_cost": 3,
-    "description": "Поместите карту с рынка, стоимостью 6 или меньше в сброс. Если у вас 15 мастерства возьмите эту карту в руку.",
+    "description": "Поместите карту с рынка, стоимостью 6 или меньше в ваш сброс. Если у вас 15 мастерства возьмите эту карту в руку.",
     "shield": 0,
     "champion_health": 0,
     "faction": "order",
     "card_type": "ally",
-    "icon": "c:/telegram/card_53.jpeg",
+    "icon": f"{media_dir}/card_53.jpeg",
     "effects": [
       {
         "action": "choose_card_from_market",
-        "value": 6,
+        "value": 1,
         "effect_type": "base",
         "condition_type": "none",
         "condition_value": 0
@@ -353,16 +353,16 @@ order_cards = [
   {
     "name": "Портальный монах",
     "crystals_cost": 3,
-    "description": "Поместите карту с рынка, стоимостью 6 или меньше в сброс. Если у вас 15 мастерства возьмите эту карту в руку.",
+    "description": "Поместите карту с рынка, стоимостью 6 или меньше в свой сброс. Если у вас 15 мастерства возьмите эту карту в руку.",
     "shield": 0,
     "champion_health": 0,
     "faction": "order",
     "card_type": "ally",
-    "icon": "c:/telegram/card_53.jpeg",
+    "icon": f"{media_dir}/card_53.jpeg",
     "effects": [
       {
         "action": "choose_card_from_market",
-        "value": 6,
+        "value": 1,
         "effect_type": "base",
         "condition_type": "none",
         "condition_value": 0
@@ -384,7 +384,7 @@ order_cards = [
     "champion_health": 0,
     "faction": "order",
     "card_type": "mercenary",
-    "icon": "c:/telegram/card_54.jpeg",
+    "icon": f"{media_dir}/card_54.jpeg",
     "effects": [
       {
         "action": "take_card",
@@ -410,7 +410,7 @@ order_cards = [
     "champion_health": 0,
     "faction": "order",
     "card_type": "mercenary",
-    "icon": "c:/telegram/card_81.jpeg",
+    "icon": f"{media_dir}/card_81.jpeg",
     "effects": [
       {
         "action": "might",
@@ -424,15 +424,15 @@ order_cards = [
   {
     "name": "Зетта, энкриптор",
     "crystals_cost": 7,
-    "description": "Получите 5 мастерства",
+    "description": "Вы и другие ваши чемпионы не можете быть атакованы",
     "shield": 5,
     "champion_health": 5,
     "faction": "order",
     "card_type": "champion",
-    "icon": "c:/telegram/card_82.jpeg",
+    "icon": f"{media_dir}/card_82.jpeg",
     "effects": [
       {
-        "action": "invulnerability",
+        "action": "invulnerability_all",
         "value": 0,
         "effect_type": "base",
         "condition_type": "none",
@@ -448,7 +448,7 @@ order_cards = [
     "champion_health": 4,
     "faction": "order",
     "card_type": "champion",
-    "icon": "c:/telegram/card_84.jpeg",
+    "icon": f"{media_dir}/card_84.jpeg",
     "effects": [
       {
         "action": "might",
@@ -474,7 +474,7 @@ order_cards = [
     "champion_health": 0,
     "faction": "order",
     "card_type": "ally",
-    "icon": "c:/telegram/card_85.jpeg",
+    "icon": f"{media_dir}/card_85.jpeg",
     "effects": [
       {
         "action": "take_card",
@@ -500,7 +500,7 @@ order_cards = [
     "champion_health": 0,
     "faction": "order",
     "card_type": "ally",
-    "icon": "c:/telegram/card_83.jpeg",
+    "icon": f"{media_dir}/card_83.jpeg",
     "effects": [
       {
         "action": "special",
@@ -519,7 +519,7 @@ order_cards = [
     "champion_health": 4,
     "faction": "order",
     "card_type": "champion",
-    "icon": "c:/telegram/card_86.jpeg",
+    "icon": f"{media_dir}/card_86.jpeg",
     "effects": [
       {
         "action": "might",

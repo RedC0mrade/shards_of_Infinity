@@ -12,7 +12,7 @@ demirealm_cards = [
     "champion_health": 0,
     "faction": "demirealm",
     "card_type": "mercenary",
-    "icon": "c:/telegram/card_20.jpeg",
+    "icon": f"{media_dir}/card_20.jpeg",
     "effects": [
       {
         "action": "attack",
@@ -31,7 +31,7 @@ demirealm_cards = [
     "champion_health": 0,
     "faction": "demirealm",
     "card_type": "mercenary",
-    "icon": "c:/telegram/card_20.jpeg",
+    "icon": f"{media_dir}/card_20.jpeg",
     "effects": [
       {
         "action": "attack",
@@ -50,7 +50,7 @@ demirealm_cards = [
     "champion_health": 0,
     "faction": "demirealm",
     "card_type": "mercenary",
-    "icon": "c:/telegram/card_20.jpeg",
+    "icon": f"{media_dir}/card_20.jpeg",
     "effects": [
       {
         "action": "attack",
@@ -69,7 +69,7 @@ demirealm_cards = [
     "champion_health": 0,
     "faction": "demirealm",
     "card_type": "mercenary",
-    "icon": "c:/telegram/card_26.jpeg",
+    "icon": f"{media_dir}/card_26.jpeg",
     "effects": [
       {
         "action": "might",
@@ -95,7 +95,7 @@ demirealm_cards = [
     "champion_health": 0,
     "faction": "demirealm",
     "card_type": "mercenary",
-    "icon": "c:/telegram/card_26.jpeg",
+    "icon": f"{media_dir}/card_26.jpeg",
     "effects": [
       {
         "action": "might",
@@ -121,7 +121,7 @@ demirealm_cards = [
     "champion_health": 0,
     "faction": "demirealm",
     "card_type": "mercenary",
-    "icon": "c:/telegram/card_26.jpeg",
+    "icon": f"{media_dir}/card_26.jpeg",
     "effects": [
       {
         "action": "might",
@@ -147,7 +147,7 @@ demirealm_cards = [
     "champion_health": 0,
     "faction": "demirealm",
     "card_type": "mercenary",
-    "icon": "c:/telegram/card_22.jpeg",
+    "icon": f"{media_dir}/card_22.jpeg",
     "effects": [
       {
         "action": "might",
@@ -173,7 +173,7 @@ demirealm_cards = [
     "champion_health": 0,
     "faction": "demirealm",
     "card_type": "mercenary",
-    "icon": "c:/telegram/card_22.jpeg",
+    "icon": f"{media_dir}/card_22.jpeg",
     "effects": [
       {
         "action": "might",
@@ -199,7 +199,7 @@ demirealm_cards = [
     "champion_health": 0,
     "faction": "demirealm",
     "card_type": "mercenary",
-    "icon": "c:/telegram/card_22.jpeg",
+    "icon": f"{media_dir}/card_22.jpeg",
     "effects": [
       {
         "action": "might",
@@ -225,7 +225,7 @@ demirealm_cards = [
     "champion_health": 0,
     "faction": "demirealm",
     "card_type": "ally",
-    "icon": "c:/telegram/card_29.jpeg",
+    "icon": f"{media_dir}/card_29.jpeg",
     "effects": [
       {
         "action": "attack",
@@ -251,7 +251,7 @@ demirealm_cards = [
     "champion_health": 0,
     "faction": "demirealm",
     "card_type": "ally",
-    "icon": "c:/telegram/card_29.jpeg",
+    "icon": f"{media_dir}/card_29.jpeg",
     "effects": [
       {
         "action": "attack",
@@ -277,7 +277,7 @@ demirealm_cards = [
     "champion_health": 0,
     "faction": "demirealm",
     "card_type": "ally",
-    "icon": "c:/telegram/card_29.jpeg",
+    "icon": f"{media_dir}/card_29.jpeg",
     "effects": [
       {
         "action": "attack",
@@ -303,7 +303,7 @@ demirealm_cards = [
     "champion_health": 0,
     "faction": "demirealm",
     "card_type": "mercenary",
-    "icon": "c:/telegram/card_34.jpeg",
+    "icon": f"{media_dir}/card_34.jpeg",
     "effects": [
       {
         "action": "attack",
@@ -329,7 +329,7 @@ demirealm_cards = [
     "champion_health": 0,
     "faction": "demirealm",
     "card_type": "mercenary",
-    "icon": "c:/telegram/card_32.jpeg",
+    "icon": f"{media_dir}/card_32.jpeg",
     "effects": [
       {
         "action": "attack",
@@ -355,7 +355,7 @@ demirealm_cards = [
     "champion_health": 0,
     "faction": "demirealm",
     "card_type": "mercenary",
-    "icon": "c:/telegram/card_34.jpeg",
+    "icon": f"{media_dir}/card_34.jpeg",
     "effects": [
       {
         "action": "attack",
@@ -381,7 +381,7 @@ demirealm_cards = [
     "champion_health": 0,
     "faction": "demirealm",
     "card_type": "mercenary",
-    "icon": "c:/telegram/card_34.jpeg",
+    "icon": f"{media_dir}/card_34.jpeg",
     "effects": [
       {
         "action": "attack",
@@ -407,7 +407,7 @@ demirealm_cards = [
     "champion_health": 0,
     "faction": "demirealm",
     "card_type": "ally",
-    "icon": "c:/telegram/card_35.jpeg",
+    "icon": f"{media_dir}/card_35.jpeg",
     "effects": [
       {
         "action": "attack",
@@ -433,7 +433,7 @@ demirealm_cards = [
     "champion_health": 0,
     "faction": "demirealm",
     "card_type": "ally",
-    "icon": "c:/telegram/card_35.jpeg",
+    "icon": f"{media_dir}/card_35.jpeg",
     "effects": [
       {
         "action": "attack",
@@ -459,7 +459,7 @@ demirealm_cards = [
     "champion_health": 0,
     "faction": "demirealm",
     "card_type": "mercenary",
-    "icon": "c:/telegram/card_73.jpeg",
+    "icon": f"{media_dir}/card_73.jpeg",
     "effects": [
       {
         "action": "attack",
@@ -492,7 +492,7 @@ demirealm_cards = [
     "champion_health": 4,
     "faction": "demirealm",
     "card_type": "champion",
-    "icon": "c:/telegram/card_74.jpeg",
+    "icon": f"{media_dir}/card_74.jpeg",
     "effects": [
       {
         "action": "attack",
@@ -518,7 +518,7 @@ demirealm_cards = [
     "champion_health": 5,
     "faction": "demirealm",
     "card_type": "champion",
-    "icon": "c:/telegram/card_75.jpeg",
+    "icon": f"{media_dir}/card_75.jpeg",
     "effects": [
       {
         "action": "attack",
@@ -544,7 +544,7 @@ demirealm_cards = [
     "champion_health": 1,
     "faction": "demirealm",
     "card_type": "champion",
-    "icon": "c:/telegram/card_76.jpeg",
+    "icon": f"{media_dir}/card_76.jpeg",
     "effects": [
       {
         "action": "attack",

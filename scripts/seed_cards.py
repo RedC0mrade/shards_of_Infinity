@@ -46,7 +46,11 @@ async def seed_all_cards():
 
             # Объединяем все данные карт
             all_cards_data = (
-                start_data + wilds_data + homodeus_cards + demirealm_cards
+                start_data
+                + wilds_data
+                + homodeus_cards
+                + demirealm_cards
+                + order_cards
             )
             total_cards = len(all_cards_data)
 

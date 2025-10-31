@@ -5,6 +5,7 @@
 
 
 # docker-compose up --build -d
+
 # python scripts/seed_cards.py
 
 

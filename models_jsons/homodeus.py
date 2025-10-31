@@ -37,7 +37,7 @@ homodeus_cards = [
     "champion_health": 0,
     "faction": "homodeus",
     "card_type": "ally",
-    "icon": "c:/telegram/card_55.jpeg",
+    "icon": f"{media_dir}/card_55.jpeg",
     "effects": [
       {
         "action": "crystal",
@@ -63,7 +63,7 @@ homodeus_cards = [
     "champion_health": 0,
     "faction": "homodeus",
     "card_type": "ally",
-    "icon": "c:/telegram/card_55.jpeg",
+    "icon": f"{media_dir}/card_55.jpeg",
     "effects": [
       {
         "action": "crystal",
@@ -89,7 +89,7 @@ homodeus_cards = [
     "champion_health": 0,
     "faction": "homodeus",
     "card_type": "ally",
-    "icon": "c:/telegram/card_59.jpeg",
+    "icon": f"{media_dir}/card_59.jpeg",
     "effects": [
       {
         "action": "attack",
@@ -115,7 +115,7 @@ homodeus_cards = [
     "champion_health": 0,
     "faction": "homodeus",
     "card_type": "ally",
-    "icon": "c:/telegram/card_59.jpeg",
+    "icon": f"{media_dir}/card_59.jpeg",
     "effects": [
       {
         "action": "attack",
@@ -141,7 +141,7 @@ homodeus_cards = [
     "champion_health": 0,
     "faction": "homodeus",
     "card_type": "ally",
-    "icon": "c:/telegram/card_59.jpeg",
+    "icon": f"{media_dir}/card_59.jpeg",
     "effects": [
       {
         "action": "attack",
@@ -167,7 +167,7 @@ homodeus_cards = [
     "champion_health": 0,
     "faction": "homodeus",
     "card_type": "ally",
-    "icon": "c:/telegram/card_61.jpeg",
+    "icon": f"{media_dir}/card_61.jpeg",
     "effects": [
       {
         "action": "crystal",
@@ -193,7 +193,7 @@ homodeus_cards = [
     "champion_health": 0,
     "faction": "homodeus",
     "card_type": "ally",
-    "icon": "c:/telegram/card_61.jpeg",
+    "icon": f"{media_dir}/card_61.jpeg",
     "effects": [
       {
         "action": "crystal",
@@ -219,7 +219,7 @@ homodeus_cards = [
     "champion_health": 0,
     "faction": "homodeus",
     "card_type": "ally",
-    "icon": "c:/telegram/card_61.jpeg",
+    "icon": f"{media_dir}/card_61.jpeg",
     "effects": [
       {
         "action": "crystal",
@@ -245,7 +245,7 @@ homodeus_cards = [
     "champion_health": 0,
     "faction": "homodeus",
     "card_type": "ally",
-    "icon": "c:/telegram/card_65.jpeg",
+    "icon": f"{media_dir}/card_65.jpeg",
     "effects": [
       {
         "action": "crystal",
@@ -264,7 +264,7 @@ homodeus_cards = [
     "champion_health": 0,
     "faction": "homodeus",
     "card_type": "ally",
-    "icon": "c:/telegram/card_65.jpeg",
+    "icon": f"{media_dir}/card_65.jpeg",
     "effects": [
       {
         "action": "crystal",
@@ -283,7 +283,7 @@ homodeus_cards = [
     "champion_health": 0,
     "faction": "homodeus",
     "card_type": "ally",
-    "icon": "c:/telegram/card_65.jpeg",
+    "icon": f"{media_dir}/card_65.jpeg",
     "effects": [
       {
         "action": "crystal",
@@ -302,7 +302,7 @@ homodeus_cards = [
     "champion_health": 2,
     "faction": "homodeus",
     "card_type": "champion",
-    "icon": "c:/telegram/card_68.jpeg",
+    "icon": f"{media_dir}/card_68.jpeg",
     "effects": [
       {
         "action": "attack",
@@ -328,7 +328,7 @@ homodeus_cards = [
     "champion_health": 2,
     "faction": "homodeus",
     "card_type": "champion",
-    "icon": "c:/telegram/card_68.jpeg",
+    "icon": f"{media_dir}/card_68.jpeg",
     "effects": [
       {
         "action": "attack",
@@ -354,7 +354,7 @@ homodeus_cards = [
     "champion_health": 5,
     "faction": "homodeus",
     "card_type": "champion",
-    "icon": "c:/telegram/card_70.jpeg",
+    "icon": f"{media_dir}/card_70.jpeg",
     "effects": [
       {
         "action": "crystal",
@@ -380,7 +380,7 @@ homodeus_cards = [
     "champion_health": 5,
     "faction": "homodeus",
     "card_type": "champion",
-    "icon": "c:/telegram/card_70.jpeg",
+    "icon": f"{media_dir}/card_70.jpeg",
     "effects": [
       {
         "action": "crystal",
@@ -406,7 +406,7 @@ homodeus_cards = [
     "champion_health": 4,
     "faction": "homodeus",
     "card_type": "champion",
-    "icon": "c:/telegram/card_71.jpeg",
+    "icon": f"{media_dir}/card_71.jpeg",
     "effects": [
       {
         "action": "attack",
@@ -432,7 +432,7 @@ homodeus_cards = [
     "champion_health": 4,
     "faction": "homodeus",
     "card_type": "champion",
-    "icon": "c:/telegram/card_71.jpeg",
+    "icon": f"{media_dir}/card_71.jpeg",
     "effects": [
       {
         "action": "attack",
@@ -458,7 +458,7 @@ homodeus_cards = [
     "champion_health": 6,
     "faction": "homodeus",
     "card_type": "champion",
-    "icon": "c:/telegram/card_87.jpeg",
+    "icon": f"{media_dir}/card_87.jpeg",
     "effects": [
       {
         "action": "take_card",
@@ -477,7 +477,7 @@ homodeus_cards = [
     "champion_health": 0,
     "faction": "homodeus",
     "card_type": "mercenary",
-    "icon": "c:/telegram/card_88.jpeg",
+    "icon": f"{media_dir}/card_88.jpeg",
     "effects": [
       {
         "action": "attack",
@@ -503,7 +503,7 @@ homodeus_cards = [
     "champion_health": 2,
     "faction": "homodeus",
     "card_type": "champion",
-    "icon": "c:/telegram/card_89.jpeg",
+    "icon": f"{media_dir}/card_89.jpeg",
     "effects": [
       {
         "action": "attack",
@@ -529,7 +529,7 @@ homodeus_cards = [
     "champion_health": 7,
     "faction": "homodeus",
     "card_type": "champion",
-    "icon": "c:/telegram/card_90.jpeg",
+    "icon": f"{media_dir}/card_90.jpeg",
     "effects": [
       {
         "action": "crystal",
@@ -555,7 +555,7 @@ homodeus_cards = [
     "champion_health": 5,
     "faction": "homodeus",
     "card_type": "champion",
-    "icon": "c:/telegram/card_91.jpeg",
+    "icon": f"{media_dir}/card_91.jpeg",
     "effects": [
       {
         "action": "attack",
