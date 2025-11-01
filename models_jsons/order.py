@@ -525,7 +525,7 @@ order_cards = [
         "action": "might",
         "value": 3,
         "effect_type": "conditional",
-        "condition_type": "all_fractions_in_hand",
+        "condition_type": "whd_champion",
         "condition_value": 1
       },
       {

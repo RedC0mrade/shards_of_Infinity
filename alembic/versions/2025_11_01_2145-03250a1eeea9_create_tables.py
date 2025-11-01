@@ -1,8 +1,8 @@
 """Create tables
 
-Revision ID: 1b4c218c2429
+Revision ID: 03250a1eeea9
 Revises:
-Create Date: 2025-10-31 23:05:39.327885
+Create Date: 2025-11-01 21:45:25.961516
 
 """
 
@@ -13,7 +13,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = "1b4c218c2429"
+revision: str = "03250a1eeea9"
 down_revision: Union[str, Sequence[str], None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -135,12 +135,14 @@ def upgrade() -> None:
                 "MASTERY",
                 "NONE",
                 "ORDER_ON_TABLE",
+                "PLAY_FROM_HAND",
                 "PLAYER_HEALTH",
                 "PLUS_VALUE_FOR_EACH_HOMODEUS_CHAMPION_IN_GAME",
                 "PLUS_TWO_FOR_EACH_DEMIREALM_IN_RESET",
                 "PLUS_TWO_FOR_EACH_WILDS_IN_PLAY",
                 "WILDS_HOMODEUS_DEMIREALM_ON_TABLE",
                 "WILDS_ON_TABLE",
+                "WHD_CHAMPION",
                 name="conditiontype",
             ),
             nullable=True,

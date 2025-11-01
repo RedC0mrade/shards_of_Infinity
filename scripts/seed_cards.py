@@ -14,6 +14,10 @@ from models_jsons.demirealm import demirealm_cards
 from models_jsons.homodeus import homodeus_cards
 from models_jsons.order import order_cards
 
+from app.utils.logger import get_logger
+
+logger = get_logger(__name__)
+
 
 async def seed_all_cards():
     """Заполняет базу данных всеми картами (стартовые и дикой природы)"""
@@ -30,19 +34,19 @@ async def seed_all_cards():
         async with db_helper.session_context() as session:
             from sqlalchemy import select
 
-            print("Проверяем существующие карты в базе...")
+            logger.info("Проверяем существующие карты в базе...")
 
             # Проверяем, есть ли уже карты в базе
             result = await session.execute(select(Card))
             existing_cards = result.scalars().all()
 
             if existing_cards:
-                print(
-                    f"✅ В базе уже есть {len(existing_cards)} карт. Пропускаем заполнение."
+                logger.info(
+                    "В базе уже есть %s карт. Пропускаем заполнение.", len(existing_cards)
                 )
                 return
 
-            print("Начинаем заполнение базы данных картами...")
+            logger.info("Начинаем заполнение базы данных картами...")
 
             # Объединяем все данные карт
             all_cards_data = (
@@ -54,9 +58,9 @@ async def seed_all_cards():
             )
             total_cards = len(all_cards_data)
 
-            print(f"Всего карт для добавления: {total_cards}")
-            print(f"  - Стартовые карты: {len(start_data)}")
-            print(f"  - Карты дикой природы: {len(wilds_data)}")
+            logger.info("Всего карт для добавления: %s", total_cards)
+            logger.info("  - Стартовые карты: %s", len(start_data))
+            logger.info("  - Карты дикой природы: %s", len(wilds_data))
 
             # Создаем все карты
             created_count = 0
@@ -94,27 +98,30 @@ async def seed_all_cards():
                     session.add(card)
                     created_count += 1
 
-                    # Выводим информацию о добавленной карте
+                    # Логируем информацию о добавленной карте
                     faction = card_data["faction"]
                     card_type = card_data["card_type"]
-                    print(
-                        f"  [{i}/{total_cards}] Добавлена: {card_data['name']} ({faction} - {card_type})"
+                    logger.debug(
+                        "[%s/%s] Добавлена: %s (%s - %s)", 
+                        i, total_cards, card_data['name'], faction, card_type
                     )
 
                 except Exception as e:
-                    print(
-                        f"  ❌ Ошибка при создании карты {card_data['name']}: {e}"
+                    logger.error(
+                        "Ошибка при создании карты %s: %s",
+                        card_data['name'], e,
+                        exc_info=True
                     )
                     continue
 
             # Сохраняем изменения
             await session.commit()
-            print(f"\n✅ Успешно создано {created_count} карт в базе данных!")
-            print(f"   - Стартовые карты: {len([c for c in start_data])}")
-            print(f"   - Карты дикой природы: {len([c for c in wilds_data])}")
+            logger.info("Успешно создано %s карт в базе данных!", created_count)
+            logger.info("   - Стартовые карты: %s", len([c for c in start_data]))
+            logger.info("   - Карты дикой природы: %s", len([c for c in wilds_data]))
 
     except Exception as e:
-        print(f"❌ Ошибка при заполнении базы данных: {e}")
+        logger.error("Ошибка при заполнении базы данных: %s", e, exc_info=True)
         raise
     finally:
         await db_helper.dispose()
@@ -152,22 +159,22 @@ async def check_existing_cards():
             )
             types_count = result.all()
 
-            print(f"\n📊 Статистика базы данных:")
-            print(f"   Всего карт: {total_cards}")
-            print(f"   По фракциям:")
+            logger.info("Статистика базы данных:")
+            logger.info("   Всего карт: %s", total_cards)
+            logger.info("   По фракциям:")
             for faction, count in factions_count:
-                print(f"     - {faction}: {count}")
-            print(f"   По типам:")
+                logger.info("     - %s: %s", faction, count)
+            logger.info("   По типам:")
             for card_type, count in types_count:
-                print(f"     - {card_type}: {count}")
+                logger.info("     - %s: %s", card_type, count)
 
     except Exception as e:
-        print(f"❌ Ошибка при проверке базы данных: {e}")
+        logger.error("Ошибка при проверке базы данных: %s", e, exc_info=True)
     finally:
         await db_helper.dispose()
 
 
 if __name__ == "__main__":
-    print("🚀 Запуск заполнения базы данных всеми картами...")
+    logger.info("Запуск заполнения базы данных всеми картами...")
     asyncio.run(seed_all_cards())
     asyncio.run(check_existing_cards())

@@ -71,6 +71,7 @@ class ConditionType(str, enum.Enum):
     MASTERY = "mastery"
     NONE = "none"
     ORDER_ON_TABLE = "order_on_table"
+    PLAY_FROM_HAND = "play_from_hand"
     PLAYER_HEALTH = "player_health"
     PLUS_VALUE_FOR_EACH_HOMODEUS_CHAMPION_IN_GAME = (
         "plus_value_for_each_homodeus_champion_in_game"
@@ -81,6 +82,7 @@ class ConditionType(str, enum.Enum):
     PLUS_TWO_FOR_EACH_WILDS_IN_PLAY = "plus_two_for_each_wilds_in_play"
     WILDS_HOMODEUS_DEMIREALM_ON_TABLE = "wilds_homodeus_demirealm_on_table"
     WILDS_ON_TABLE = "wilds_on_table"
+    WHD_CHAMPION = "whd_champion"
 
 
 class StartCardPlayer(str, enum.Enum):
