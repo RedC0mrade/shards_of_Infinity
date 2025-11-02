@@ -3,9 +3,6 @@ from sqlalchemy import Result, select
 from sqlalchemy.orm import selectinload
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.backend.core.models.card import Card
-from app.backend.core.models.game import Game, GameStatus
-
 from app.backend.core.models.play_card_instance import (
     CardZone,
     PlayerCardInstance,
