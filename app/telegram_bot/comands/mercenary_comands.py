@@ -70,26 +70,26 @@ async def mercenary_play(
             )
         if card_instance.zone != CardZone.MARKET:
             logger.warning("Неверная зона карты - %s", card_instance.zone)
+            raise GameError("Эта карта уже не находится на рынке. 🃏")
 
         photo = FSInputFile(card_instance.card.icon)
 
         if callback_data.play_now:
             position_on_market = card_instance.position_on_market
 
-            answer = await move_services.make_move(
+            await move_services.make_move(
                 card=card_instance.card,
                 player_state=player_state,
                 game=player_state.game,
                 player_id=callback.from_user.id,
                 mercenary=True,
             )
-            logger.info("Отработка карты покупки наемника ответ %s", answer)
+
             await buy_service.replacement_cards_from_the_market(
                 game_id=player_state.game_id,
                 position_on_market=position_on_market,
             )
-            if not answer:
-                return await callback.message.answer(text=answer)
+
 
             await callback.message.answer_photo(
                 photo=photo,
@@ -101,7 +101,7 @@ async def mercenary_play(
                 chat_id=player_state.game.non_active_player_id,
             )
         else:
-            answer = await buy_service.buy_card_from_market(
+            await buy_service.buy_card_from_market(
                 card_instance=card_instance,
                 card=card_instance.card,
                 player_state=player_state,
