@@ -15,6 +15,7 @@ from app.backend.crud.player_state_crud import PlayerStateServices
 
 from app.backend.factories.database import db_helper
 from app.telegram_bot.keyboards.mersery_keyboard import MercenaryCallback
+from app.utils.exceptions.exceptions import NotYourTurn, GameError
 from app.utils.logger import get_logger
 
 
@@ -51,9 +52,7 @@ async def mercenary_play(
                 player_state.game.active_player_id,
                 callback.from_user.id,
             )
-            return await callback.answer(
-                text="Пожалуйста, дождитесь своего хода"
-            )
+            raise NotYourTurn("Пожалуйста, дождитесь своего хода 🕐")
 
         card_instance: PlayerCardInstance = (
             await card_instance_services.get_card_inctance_for_id(
@@ -65,12 +64,9 @@ async def mercenary_play(
                 "Нет карты наёмника на рынке - id - %s",
                 callback_data.card_instance_id,
             )
-            return await callback.answer(
-                text=(
-                    "Эта карта было уже разыграна, ",
-                    "сделайте новый запрос рынка, ",
-                    'с помощью кнопки "Рынок"',
-                )
+            raise GameError(
+                "Эта карта уже была разыграна. "
+                "Сделайте новый запрос рынка через кнопку «Рынок». 🛒"
             )
         if card_instance.zone != CardZone.MARKET:
             logger.warning("Неверная зона карты - %s", card_instance.zone)
@@ -79,6 +75,7 @@ async def mercenary_play(
 
         if callback_data.play_now:
             position_on_market = card_instance.position_on_market
+
             answer = await move_services.make_move(
                 card=card_instance.card,
                 player_state=player_state,
@@ -111,15 +108,13 @@ async def mercenary_play(
                 game=player_state.game,
                 player_id=callback.from_user.id,
             )
-            if answer[0]:
-                await callback.message.answer_photo(
-                    photo=photo,
-                    caption=f"Вы купили карту {card_instance.card.name}",
-                )
-                await callback.bot.send_photo(
-                    photo=photo,
-                    caption=f"Ваш противник купил карту: {card_instance.card.name}",
-                    chat_id=player_state.game.non_active_player_id,
-                )
-            else:
-                await callback.message.answer(text=answer[1])
+
+            await callback.message.answer_photo(
+                photo=photo,
+                caption=f"Вы купили карту {card_instance.card.name}",
+            )
+            await callback.bot.send_photo(
+                photo=photo,
+                caption=f"Ваш противник купил карту: {card_instance.card.name}",
+                chat_id=player_state.game.non_active_player_id,
+            )

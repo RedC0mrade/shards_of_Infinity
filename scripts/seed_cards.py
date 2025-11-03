@@ -59,9 +59,11 @@ async def seed_all_cards():
             total_cards = len(all_cards_data)
 
             logger.info("Всего карт для добавления: %s", total_cards)
-            logger.info("  - Стартовые карты: %s", len(start_data))
-            logger.info("  - Карты дикой природы: %s", len(wilds_data))
-
+            logger.info("Стартовые карты: %s", len(start_data))
+            logger.info("  - Карты wilds: %s", len(wilds_data))
+            logger.info("  - Карты homodeus: %s", len(homodeus_cards))
+            logger.info("  - Карты demirealm: %s", len(demirealm_cards))
+            logger.info("  - Карты order: %s", len(order_cards))
             # Создаем все карты
             created_count = 0
             for i, card_data in enumerate(all_cards_data, 1):
@@ -117,8 +119,6 @@ async def seed_all_cards():
             # Сохраняем изменения
             await session.commit()
             logger.info("Успешно создано %s карт в базе данных!", created_count)
-            logger.info("   - Стартовые карты: %s", len([c for c in start_data]))
-            logger.info("   - Карты дикой природы: %s", len([c for c in wilds_data]))
 
     except Exception as e:
         logger.error("Ошибка при заполнении базы данных: %s", e, exc_info=True)

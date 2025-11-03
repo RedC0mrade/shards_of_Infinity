@@ -9,6 +9,7 @@ from app.backend.core.models.play_card_instance import (
     PlayerCardInstance,
 )
 from app.backend.core.models.player_state import PlayerState
+from app.utils.exceptions.exceptions import InvalidCardZone, NotEnoughCrystals
 from app.utils.logger import get_logger
 
 
@@ -42,14 +43,9 @@ class BuyServices:
                 player_state.crystals,
                 card.crystals_cost,
             )
-            return (
-                False,
-                (
-                    f"Недостаточно кристалов💎 Вы имеете"
-                    f" - {player_state.crystals} "
-                    f"для покупки карты🃏 {card.name} за "
-                    f"{card.crystals_cost} кристалов💎"
-                ),
+            raise NotEnoughCrystals(
+                f"Недостаточно кристаллов💎 — у вас {player_state.crystals}, "
+                f"а карта 🃏 {card.name} стоит {card.crystals_cost}💎."
             )
 
         if card_instance.zone != CardZone.MARKET:
@@ -57,7 +53,7 @@ class BuyServices:
                 "Не правильная зона карты %s",
                 card_instance.zone,
             )
-            return (False, f"Не правильно выбрана карта🃏")
+            raise InvalidCardZone("Эта карта уже не находится на рынке 🃏.")
 
         player_state.crystals -= card.crystals_cost
         self.logger.info(
@@ -73,7 +69,11 @@ class BuyServices:
             position_on_market=position_on_market,
         )
         await self.session.commit()
-        return (True, "")
+        self.logger.info(
+            "Игрок %s успешно купил карту '%s' (новое состояние рынка обновлено)",
+            player_id, 
+            card.name,
+        )
 
     async def replacement_cards_from_the_market(
         self,

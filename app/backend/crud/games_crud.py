@@ -92,7 +92,7 @@ class GameServices:
         self,
         token: str,
         player2_id: int,
-    ) -> Game | None:
+    ) -> Game:
         self.logger.info(
             "Попытка присоединиться к игре с кодом %s для игрока %s",
             token,
