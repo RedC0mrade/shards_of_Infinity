@@ -99,9 +99,7 @@ async def ask_invite_code(message: types.Message, state: FSMContext):
         game_service = GameServices(session=session)
 
         # Проверяем, есть ли у пользователя активная игра
-        if await game_service.has_active_game(player_id=message.from_user.id):
-            await message.answer("❌ У вас уже есть активная игра.")
-            return
+        await game_service.has_active_game(player_id=message.from_user.id)
 
     await message.answer("Введите код приглашения:")
     await state.set_state(AcceptInvitationStates.waiting_for_invite_code)

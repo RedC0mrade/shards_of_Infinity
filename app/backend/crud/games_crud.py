@@ -6,6 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.backend.core.models.game import Game, GameStatus
 from app.backend.core.models.user import TelegramUser
 from app.backend.schemas.games import CreateGameSchema, InvateGameSchema
+from app.utils.exceptions.exceptions import HaveActiveGame
 from app.utils.logger import get_logger
 
 
@@ -84,7 +85,8 @@ class GameServices:
                 game.id,
                 game.status,
             )
-            return True
+            # return True
+            raise HaveActiveGame(message="❌ У вас уже есть активная игра.")
         self.logger.warning("game not found")
         return False
 
