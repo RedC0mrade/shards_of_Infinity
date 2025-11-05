@@ -59,28 +59,23 @@ async def handle_start(message: types.Message):
 @router.message(F.text == StartKBText.START_GAME)
 async def new_game(message: types.Message):
     invite_token = generate_invite_token()
-    chat_id = message.from_user.id
+
     game_data = CreateGameSchema(
-        player1_id=chat_id,
-        active_player_id=chat_id,
+        player1_id=message.from_user.id,
+        active_player_id=message.from_user.id,
         invite_token=invite_token,
+    )
+    user_data = UserCreateSchema(
+            chat_id=message.from_user.id,
+            username=message.from_user.username,
+            first_name=message.from_user.first_name,
+            last_name=message.from_user.last_name,
     )
 
     async with db_helper.session_context() as session:
         game_service = GameServices(session=session)
-        stmt = select(TelegramUser).where(TelegramUser.id == chat_id)
-        result: Result = await session.execute(stmt)
-        user = result.scalar_one_or_none()
-        if not user:
-            user_data = UserCreateSchema(
-                chat_id=message.from_user.id,
-                username=message.from_user.username,
-                first_name=message.from_user.first_name,
-                last_name=message.from_user.last_name,
-            )
-
-            user_service = UserServices(session=session)
-            user = await user_service.get_or_create_user(user_data)
+        user_service = UserServices(session=session)
+        await user_service.get_or_create_user(user_data)
         await game_service.create_game(game_data=game_data)
 
     await message.answer(
@@ -122,50 +117,49 @@ async def process_invite_code(message: types.Message, state: FSMContext):
             token=token,
             player2_id=player2_id,
         )
-        if game:
-            # Назначаем у кого сила 1, у кого 0
-            player_states = player_state_service.assign_mastery(game=game)
+        # Назначаем у кого сила 1, у кого 0
+        player_states = player_state_service.assign_mastery(game=game)
 
-            await player_state_service.create_play_state(
-                play_data=player_states[0],
-                game_id=game.id,
-                player=StartCardPlayer.FIRST_PLAYER,
-            )
-            await player_state_service.create_play_state(
-                play_data=player_states[1],
-                game_id=game.id,
-                player=StartCardPlayer.SECOND_PLAYER,
-            )
-            # Создаем маркет из 6 рандомных карт
-            # await market_service.create_market(game=game)
+        await player_state_service.create_play_state(
+            play_data=player_states[0],
+            game_id=game.id,
+            player=StartCardPlayer.FIRST_PLAYER,
+        )
+        await player_state_service.create_play_state(
+            play_data=player_states[1],
+            game_id=game.id,
+            player=StartCardPlayer.SECOND_PLAYER,
+        )
+        # Создаем маркет из 6 рандомных карт
+        # await market_service.create_market(game=game)
 
-            # создаем стартовую руку у обоих пользователей
-            await hand_service.create_hand(game.active_player_id)
-            await hand_service.create_hand(game.non_active_player_id)
+        # создаем стартовую руку у обоих пользователей
+        await hand_service.create_hand(game.active_player_id)
+        await hand_service.create_hand(game.non_active_player_id)
 
-            # создаем состояние для всех карт кроме стартовых
-            await card_instance_service.create_card_instance_for_all_cards(
-                game_id=game.id
-            )
+        # создаем состояние для всех карт кроме стартовых
+        await card_instance_service.create_card_instance_for_all_cards(
+            game_id=game.id
+        )
 
-            await session.commit()
+        await session.commit()
 
-            await message.bot.send_message(
-                chat_id=game.non_active_player_id,
-                text="🤖 Игра начинается, ходит ваш противник, удачи",
-                reply_markup=non_play_card_keyboard(),
-            )
+        await message.bot.send_message(
+            chat_id=game.non_active_player_id,
+            text="🤖 Игра начинается, ходит ваш противник, удачи",
+            reply_markup=non_play_card_keyboard(),
+        )
 
-            await message.bot.send_message(
-                chat_id=game.active_player_id,
-                text="✅ Игра начинается, ваш ход, удачи",
-                reply_markup=in_play_card_keyboard(),
-            )
+        await message.bot.send_message(
+            chat_id=game.active_player_id,
+            text="✅ Игра начинается, ваш ход, удачи",
+            reply_markup=in_play_card_keyboard(),
+        )
 
-        else:
-            await message.answer(
-                text="❌ Код приглашения не найден или игра уже началась.",
-            )
+        # else:
+        #     await message.answer(
+        #         text="❌ Код приглашения не найден или игра уже началась.",
+        #     )
 
     await state.clear()
 

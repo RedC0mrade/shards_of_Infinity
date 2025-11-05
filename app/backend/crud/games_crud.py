@@ -6,7 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.backend.core.models.game import Game, GameStatus
 from app.backend.core.models.user import TelegramUser
 from app.backend.schemas.games import CreateGameSchema, InvateGameSchema
-from app.utils.exceptions.exceptions import HaveActiveGame
+from app.utils.exceptions.exceptions import HaveActiveGame, GameTokenError
 from app.utils.logger import get_logger
 
 
@@ -110,14 +110,14 @@ class GameServices:
             self.logger.warning(
                 "Игра с кодом %s не найдена или не в статусе WAITING", token
             )
-            return None
+            raise GameTokenError(
+                message="❌ Код приглашения не найден или игра уже началась."
+            )
 
         game.player2_id = player2_id
         game.active_player_id = choice([player2_id, game.player1_id])
         game.non_active_player_id = (
-            game.player1_id
-            if game.active_player_id == player2_id
-            else player2_id
+            game.player1_id if game.active_player_id == player2_id else player2_id
         )
         game.status = GameStatus.IN_PROGRESS
         await self.session.commit()

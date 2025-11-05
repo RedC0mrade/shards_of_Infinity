@@ -5,6 +5,8 @@ class GameError(Exception):
         super().__init__(message)
         self.message = message
 
+class GameTokenError(GameError):
+    """Ошибка, ввкдкн не верный токен"""
 
 class HaveActiveGame(GameError):
     """Уже есть активная игра."""
