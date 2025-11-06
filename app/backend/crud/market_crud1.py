@@ -8,6 +8,7 @@ from app.backend.core.models.play_card_instance import (
     PlayerCardInstance,
 )
 from app.backend.core.models.player_state import PlayerState
+from app.utils.exceptions.exceptions import MarketError
 from app.utils.logger import get_logger
 
 
@@ -43,7 +44,7 @@ class MarketServices:
                 "Нет карт на рынке у игры с id == %s",
                 game_id,
             )
-            return None
+            raise MarketError(message="❌ Нет карт на рынке.")
         return market_cards
 
     # async def buy_market_card(

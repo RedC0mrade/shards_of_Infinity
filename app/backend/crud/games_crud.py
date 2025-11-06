@@ -1,32 +1,27 @@
 from random import choice
 from fastapi import HTTPException, status
 from sqlalchemy import Result, delete, or_, select
-from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.backend.core.models.game import Game, GameStatus
 from app.backend.core.models.user import TelegramUser
+from app.backend.crud.base_service import BaseService
 from app.backend.schemas.games import CreateGameSchema, InvateGameSchema
-from app.utils.exceptions.exceptions import HaveActiveGame, GameTokenError
-from app.utils.logger import get_logger
+from app.utils.exceptions.exceptions import ActiveGameError, GameTokenError
 
 
-class GameServices:
-    def __init__(
-        self,
-        session: AsyncSession,
-    ):
-        self.session = session
-        self.logger = get_logger(self.__class__.__name__)
+class GameServices(BaseService):
 
     async def create_game(
         self,
         game_data: CreateGameSchema,
     ) -> Game:
+
         self.logger.info(
             "Создание игры для игрока %s с токеном %s",
             game_data.player1_id,
             game_data.invite_token,
         )
+
         game = Game(**game_data.model_dump())
 
         self.session.add(game)
@@ -86,7 +81,7 @@ class GameServices:
                 game.status,
             )
             # return True
-            raise HaveActiveGame(message="❌ У вас уже есть активная игра.")
+            raise ActiveGameError(message="❌ У вас уже есть активная игра.")
         self.logger.warning("game not found")
         return False
 
@@ -117,7 +112,9 @@ class GameServices:
         game.player2_id = player2_id
         game.active_player_id = choice([player2_id, game.player1_id])
         game.non_active_player_id = (
-            game.player1_id if game.active_player_id == player2_id else player2_id
+            game.player1_id
+            if game.active_player_id == player2_id
+            else player2_id
         )
         game.status = GameStatus.IN_PROGRESS
         await self.session.commit()
@@ -130,65 +127,65 @@ class GameServices:
         )
         return game
 
-    async def defeat(
-        self,
-        player_id: int,
-    ):
-        self.logger.info("Игрок %s терпит поражение", player_id)
+    # async def defeat(
+    #     self,
+    #     player_id: int,
+    # ):
+    #     self.logger.info("Игрок %s терпит поражение", player_id)
 
-        stmt = (
-            select(Game)
-            .where(
-                or_(
-                    Game.player1_id == player_id,
-                    Game.player2_id == player_id,
-                ),
-                Game.status == GameStatus.IN_PROGRESS,
-            )
-            .limit(1)
-        )
-        result: Result = await self.session.execute(stmt)
-        game: Game = result.scalar_one_or_none()
-        if not game:
-            self.logger.error(
-                "Активная игра для игрока %s не найдена",
-                player_id,
-            )
-            raise ValueError(f"Active game not found for player {player_id}")
-        game.status = GameStatus.FINISHED
-        player2_id = (
-            game.player1_id if game.player1_id != player_id else game.player2_id
-        )
-        stmt = select(TelegramUser).where(TelegramUser.id == player_id)
-        result: Result = await self.session.execute(stmt)
-        loser: TelegramUser = result.scalar_one_or_none()
-        if not loser:
-            self.logger.error(
-                "Игрок %s (проигравший) не найден в базе",
-                player_id,
-            )
-            raise ValueError(f"User {player_id} not found")
-        loser.defeats += 1
+    #     stmt = (
+    #         select(Game)
+    #         .where(
+    #             or_(
+    #                 Game.player1_id == player_id,
+    #                 Game.player2_id == player_id,
+    #             ),
+    #             Game.status == GameStatus.IN_PROGRESS,
+    #         )
+    #         .limit(1)
+    #     )
+    #     result: Result = await self.session.execute(stmt)
+    #     game: Game = result.scalar_one_or_none()
+    #     if not game:
+    #         self.logger.error(
+    #             "Активная игра для игрока %s не найдена",
+    #             player_id,
+    #         )
+    #         raise ValueError(f"Active game not found for player {player_id}")
+    #     game.status = GameStatus.FINISHED
+    #     player2_id = (
+    #         game.player1_id if game.player1_id != player_id else game.player2_id
+    #     )
+    #     stmt = select(TelegramUser).where(TelegramUser.id == player_id)
+    #     result: Result = await self.session.execute(stmt)
+    #     loser: TelegramUser = result.scalar_one_or_none()
+    #     if not loser:
+    #         self.logger.error(
+    #             "Игрок %s (проигравший) не найден в базе",
+    #             player_id,
+    #         )
+    #         raise ValueError(f"User {player_id} not found")
+    #     loser.defeats += 1
 
-        stmt = select(TelegramUser).where(TelegramUser.id == player2_id)
-        result: Result = await self.session.execute(stmt)
-        winner: TelegramUser = result.scalar_one_or_none()
-        if not winner:
-            self.logger.error(
-                "Игрок %s (победитель) не найден в базе",
-                player2_id,
-            )
-            raise ValueError(f"User {player2_id} not found")
-        winner.victories += 1
+    #     stmt = select(TelegramUser).where(TelegramUser.id == player2_id)
+    #     result: Result = await self.session.execute(stmt)
+    #     winner: TelegramUser = result.scalar_one_or_none()
+    #     if not winner:
+    #         self.logger.error(
+    #             "Игрок %s (победитель) не найден в базе",
+    #             player2_id,
+    #         )
+    #         raise ValueError(f"User {player2_id} not found")
+    #     winner.victories += 1
 
-        self.session.add_all([game, loser, winner])
-        await self.session.commit()
-        self.logger.info(
-            "Игра %s завершена. Победитель: %s, проигравший: %s",
-            game.id,
-            winner.id,
-            loser.id,
-        )
+    #     self.session.add_all([game, loser, winner])
+    #     await self.session.commit()
+    #     self.logger.info(
+    #         "Игра %s завершена. Победитель: %s, проигравший: %s",
+    #         game.id,
+    #         winner.id,
+    #         loser.id,
+    #     )
 
     async def delete_game(self, game_id: int):
         self.logger.warning("Удаление игры %s", game_id)
@@ -213,5 +210,5 @@ class GameServices:
                 "Нет активной игры у пользователя c id %s",
                 player_id,
             )
-            return None
+            raise ActiveGameError(message="❌ У вас нет активной игры.")
         return game

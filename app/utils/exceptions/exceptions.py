@@ -5,11 +5,23 @@ class GameError(Exception):
         super().__init__(message)
         self.message = message
 
-class GameTokenError(GameError):
-    """Ошибка, ввкдкн не верный токен"""
 
-class HaveActiveGame(GameError):
-    """Уже есть активная игра."""
+class GameTokenError(GameError):
+    """Ошибка, ввeдeн не верный токен."""
+
+    pass
+
+
+class ActiveGameError(GameError):
+    """Пробле с активной игрой."""
+
+    pass
+
+
+class MarketError(GameError):
+    """Ошибка маркета."""
+
+    pass
 
 
 class NotEnoughCrystals(GameError):

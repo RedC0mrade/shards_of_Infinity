@@ -1,16 +1,10 @@
 from sqlalchemy import Result, select
-from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.backend.crud.base_service import BaseService
 from app.backend.core.models.user import TelegramUser
 from app.backend.schemas.users import UserCreateSchema
 
-
-class UserServices:
-    def __init__(
-        self,
-        session: AsyncSession,
-    ):
-        self.session = session
+class UserServices(BaseService):
 
     async def get_or_create_user(
         self,
@@ -21,12 +15,14 @@ class UserServices:
         user = result.scalar_one_or_none()
 
         if user:
+            self.logger.info("Пользователь уже существует - %s", user.username)
             return user
-
+        self.logger.info("Новый пользователь")
         user = TelegramUser(
             **user_data.model_dump(),
         )
         self.session.add(user)
         await self.session.commit()
         await self.session.refresh(user)
+        self.logger.info("Пользователь - %s", user.username)
         return user

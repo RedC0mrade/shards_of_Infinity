@@ -1,3 +1,4 @@
+from pathlib import Path
 from aiogram import Router, types, F
 from aiogram.types import FSInputFile, InputMediaPhoto
 
@@ -17,9 +18,12 @@ from app.backend.factories.database import db_helper
 
 from app.telegram_bot.keyboards.game_move_keyboard import MoveKBText
 from app.telegram_bot.keyboards.hand_keyboard import make_card_move_keyboard
+from app.utils.logger import get_logger
 
 router = Router(name=__name__)
 
+media_dir = Path(__file__).parent.parent.parent.parent / "media"
+logger = get_logger(__name__)
 
 @router.message(F.text == MoveKBText.MARKET)
 async def handle_market(message: types.Message):
@@ -31,35 +35,29 @@ async def handle_market(message: types.Message):
             player_id=message.from_user.id
         )
 
-        if not game:
-            await message.answer("❌ У вас нет активной игры.")
-            return
-
         market_cards: list[PlayerCardInstance] = (
             await market_servise.get_market_cards(game_id=game.id)
         )
 
-        if not market_cards:
-            await message.answer("❌ Нет карт на рынке.")
-            return
-
         media = []  # переделать дублирующийся код
         for slot in market_cards:
             card = slot.card
-
+            icon_path = media_dir / Path(card.icon)
+            logger.info("Путь до карты %s", icon_path)
             media.append(
                 InputMediaPhoto(
-                    media=FSInputFile(card.icon),
+                    media=FSInputFile(icon_path),
                 )
             )
-
         await message.answer_media_group(media)
-        await message.answer(
-            text="Выберите карту для покупки",
-            reply_markup=make_card_move_keyboard(
-                instance_data=market_cards, market=True
-            ),
-        )
+
+        if message.from_user.id == game.active_player_id:
+            await message.answer(
+                text="Выберите карту для покупки",
+                reply_markup=make_card_move_keyboard(
+                    instance_data=market_cards, market=True
+                ),
+            )
 
 
 @router.message(
