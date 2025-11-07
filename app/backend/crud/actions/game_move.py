@@ -1,13 +1,14 @@
-from sqlalchemy import Result, delete, or_, select
+from sqlalchemy import Result, delete, func, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.backend.core.models.card import Card, CardAction, EffectType
+from app.backend.core.models.card import Card, CardAction, CardFaction, EffectType
 from app.backend.core.models.game import Game
 from app.backend.core.models.play_card_instance import (
     CardZone,
     PlayerCardInstance,
 )
 from app.backend.core.models.player_state import PlayerState
+from app.backend.crud.base_service import BaseService
 from app.backend.crud.card_crud import CardServices
 from app.backend.crud.card_instance_crud import CardInstanceServices
 from app.backend.crud.executors.effects_executor import EffectExecutor
@@ -15,13 +16,51 @@ from app.backend.crud.executors.ps_count_executor import PlayStateExecutor
 from app.utils.logger import get_logger
 
 
-class MoveServices:
-    def __init__(
+class MoveServices(BaseService):
+
+    async def pre_make_move(
         self,
-        session: AsyncSession,
+        player_state: PlayerState,
+        game: Game,
     ):
-        self.session = session
-        self.logger = get_logger(self.__class__.__name__)
+        # Что необходимо сделать перед ходом
+        # 1) Обнулить все показатели. Атаки, защиты, щита
+        # 2) Обновить обновить счетчик фракций
+        player_state.power = 0
+        player_state.shield = 0
+        player_state.crystals = 0
+
+        stmt = (
+            select(Card.faction, func.count())
+            .join(PlayerCardInstance, PlayerCardInstance.card_id == Card.id)
+            .where(
+                PlayerCardInstance.zone == CardZone.IN_PLAY,
+                PlayerCardInstance.game_id == game.id,
+                PlayerCardInstance.player_state_id == player_state.id,
+            )
+            .group_by(Card.faction)
+        )
+        result: Result = await self.session.execute(stmt)
+        faction_counts = dict(result.all())
+
+        player_state.wilds_count = faction_counts.get(
+            CardFaction.WILDS,
+            0,
+        )
+        player_state.order_count = faction_counts.get(
+            CardFaction.ORDER,
+            0,
+        )
+        player_state.homodeus_count = faction_counts.get(
+            CardFaction.HOMODEUS,
+            0,
+        )
+        player_state.demirealm_count = faction_counts.get(
+            CardFaction.DEMIREALM,
+            0,
+        )
+
+        await self.session.flush()
 
     async def make_move(
         self,
@@ -78,6 +117,7 @@ class MoveServices:
 
         await self.session.commit()
         return answer
+
 
 # Розыгрыш карты:
 # - Проверить есть ли карта в руке

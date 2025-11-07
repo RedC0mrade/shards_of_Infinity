@@ -8,17 +8,12 @@ from app.backend.core.models.play_card_instance import (
     PlayerCardInstance,
 )
 from app.backend.core.models.player_state import PlayerState
+from app.backend.crud.base_service import BaseService
 from app.backend.schemas.card import CreateCardSchema
 from app.utils.logger import get_logger
 
 
-class CardServices:
-    def __init__(
-        self,
-        session: AsyncSession,
-    ):
-        self.session = session
-        self.logger = get_logger(self.__class__.__name__)
+class CardServices(BaseService):
 
     async def get_all_cards_in_the_deck(self) -> list[Card]:
         stmt = select(Card)

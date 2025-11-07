@@ -156,11 +156,6 @@ async def process_invite_code(message: types.Message, state: FSMContext):
             reply_markup=in_play_card_keyboard(),
         )
 
-        # else:
-        #     await message.answer(
-        #         text="❌ Код приглашения не найден или игра уже началась.",
-        #     )
-
     await state.clear()
 
 

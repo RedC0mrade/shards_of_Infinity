@@ -59,7 +59,7 @@ class GameServices(BaseService):
         )
         return game
 
-    async def has_active_game(self, player_id: int) -> Game | bool:
+    async def has_active_game(self, player_id: int) -> Game:
         self.logger.info("player id %s", player_id)
         stmt = (
             select(Game)
@@ -80,10 +80,9 @@ class GameServices(BaseService):
                 game.id,
                 game.status,
             )
-            # return True
             raise ActiveGameError(message="❌ У вас уже есть активная игра.")
         self.logger.warning("game not found")
-        return False
+
 
     async def join_game_by_code(
         self,

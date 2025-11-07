@@ -16,6 +16,7 @@ class MoveKBText:
     END = "Конец хода"
     DEFEAT = "Сдаться"
     SHILD = "Щит"
+    CHAMPION_PLAY = "Разыграть свойства чемптонов"
 
 
 def in_play_card_keyboard():
@@ -30,6 +31,7 @@ def in_play_card_keyboard():
     parameters_button = KeyboardButton(text=MoveKBText.GAME_PARAMETERS)
     enemy_parameters_button = KeyboardButton(text=MoveKBText.ENEMY_PARAMETERS)
     player_discard_button = KeyboardButton(text=MoveKBText.PLAYER_DISCARD)
+    champion_play_button = KeyboardButton(text=MoveKBText.CHAMPION_PLAY)
 
     button_row = [
         attack_button,
@@ -43,6 +45,7 @@ def in_play_card_keyboard():
         hand_button,
         player_discard_button,
         cards_in_play,
+        champion_play_button,
     ]
 
     parameters_row = [
@@ -61,7 +64,8 @@ def in_play_card_keyboard():
 
 
 def non_play_card_keyboard():
-    """Клавиатура общеигравого меню, для игрока ждущего своего хода"""
+    """Клавиатура общеигравого меню, для игрока ждущего своего хода."""
+    
     market_button = KeyboardButton(text=MoveKBText.MARKET)
     hand_button = KeyboardButton(text=MoveKBText.HAND)
     cards_in_play = KeyboardButton(text=MoveKBText.CARDS_IN_PLAY)

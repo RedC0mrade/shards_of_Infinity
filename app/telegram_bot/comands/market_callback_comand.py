@@ -7,10 +7,10 @@ from app.backend.core.models.play_card_instance import (
     PlayerCardInstance,
 )
 from app.backend.core.models.player_state import PlayerState
-from app.backend.crud.buy_move import BuyServices
+from app.backend.crud.actions.buy_move import BuyServices
 from app.backend.crud.card_crud import CardServices
 from app.backend.crud.card_instance_crud import CardInstanceServices
-from app.backend.crud.game_move_crud import MoveServices
+from app.backend.crud.actions.game_move import MoveServices
 from app.backend.crud.player_state_crud import PlayerStateServices
 from app.telegram_bot.keyboards.hand_keyboard import MarketCallback
 
