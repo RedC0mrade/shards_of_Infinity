@@ -26,6 +26,16 @@ class MoveServices(BaseService):
         # Что необходимо сделать перед ходом
         # 1) Обнулить все показатели. Атаки, защиты, щита
         # 2) Обновить обновить счетчик фракций
+        self.logger.info(
+            "Состояние player_state на начало функции, power - %s,\n shild - %s,\n crystals - %s,\n wilds - %s,\n homodeus - %s,\n order - %s,\n demirealm - %s",
+            player_state.power,
+            player_state.shield,
+            player_state.crystals,
+            player_state.wilds_count,
+            player_state.homodeus_count,
+            player_state.order_count,
+            player_state.demirealm_count,
+        )
         player_state.power = 0
         player_state.shield = 0
         player_state.crystals = 0
@@ -59,8 +69,17 @@ class MoveServices(BaseService):
             CardFaction.DEMIREALM,
             0,
         )
-
-        await self.session.flush()
+        self.logger.info(
+            "Состояние player_state на конец функции, power - %s,\n shild - %s,\n crystals - %s,\n wilds - %s,\n homodeus - %s,\n order - %s,\n demirealm - %s",
+            player_state.power,
+            player_state.shield,
+            player_state.crystals,
+            player_state.wilds_count,
+            player_state.homodeus_count,
+            player_state.order_count,
+            player_state.demirealm_count,
+        )        
+        await self.session.flush()  # закомитится в хендлере
 
     async def make_move(
         self,
@@ -94,9 +113,7 @@ class MoveServices(BaseService):
             session=self.session,
             player_state=player_state,
         )
-        await play_state_executor.faction_count(
-            card=card
-        )  # Считаем разыранные карты
+        await play_state_executor.faction_count(card=card)  # Считаем разыранные карты
         self.logger.info(
             "faction_count отработала. Переходим к функции change_card_zone"
         )

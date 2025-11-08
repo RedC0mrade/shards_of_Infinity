@@ -2,6 +2,7 @@ from sqlalchemy import Result, select
 from app.backend.core.models.card import StartCardPlayer
 from app.backend.core.models.game import Game
 from app.backend.core.models.user import TelegramUser
+from app.backend.crud.actions.game_move import MoveServices
 from app.backend.crud.card_instance_crud import CardInstanceServices
 from app.backend.crud.games_crud import GameServices
 from app.backend.crud.hand_crud import HandServices
@@ -112,6 +113,7 @@ async def process_invite_code(message: types.Message, state: FSMContext):
         game_service = GameServices(session=session)
         hand_service = HandServices(session=session)
         card_instance_service = CardInstanceServices(session=session)
+        move_service = MoveServices(session=session)
 
         game = await game_service.join_game_by_code(
             token=token,
@@ -141,6 +143,8 @@ async def process_invite_code(message: types.Message, state: FSMContext):
         await card_instance_service.create_card_instance_for_all_cards(
             game_id=game.id
         )
+
+        await move_service.pre_make_move(player_state=)
 
         await session.commit()
 
