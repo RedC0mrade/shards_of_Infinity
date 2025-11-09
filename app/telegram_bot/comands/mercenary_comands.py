@@ -55,7 +55,7 @@ async def mercenary_play(
             raise NotYourTurn("Пожалуйста, дождитесь своего хода 🕐")
 
         card_instance: PlayerCardInstance = (
-            await card_instance_services.get_card_inctance_for_id(
+            await card_instance_services.get_card_instance_for_id(
                 card_instanse_id=callback_data.card_instance_id,
             )
         )
@@ -89,7 +89,6 @@ async def mercenary_play(
                 game_id=player_state.game_id,
                 position_on_market=position_on_market,
             )
-
 
             await callback.message.answer_photo(
                 photo=photo,

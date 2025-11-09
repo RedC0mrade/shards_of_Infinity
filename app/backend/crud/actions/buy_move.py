@@ -9,18 +9,13 @@ from app.backend.core.models.play_card_instance import (
     PlayerCardInstance,
 )
 from app.backend.core.models.player_state import PlayerState
+from app.backend.crud.base_service import BaseService
 from app.utils.exceptions.exceptions import InvalidCardZone, NotEnoughCrystals
 from app.utils.logger import get_logger
 
 
-class BuyServices:
-    def __init__(
-        self,
-        session: AsyncSession,
-    ):
-        self.session = session
-        self.logger = get_logger(self.__class__.__name__)
-
+class BuyServices(BaseService):
+    
     async def buy_card_from_market(
         self,
         player_state: PlayerState,

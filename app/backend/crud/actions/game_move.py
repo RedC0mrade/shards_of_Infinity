@@ -78,7 +78,7 @@ class MoveServices(BaseService):
             player_state.homodeus_count,
             player_state.order_count,
             player_state.demirealm_count,
-        )        
+        )
         await self.session.flush()  # закомитится в хендлере
 
     async def make_move(
@@ -135,9 +135,22 @@ class MoveServices(BaseService):
         await self.session.commit()
         return answer
 
+    # Розыгрыш карты:
+    # - Проверить есть ли карта в руке
+    # - Отыграть эффект
+    # - Обновить счетчик фрацкий сыграных в этом ходу
+    # - Поместить карту в сброс
 
-# Розыгрыш карты:
-# - Проверить есть ли карта в руке
-# - Отыграть эффект
-# - Обновить счетчик фрацкий сыграных в этом ходу
-# - Поместить карту в сброс
+    async def after_the_move(
+        player_state: PlayerState,
+        enemy_player_state: PlayerState,
+        game: Game,
+    ):
+        # 0) Поменять активного и не активного игрока местами
+        # 1) Сбросить все карты из руки и на столе, кроме чемпионов
+        # 2) Набрать новые карты
+        # 3) Посчитать щиты
+        game.active_player_id, game.non_active_player_id = (
+            game.non_active_player_id,
+            game.active_player_id,
+        )

@@ -87,7 +87,7 @@ class CardInstanceServices(BaseService):
         card_id: int,
         game_id: int,
         card_zone: CardZone,
-    ) -> PlayerCardInstance | str:
+    ) -> PlayerCardInstance:
         """Получаем информацию о состоянии карты в определенной зоне."""
 
         self.logger.info(
@@ -119,7 +119,7 @@ class CardInstanceServices(BaseService):
 
         return card_instance
 
-    async def get_card_inctance_for_id(
+    async def get_card_instance_for_id(
         self,
         card_instanse_id: int,
     ) -> PlayerCardInstance:
@@ -136,3 +136,12 @@ class CardInstanceServices(BaseService):
             self.logger.warning("Нет состояния карты с id -%s", card_instanse_id)
 
         return card_instanse
+
+    async def get_all_card_instance(
+            self,
+            player_state: PlayerState,
+            game: Game,
+    ) -> list[PlayerCardInstance]:
+        """Получаем все карты игрока из руки и со стола, исключая чемпионов."""
+
+        stmt = select(PlayerCardInstance).

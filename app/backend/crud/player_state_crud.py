@@ -86,51 +86,51 @@ class PlayerStateServices(BaseService):
         )
         return res
 
-    async def draw_cards(
-        self,
-        player_state: PlayerState,
-        count: int = 5,
-    ) -> list[PlayerCardInstance]:
-        """Добор карт в руку"""
-        # 1. Сколько карт уже в руке
-        current_hand = [
-            card for card in player_state.cards if card.zone == CardZone.HAND
-        ]
-        need_to_draw = count - len(current_hand)
-        if need_to_draw <= 0:
-            return current_hand
+    # async def draw_cards(
+    #     self,
+    #     player_state: PlayerState,
+    #     count: int = 5,
+    # ) -> list[PlayerCardInstance]:
+    #     """Добор карт в руку"""
+    #     # 1. Сколько карт уже в руке
+    #     current_hand = [
+    #         card for card in player_state.cards if card.zone == CardZone.HAND
+    #     ]
+    #     need_to_draw = count - len(current_hand)
+    #     if need_to_draw <= 0:
+    #         return current_hand
 
-        drawn_cards: list[PlayerCardInstance] = []
+    #     drawn_cards: list[PlayerCardInstance] = []
 
-        while need_to_draw > 0:
-            # Берём карты из DECK
-            deck_cards = [
-                c for c in player_state.cards if c.zone == CardZone.PLAYER_DECK
-            ]
-            if not deck_cards:
-                # Если DECK пуст — перемешиваем DISCARD обратно в DECK
-                discard_cards = [
-                    c for c in player_state.cards if c.zone == CardZone.DISCARD
-                ]
-                if not discard_cards:
-                    break  # вообще нет карт
-                # Перемещаем в DECK
-                for card in discard_cards:
-                    card.zone = CardZone.PLAYER_DECK
-                random.shuffle(discard_cards)  # перемешивание
-                # можно обновить order_in_zone
-                for idx, card in enumerate(discard_cards):
-                    card.order_in_zone = idx
+    #     while need_to_draw > 0:
+    #         # Берём карты из DECK
+    #         deck_cards = [
+    #             c for c in player_state.cards if c.zone == CardZone.PLAYER_DECK
+    #         ]
+    #         if not deck_cards:
+    #             # Если DECK пуст — перемешиваем DISCARD обратно в DECK
+    #             discard_cards = [
+    #                 c for c in player_state.cards if c.zone == CardZone.DISCARD
+    #             ]
+    #             if not discard_cards:
+    #                 break  # вообще нет карт
+    #             # Перемещаем в DECK
+    #             for card in discard_cards:
+    #                 card.zone = CardZone.PLAYER_DECK
+    #             random.shuffle(discard_cards)  # перемешивание
+    #             # можно обновить order_in_zone
+    #             for idx, card in enumerate(discard_cards):
+    #                 card.order_in_zone = idx
 
-                deck_cards = discard_cards
+    #             deck_cards = discard_cards
 
-            # Добираем одну карту
-            card = deck_cards.pop(0)  # верхняя
-            card.zone = CardZone.HAND
-            drawn_cards.append(card)
-            need_to_draw -= 1
+    #         # Добираем одну карту
+    #         card = deck_cards.pop(0)  # верхняя
+    #         card.zone = CardZone.HAND
+    #         drawn_cards.append(card)
+    #         need_to_draw -= 1
 
-        return drawn_cards
+    #     return drawn_cards
 
     async def get_player_state_with_game(self, player_id: int) -> PlayerState:
         """Получаем параметры игрока."""

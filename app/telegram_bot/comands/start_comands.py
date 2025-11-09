@@ -1,6 +1,7 @@
 from sqlalchemy import Result, select
 from app.backend.core.models.card import StartCardPlayer
 from app.backend.core.models.game import Game
+from app.backend.core.models.player_state import PlayerState
 from app.backend.core.models.user import TelegramUser
 from app.backend.crud.actions.game_move import MoveServices
 from app.backend.crud.card_instance_crud import CardInstanceServices
@@ -67,10 +68,10 @@ async def new_game(message: types.Message):
         invite_token=invite_token,
     )
     user_data = UserCreateSchema(
-            chat_id=message.from_user.id,
-            username=message.from_user.username,
-            first_name=message.from_user.first_name,
-            last_name=message.from_user.last_name,
+        chat_id=message.from_user.id,
+        username=message.from_user.username,
+        first_name=message.from_user.first_name,
+        last_name=message.from_user.last_name,
     )
 
     async with db_helper.session_context() as session:
@@ -140,12 +141,8 @@ async def process_invite_code(message: types.Message, state: FSMContext):
         await hand_service.create_hand(game.non_active_player_id)
 
         # создаем состояние для всех карт кроме стартовых
-        await card_instance_service.create_card_instance_for_all_cards(
-            game_id=game.id
-        )
-
-        await move_service.pre_make_move(player_state=)
-
+        await card_instance_service.create_card_instance_for_all_cards(game_id=game.id)
+        
         await session.commit()
 
         await message.bot.send_message(
@@ -168,9 +165,7 @@ async def keyboard_return(message: types.Message):
     async with db_helper.session_context() as session:
         game_service = GameServices(session=session)
 
-        game: Game = await game_service.get_active_game(
-            player_id=message.from_user.id
-        )
+        game: Game = await game_service.get_active_game(player_id=message.from_user.id)
 
         if game.active_player_id == message.from_user.id:
             await message.answer(
