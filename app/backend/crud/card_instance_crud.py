@@ -144,4 +144,8 @@ class CardInstanceServices(BaseService):
     ) -> list[PlayerCardInstance]:
         """Получаем все карты игрока из руки и со стола, исключая чемпионов."""
 
-        stmt = select(PlayerCardInstance).
+        stmt = select(PlayerCardInstance).join((
+                    PlayerState,
+                    PlayerCardInstance.player_state_id == PlayerState.id,
+                ).where(PlayerState.player_id == player_state.player_id, PlayerCardInstance.zone == CardZone.IN_PLAY)
+                )
