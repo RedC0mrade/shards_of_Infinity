@@ -4,7 +4,7 @@ from sqlalchemy import Result, select
 from sqlalchemy.orm import joinedload
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.backend.core.models.card import Card, StartCardPlayer
+from app.backend.core.models.card import Card, CardType, StartCardPlayer
 from app.backend.core.models.game import Game, GameStatus
 from app.backend.core.models.play_card_instance import (
     CardZone,
@@ -133,19 +133,29 @@ class CardInstanceServices(BaseService):
         card_instanse = result.scalar_one_or_none()
 
         if not card_instanse:
-            self.logger.warning("Нет состояния карты с id -%s", card_instanse_id)
+            self.logger.warning(
+                "Нет состояния карты с id -%s", card_instanse_id
+            )
 
         return card_instanse
 
     async def get_all_card_instance(
-            self,
-            player_state: PlayerState,
-            game: Game,
+        self,
+        player_state: PlayerState,
+        card_zone
     ) -> list[PlayerCardInstance]:
         """Получаем все карты игрока из руки и со стола, исключая чемпионов."""
 
-        stmt = select(PlayerCardInstance).join((
-                    PlayerState,
-                    PlayerCardInstance.player_state_id == PlayerState.id,
-                ).where(PlayerState.player_id == player_state.player_id, PlayerCardInstance.zone == CardZone.IN_PLAY)
-                )
+        stmt = (select(PlayerCardInstance)
+        .join(PlayerState, PlayerCardInstance.player_state_id == PlayerState.id)
+        .join(Card, Card.id == PlayerCardInstance.card_id)
+        .where(
+            PlayerState.player_id == player_state.player_id,
+            PlayerCardInstance.zone == CardZone.IN_PLAY,
+            Card.card_type != CardType.CHAMPION,
+            )
+        )
+
+        result: Result = await self.session.execute(stmt)
+        card_instances = result.scalars().all()
+        self.logger
