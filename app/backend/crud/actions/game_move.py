@@ -1,7 +1,12 @@
 from sqlalchemy import Result, delete, func, or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.backend.core.models.card import Card, CardAction, CardFaction, EffectType
+from app.backend.core.models.card import (
+    Card,
+    CardAction,
+    CardFaction,
+    EffectType,
+)
 from app.backend.core.models.game import Game
 from app.backend.core.models.play_card_instance import (
     CardZone,
@@ -90,7 +95,11 @@ class MoveServices(BaseService):
         mercenary: bool = False,
     ) -> str:
         """Игрок разыгрывает карту."""
-
+        # Розыгрыш карты:
+        # - Проверить есть ли карта в руке
+        # - Отыграть эффект
+        # - Обновить счетчик фрацкий сыграных в этом ходу
+        # - Поместить карту в сброс
         self.logger.info(
             "Игрок с id - %s делает ход картой - %s, в игре с id - %s",
             player_id,
@@ -113,7 +122,9 @@ class MoveServices(BaseService):
             session=self.session,
             player_state=player_state,
         )
-        await play_state_executor.faction_count(card=card)  # Считаем разыранные карты
+        await play_state_executor.faction_count(
+            card=card
+        )  # Считаем разыранные карты
         self.logger.info(
             "faction_count отработала. Переходим к функции change_card_zone"
         )
@@ -135,22 +146,32 @@ class MoveServices(BaseService):
         await self.session.commit()
         return answer
 
-    # Розыгрыш карты:
-    # - Проверить есть ли карта в руке
-    # - Отыграть эффект
-    # - Обновить счетчик фрацкий сыграных в этом ходу
-    # - Поместить карту в сброс
-
     async def after_the_move(
+        self,
         player_state: PlayerState,
         enemy_player_state: PlayerState,
         game: Game,
     ):
+        """Действия после окончания хода"""
+
         # 0) Поменять активного и не активного игрока местами
         # 1) Сбросить все карты из руки и на столе, кроме чемпионов
         # 2) Набрать новые карты
         # 3) Посчитать щиты
+        
+        card_instance_service = CardInstanceServices(session=self.session)
+        
         game.active_player_id, game.non_active_player_id = (
             game.non_active_player_id,
             game.active_player_id,
+        ) # не забыть что нужно закоммитить
+
+        cards_intances = (
+            card_instance_service.get_player_cards_instance_in_play(
+                player_state
+            )
         )
+
+        card_instance_service.change_zone_of_cards(cards_intances) # не забыть что нужно закоммитить
+
+        

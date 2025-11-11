@@ -82,7 +82,7 @@ class PlayerCardInstance(Base):
         default=False,
         server_default=text("FALSE"),
     )
-    card: Mapped["Card"] = relationship("Card", lazy="selectin")
+    card: Mapped["Card"] = relationship("Card", lazy="joined")
     game: Mapped["Game"] = relationship("Game")
     player_state: Mapped["PlayerState"] = relationship(
         "PlayerState",

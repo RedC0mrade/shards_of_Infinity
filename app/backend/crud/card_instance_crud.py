@@ -139,23 +139,49 @@ class CardInstanceServices(BaseService):
 
         return card_instanse
 
-    async def get_all_card_instance(
-        self,
-        player_state: PlayerState,
-        card_zone
+    async def get_player_cards_instance_in_play(
+        self, player_state: PlayerState, card_zone
     ) -> list[PlayerCardInstance]:
         """Получаем все карты игрока из руки и со стола, исключая чемпионов."""
 
-        stmt = (select(PlayerCardInstance)
-        .join(PlayerState, PlayerCardInstance.player_state_id == PlayerState.id)
-        .join(Card, Card.id == PlayerCardInstance.card_id)
-        .where(
-            PlayerState.player_id == player_state.player_id,
-            PlayerCardInstance.zone == CardZone.IN_PLAY,
-            Card.card_type != CardType.CHAMPION,
+        stmt = (
+            select(PlayerCardInstance)
+            .join(
+                PlayerState,
+                PlayerCardInstance.player_state_id == PlayerState.id,
+            )
+            .join(Card, Card.id == PlayerCardInstance.card_id)
+            .where(
+                PlayerState.player_id == player_state.player_id,
+                PlayerCardInstance.zone == CardZone.IN_PLAY,
+                Card.card_type != CardType.CHAMPION,
             )
         )
 
         result: Result = await self.session.execute(stmt)
-        card_instances = result.scalars().all()
-        self.logger
+        card_instances: list[PlayerCardInstance] = result.scalars().all()
+        for card_instance in card_instances:
+            self.logger.info(
+                "🃏 Карта '%s' (тип: %s, фракция: %s) находится в зоне %s.",
+                card_instance.card.name,
+                card_instance.card.card_type,
+                card_instance.card.faction,
+                card_instance.zone,
+            )
+        return card_instances
+
+    async def change_zone_of_cards(
+        self,
+        card_instances: list[PlayerCardInstance],
+    ) -> list[PlayerCardInstance]:
+        """Меняем зону карты в PlayerCardInstance"""
+        for card_instance in card_instances:
+            card_instance.zone = CardZone.DISCARD
+            self.logger.info(
+                "🃏 Карта '%s' (тип: %s, фракция: %s) находится в зоне %s.",
+                card_instance.card.name,
+                card_instance.card.card_type,
+                card_instance.card.faction,
+                card_instance.zone,
+            )
+        # await self.session.flush() наверное не нужно, проверить
