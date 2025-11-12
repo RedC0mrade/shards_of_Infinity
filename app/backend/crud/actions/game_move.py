@@ -18,6 +18,7 @@ from app.backend.crud.card_crud import CardServices
 from app.backend.crud.card_instance_crud import CardInstanceServices
 from app.backend.crud.executors.effects_executor import EffectExecutor
 from app.backend.crud.executors.ps_count_executor import PlayStateExecutor
+from app.backend.crud.hand_crud import HandServices
 from app.utils.logger import get_logger
 
 
@@ -122,9 +123,7 @@ class MoveServices(BaseService):
             session=self.session,
             player_state=player_state,
         )
-        await play_state_executor.faction_count(
-            card=card
-        )  # Считаем разыранные карты
+        await play_state_executor.faction_count(card=card)  # Считаем разыранные карты
         self.logger.info(
             "faction_count отработала. Переходим к функции change_card_zone"
         )
@@ -158,20 +157,28 @@ class MoveServices(BaseService):
         # 1) Сбросить все карты из руки и на столе, кроме чемпионов
         # 2) Набрать новые карты
         # 3) Посчитать щиты
-        
+
         card_instance_service = CardInstanceServices(session=self.session)
-        
+        hand_service = HandServices(session=self.session)
+
         game.active_player_id, game.non_active_player_id = (
             game.non_active_player_id,
             game.active_player_id,
-        ) # не забыть что нужно закоммитить
+        )  # не забыть что нужно закоммитить
 
-        cards_intances = (
-            card_instance_service.get_player_cards_instance_in_play(
-                player_state
-            )
+        cards_intances = card_instance_service.get_player_cards_instance_in_play(
+            player_state
         )
 
-        card_instance_service.change_zone_of_cards(cards_intances) # не забыть что нужно закоммитить
+        card_instance_service.change_zone_of_cards(
+            cards_intances
+        )  # не забыть что нужно закоммитить
 
-        
+        hand: list[PlayerCardInstance] = hand_service.create_hand(
+            player_id=player_state.player_id
+        )
+
+        player_state.shield = sum([card_instance.card.shield for card_instance in hand])
+        self.logger.info("щит равен - %s", player_state.shield)
+
+        self.session.commit()

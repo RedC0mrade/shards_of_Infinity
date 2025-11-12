@@ -13,7 +13,7 @@ from app.utils.logger import get_logger
 
 class HandServices(BaseService):
 
-    async def get_cards_in_zone(
+    async def get_cards_in_zone(  # Проверить на дублирование в card_instance_crud
         self,
         game_id: int,
         player_id: int,
@@ -100,7 +100,7 @@ class HandServices(BaseService):
         if len(deck) < hand_count:
 
             self.logger.info(
-                "Карт в колоде меньше %s: %s",
+                "Карт в колоде меньше %s их - %s",
                 hand_count,
                 len(deck),
             )
@@ -151,4 +151,6 @@ class HandServices(BaseService):
         # await self.session.commit()
         self.logger.info("Финальная рука: %s", hand_cards)
 
-        # return hand_cards
+        return hand_cards
+
+    
