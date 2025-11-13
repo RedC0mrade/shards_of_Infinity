@@ -8,6 +8,7 @@ from app.backend.core.models.play_card_instance import (
 )
 from app.backend.core.models.player_state import PlayerState
 from app.backend.crud.base_service import BaseService
+from app.utils.exceptions.exceptions import DoNotHaveCardInZone
 from app.utils.logger import get_logger
 
 
@@ -47,6 +48,8 @@ class HandServices(BaseService):
                 card.id,
                 card.zone,
             )
+        if not hand:
+            raise DoNotHaveCardInZone(message="❌ Нет карт.")
         return hand
 
     async def get_cards_in_play(

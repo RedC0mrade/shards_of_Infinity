@@ -78,10 +78,6 @@ async def handle_hand(message: types.Message):
             player_id=message.from_user.id
         )
 
-        if not game:
-            await message.answer("❌ У вас нет активной игры.")
-            return
-
         if message.text == MoveKBText.HAND:
             hand_cards: list[PlayerCardInstance] = (
                 await hand_services.get_cards_in_zone(
@@ -108,20 +104,18 @@ async def handle_hand(message: types.Message):
                 )
             )
 
-        if not hand_cards:
-            await message.answer(f"❌ Нет карт.")
-            return
-
-        cards = []  # переделать дублирующийся код
+        media = []  # переделать дублирующийся код
         for slot in hand_cards:
             card = slot.card
 
-            cards.append(
+            icon_path = media_dir / Path(card.icon)
+            logger.info("Путь до карты %s", icon_path)
+            media.append(
                 InputMediaPhoto(
-                    media=FSInputFile(card.icon),
+                    media=FSInputFile(icon_path),
                 )
             )
-        await message.answer_media_group(cards)
+        await message.answer_media_group(media)
         if message.text == MoveKBText.HAND:
 
             await message.answer(
@@ -143,9 +137,6 @@ async def handle_game_parametrs(message: types.Message):
                 player_id=message.from_user.id
             )
         )
-        if not play_state:
-            await message.answer("❌ У вас нет активной игры.")
-            return
 
         if play_state.game.active_player_id == message.from_user.id:
             await message.answer(
@@ -160,7 +151,7 @@ async def handle_game_parametrs(message: types.Message):
                     f"Разыграно карт фракции Демириалм 👾= {play_state.demirealm_count}\n"
                 )
             )
-            return
+            # return
         else:
             await message.answer(
                 text=(
@@ -183,9 +174,6 @@ async def enemy_game_parametrs(message: types.Message):
                 player_id=message.from_user.id
             )
         )
-        if not enemy_play_state:
-            await message.answer("❌ У вас нет активной игры.")
-            return
 
         await message.answer(
             text=(
@@ -193,3 +181,21 @@ async def enemy_game_parametrs(message: types.Message):
                 f"Мастерство ⚡ = {enemy_play_state.mastery}\n"
             )
         )
+
+
+@router.message(F.text == MoveKBText.END)
+async def attack_enemy_player(message: types.Message):
+    """Атака противника."""
+    # 1) Проверить является ли игрок активным
+    # 2) Проверить есть ли неуязвимость у атакуемого
+    # 3) Нанести урон
+    # 4) Проверить не опустилось ли здоровье ниже нуля
+    # 4.1) Если опустилось вывести сообщения ирокам
+    # 4.2) Сменить статус игры на финиш
+    async with db_helper.session_context() as session:
+        game_service = GameServices(session=session)
+        game: Game = await game_service.get_active_game(
+            player_id=message.from_user.id
+        )
+        if message.from_user.id != game.active_player_id:
+            await message.answer(text="❌ Ходит Ваш противник")

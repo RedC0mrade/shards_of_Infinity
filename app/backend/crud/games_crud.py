@@ -193,7 +193,7 @@ class GameServices(BaseService):
         await self.session.commit()
         self.logger.info("Игра с id %s успешно удалена", game_id)
 
-    async def get_active_game(self, player_id: int) -> Game:
+    async def get_active_game(self, player_id: int, active_player: bool = False,) -> Game:
         self.logger.info("Получение id игры пользователем id - %s", player_id)
         stmt = select(Game).where(
             Game.status == GameStatus.IN_PROGRESS,
@@ -210,4 +210,5 @@ class GameServices(BaseService):
                 player_id,
             )
             raise ActiveGameError(message="❌ У вас нет активной игры.")
+        if active_player:
         return game

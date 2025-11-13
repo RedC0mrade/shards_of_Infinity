@@ -40,3 +40,9 @@ class NotYourTurn(GameError):
     """Попытка действия не в свой ход."""
 
     pass
+
+
+class DoNotHaveCardInZone(GameError):
+    """В данной зоне нет карт."""
+
+    pass
