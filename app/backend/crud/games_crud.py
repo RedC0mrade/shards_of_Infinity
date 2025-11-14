@@ -6,7 +6,11 @@ from app.backend.core.models.game import Game, GameStatus
 from app.backend.core.models.user import TelegramUser
 from app.backend.crud.base_service import BaseService
 from app.backend.schemas.games import CreateGameSchema, InvateGameSchema
-from app.utils.exceptions.exceptions import ActiveGameError, GameTokenError
+from app.utils.exceptions.exceptions import (
+    ActiveGameError,
+    GameTokenError,
+    NotYourTurn,
+)
 
 
 class GameServices(BaseService):
@@ -82,7 +86,6 @@ class GameServices(BaseService):
             )
             raise ActiveGameError(message="❌ У вас уже есть активная игра.")
         self.logger.warning("game not found")
-
 
     async def join_game_by_code(
         self,
@@ -193,7 +196,11 @@ class GameServices(BaseService):
         await self.session.commit()
         self.logger.info("Игра с id %s успешно удалена", game_id)
 
-    async def get_active_game(self, player_id: int, active_player: bool = False,) -> Game:
+    async def get_active_game(
+        self,
+        player_id: int,
+        active_player: bool = False,
+    ) -> Game:
         self.logger.info("Получение id игры пользователем id - %s", player_id)
         stmt = select(Game).where(
             Game.status == GameStatus.IN_PROGRESS,
@@ -203,12 +210,19 @@ class GameServices(BaseService):
             ),
         )
         result: Result = await self.session.execute(stmt)
-        game = result.scalar_one_or_none()
+        game: Game = result.scalar_one_or_none()
         if not game:
             self.logger.warning(
                 "Нет активной игры у пользователя c id %s",
                 player_id,
             )
             raise ActiveGameError(message="❌ У вас нет активной игры.")
-        if active_player:
+        if active_player and player_id != game.active_player_id:
+            self.logger.warning(
+                "Ходит не активный игрок c id %s, активный игрок с id - %s",
+                player_id,
+                game.active_player_id,
+            )
+            raise NotYourTurn(message="❌ Ходит Ваш противник")
+
         return game

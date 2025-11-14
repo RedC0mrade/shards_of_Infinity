@@ -13,7 +13,7 @@ from app.backend.core.models.play_card_instance import (
 from app.backend.core.models.player_state import PlayerState
 from app.backend.crud.base_service import BaseService
 from app.backend.schemas.play_state import CreatePlayStateSchema
-from app.utils.exceptions.exceptions import ActiveGameError
+from app.utils.exceptions.exceptions import ActiveGameError, NotYourTurn
 from app.utils.logger import get_logger
 
 if TYPE_CHECKING:
@@ -133,7 +133,11 @@ class PlayerStateServices(BaseService):
 
     #     return drawn_cards
 
-    async def get_player_state_with_game(self, player_id: int) -> PlayerState:
+    async def get_player_state_with_game(
+        self,
+        player_id: int,
+        active_player: bool = False,
+    ) -> PlayerState:
         """Получаем параметры игрока."""
         stmt = (
             select(PlayerState)
@@ -144,9 +148,17 @@ class PlayerStateServices(BaseService):
             )
         )
         result: Result = await self.session.execute(stmt)
-        player_state = result.scalar_one_or_none()
+        player_state: PlayerState = result.scalar_one_or_none()
         if not player_state:
             raise ActiveGameError(message="❌ У вас нет активной игры.")
+        if active_player and player_state.game.active_player_id != player_id:
+            self.logger.warning(
+                "active_player_id = %s, callback.from_user.id = %s",
+                player_state.game.active_player_id,
+                player_id,
+            )
+            raise NotYourTurn(message="❌ Ходит Ваш противник")
+        self.logger.info("id player_state игрока - %s", player_state.id)
         return player_state
 
     async def get_enemy_player_state_with_game(

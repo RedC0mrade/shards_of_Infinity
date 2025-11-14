@@ -179,11 +179,17 @@ async def enemy_game_parametrs(message: types.Message):
             text=(
                 f"Здоровье ❤️ = {enemy_play_state.health}\n"
                 f"Мастерство ⚡ = {enemy_play_state.mastery}\n"
+                f"Щит 🛡️ = {enemy_play_state.shield}\n"
+                f"Атака ⚔️ = {enemy_play_state.power}\n"
+                f"Разыграно карт фракции Ветвь 🌿 = {enemy_play_state.wilds_count}\n"
+                f"Разыграно карт фракции Порядок  ⚖️ = {enemy_play_state.order_count}\n"
+                f"Разыграно карт фракции Хомодеус 🤖 = {enemy_play_state.homodeus_count}\n"
+                f"Разыграно карт фракции Демириалм 👾= {enemy_play_state.demirealm_count}\n"
             )
         )
 
 
-@router.message(F.text == MoveKBText.END)
+@router.message(F.text == MoveKBText.ATTACK)
 async def attack_enemy_player(message: types.Message):
     """Атака противника."""
     # 1) Проверить является ли игрок активным
@@ -195,7 +201,6 @@ async def attack_enemy_player(message: types.Message):
     async with db_helper.session_context() as session:
         game_service = GameServices(session=session)
         game: Game = await game_service.get_active_game(
-            player_id=message.from_user.id
+            player_id=message.from_user.id,
+            
         )
-        if message.from_user.id != game.active_player_id:
-            await message.answer(text="❌ Ходит Ваш противник")
