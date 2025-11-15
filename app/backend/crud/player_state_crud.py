@@ -162,8 +162,7 @@ class PlayerStateServices(BaseService):
         return player_state
 
     async def get_enemy_player_state_with_game(
-        self,
-        player_id: int,
+        self, player_id: int, non_active_player: bool = False
     ) -> PlayerState:
         """Получаем параметры противника."""
         stmt = (
@@ -180,7 +179,17 @@ class PlayerStateServices(BaseService):
             )
         )
         result: Result = await self.session.execute(stmt)
-        player_state = result.scalar_one_or_none()
+        player_state: PlayerState = result.scalar_one_or_none()
         if not player_state:
             raise ActiveGameError(message="❌ У вас нет активной игры.")
+        if (
+            non_active_player
+            and player_state.player_id != player_state.game.non_active_player_id
+        ):
+            self.logger.warning(
+                "Игра c id %s, игрок с id %s пытается нанести урон игроку с id %s, который указан как активный",
+                player_id,
+                player_state.game_id,
+                player_state.player_id,
+            )
         return player_state

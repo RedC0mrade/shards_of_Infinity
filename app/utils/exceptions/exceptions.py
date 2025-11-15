@@ -46,3 +46,8 @@ class DoNotHaveCardInZone(GameError):
     """В данной зоне нет карт."""
 
     pass
+
+class Invulnerability(GameError):
+    """Невозможно атаковать."""
+
+    pass

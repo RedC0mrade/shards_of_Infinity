@@ -9,6 +9,7 @@ from app.backend.core.models.play_card_instance import (
     PlayerCardInstance,
 )
 from app.backend.core.models.player_state import PlayerState
+from app.backend.crud.actions.attack_move import AttackService
 from app.backend.crud.card_instance_crud import CardInstanceServices
 from app.backend.crud.games_crud import GameServices
 from app.backend.crud.hand_crud import HandServices
@@ -24,6 +25,7 @@ router = Router(name=__name__)
 
 media_dir = Path(__file__).parent.parent.parent.parent / "media"
 logger = get_logger(__name__)
+
 
 @router.message(F.text == MoveKBText.MARKET)
 async def handle_market(message: types.Message):
@@ -167,24 +169,24 @@ async def enemy_game_parametrs(message: types.Message):
     """Выводим состояние противника"""
 
     async with db_helper.session_context() as session:
-        play_state_service = PlayerStateServices(session=session)
+        player_state_service = PlayerStateServices(session=session)
 
-        enemy_play_state: PlayerState = (
-            await play_state_service.get_enemy_player_state_with_game(
+        enemy_player_state: PlayerState = (
+            await player_state_service.get_enemy_player_state_with_game(
                 player_id=message.from_user.id
             )
         )
 
         await message.answer(
             text=(
-                f"Здоровье ❤️ = {enemy_play_state.health}\n"
-                f"Мастерство ⚡ = {enemy_play_state.mastery}\n"
-                f"Щит 🛡️ = {enemy_play_state.shield}\n"
-                f"Атака ⚔️ = {enemy_play_state.power}\n"
-                f"Разыграно карт фракции Ветвь 🌿 = {enemy_play_state.wilds_count}\n"
-                f"Разыграно карт фракции Порядок  ⚖️ = {enemy_play_state.order_count}\n"
-                f"Разыграно карт фракции Хомодеус 🤖 = {enemy_play_state.homodeus_count}\n"
-                f"Разыграно карт фракции Демириалм 👾= {enemy_play_state.demirealm_count}\n"
+                f"Здоровье ❤️ = {enemy_player_state.health}\n"
+                f"Мастерство ⚡ = {enemy_player_state.mastery}\n"
+                f"Щит 🛡️ = {enemy_player_state.shield}\n"
+                f"Атака ⚔️ = {enemy_player_state.power}\n"
+                f"Разыграно карт фракции Ветвь 🌿 = {enemy_player_state.wilds_count}\n"
+                f"Разыграно карт фракции Порядок  ⚖️ = {enemy_player_state.order_count}\n"
+                f"Разыграно карт фракции Хомодеус 🤖 = {enemy_player_state.homodeus_count}\n"
+                f"Разыграно карт фракции Демириалм 👾= {enemy_player_state.demirealm_count}\n"
             )
         )
 
@@ -200,7 +202,34 @@ async def attack_enemy_player(message: types.Message):
     # 4.2) Сменить статус игры на финиш
     async with db_helper.session_context() as session:
         game_service = GameServices(session=session)
+        player_state_service = PlayerStateServices(session=session)
+        attack_service = AttackService(session=session)
+
         game: Game = await game_service.get_active_game(
             player_id=message.from_user.id,
-            
+            active_player=True,
+        )
+
+        enemy_state: PlayerState = (
+            await player_state_service.get_player_state_with_game(
+                player_id=game.non_active_player_id,
+            )
+        )
+        player_state: PlayerState = (
+            await player_state_service.get_player_state_with_game(
+                player_id=message.from_user.id,
+                active_player=True,
+            )
+        )
+        attack = player_state.power
+        health = enemy_state.health
+        attack_service = await attack_service.attack(
+            player_state=player_state,
+            enemy_state=enemy_state,
+        )
+        await message.answer(
+            text=f"Вы акатовали противника ⚔️{attack}\nОсталось здоровья 💚{enemy_state.health}"
+        )
+        await message.bot.send_message(
+            text=f"Ваш противник атаковал ⚔️{attack}\nОсталось здоровья 💚{enemy_state.health}"
         )

@@ -13,6 +13,7 @@ from app.backend.core.models.play_card_instance import (
 from app.backend.core.models.player_state import PlayerState
 from app.backend.crud.base_service import BaseService
 from app.backend.schemas.play_state import CreatePlayStateSchema
+from app.utils.exceptions.exceptions import Invulnerability
 from app.utils.logger import get_logger
 
 
@@ -185,3 +186,29 @@ class CardInstanceServices(BaseService):
                 card_instance.zone,
             )
         # await self.session.flush() наверное не нужно, проверить
+
+    async def zetta_check(self, player_state: PlayerState):
+        """Проверка на неуязвимость."""
+
+        stmt = (
+            select(PlayerCardInstance)
+            .join(
+                PlayerState,
+                PlayerState.id == PlayerCardInstance.player_state_id,
+            )
+            .join(Game, Game.id == PlayerCardInstance.game_id)
+            .join(Card, Card.id == PlayerCardInstance.card_id)
+        ).where(
+            Game.status == GameStatus.IN_PROGRESS,
+            PlayerState.player_id == player_state.player_id,
+            PlayerCardInstance.zone == CardZone.IN_PLAY,
+            Card.name == "Зетта, энкриптор",
+            Game.non_active_player_id == player_state.player_id,
+        )
+        result: Result = self.session.execute(stmt)
+        zetta = result.scalar_one_or_none()
+        self.logger.warning("Проверка zetta_check - %s", zetta)
+        if zetta:
+            raise Invulnerability(
+                message="⚔️ Невозможно атаковать противника, разыграна карта чемпиона Зетта, энкриптор"
+            )
