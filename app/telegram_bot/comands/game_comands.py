@@ -222,14 +222,20 @@ async def attack_enemy_player(message: types.Message):
             )
         )
         attack = player_state.power
-        health = enemy_state.health
         attack_service = await attack_service.attack(
             player_state=player_state,
             enemy_state=enemy_state,
         )
         await message.answer(
-            text=f"Вы акатовали противника ⚔️{attack}\nОсталось здоровья 💚{enemy_state.health}"
+            text=f"Вы нанесли противнику ⚔️{attack} урона\nОсталось здоровья 💚{enemy_state.health}"
         )
         await message.bot.send_message(
-            text=f"Ваш противник атаковал ⚔️{attack}\nОсталось здоровья 💚{enemy_state.health}"
+            text=f"Ваш противник нанес ⚔️{attack} урона\nОсталось здоровья 💚{enemy_state.health}",
+            chat_id=game.non_active_player_id,
         )
+
+
+@router.message(F.text == MoveKBText.END)
+async def end_move(message: types.Message):
+    """Конец хода."""
+    

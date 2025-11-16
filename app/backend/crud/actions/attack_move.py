@@ -36,4 +36,5 @@ class AttackService(BaseService):
         #     game_id=player_state.game_id,
         #     loser=enemy_state.player_id,
         # )
+        player_state.power = 0
         await self.session.commit()
