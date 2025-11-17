@@ -3,6 +3,8 @@ from sqlalchemy import Result, select
 from app.backend.crud.base_service import BaseService
 from app.backend.core.models.user import TelegramUser
 from app.backend.schemas.users import UserCreateSchema
+from app.utils.exceptions.exceptions import WrongUserId
+
 
 class UserServices(BaseService):
 
@@ -25,4 +27,19 @@ class UserServices(BaseService):
         await self.session.commit()
         await self.session.refresh(user)
         self.logger.info("Пользователь - %s", user.username)
+        return user
+
+    async def get_user_for_id(self, player_id: int) -> TelegramUser:
+        """Получаем пользователя по id."""
+
+        self.logger.info("Получаем пользователя по id - %s")
+        stmt = select(TelegramUser).where(TelegramUser.id == player_id)
+        result: Result = await self.session.execute(stmt)
+        user = result.scalar_one_or_none()
+        if not user:
+            self.logger.info(
+                "Пользователь с id - %s, не найден",
+                player_id,
+            )
+            raise WrongUserId(message="Ошибка пользователя")
         return user

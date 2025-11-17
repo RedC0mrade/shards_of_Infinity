@@ -5,6 +5,10 @@ class GameError(Exception):
         super().__init__(message)
         self.message = message
 
+class WrongUserId(GameError):
+    """Не правильно указан id."""
+    pass
+
 
 class GameTokenError(GameError):
     """Ошибка, ввeдeн не верный токен."""

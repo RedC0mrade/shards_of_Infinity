@@ -238,4 +238,4 @@ async def attack_enemy_player(message: types.Message):
 @router.message(F.text == MoveKBText.END)
 async def end_move(message: types.Message):
     """Конец хода."""
-    
+    async with db_helper.session_context() as session:
