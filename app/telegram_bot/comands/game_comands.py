@@ -10,6 +10,8 @@ from app.backend.core.models.play_card_instance import (
 )
 from app.backend.core.models.player_state import PlayerState
 from app.backend.crud.actions.attack_move import AttackService
+from app.backend.crud.actions.defeat_move import DefeatService
+from app.backend.crud.actions.game_move import MoveServices
 from app.backend.crud.card_instance_crud import CardInstanceServices
 from app.backend.crud.games_crud import GameServices
 from app.backend.crud.hand_crud import HandServices
@@ -33,12 +35,10 @@ async def handle_market(message: types.Message):
     async with db_helper.session_context() as session:
         game_service = GameServices(session=session)
         market_servise = MarketServices(session=session)
-        game: Game = await game_service.get_active_game(
-            player_id=message.from_user.id
-        )
+        game: Game = await game_service.get_active_game(player_id=message.from_user.id)
 
-        market_cards: list[PlayerCardInstance] = (
-            await market_servise.get_market_cards(game_id=game.id)
+        market_cards: list[PlayerCardInstance] = await market_servise.get_market_cards(
+            game_id=game.id
         )
 
         media = []  # переделать дублирующийся код
@@ -76,9 +76,7 @@ async def handle_hand(message: types.Message):
     async with db_helper.session_context() as session:
         game_service = GameServices(session=session)
         hand_services = HandServices(session=session)
-        game: Game = await game_service.get_active_game(
-            player_id=message.from_user.id
-        )
+        game: Game = await game_service.get_active_game(player_id=message.from_user.id)
 
         if message.text == MoveKBText.HAND:
             hand_cards: list[PlayerCardInstance] = (
@@ -134,10 +132,8 @@ async def handle_game_parametrs(message: types.Message):
     async with db_helper.session_context() as session:
         play_state_service = PlayerStateServices(session=session)
 
-        play_state: PlayerState = (
-            await play_state_service.get_player_state_with_game(
-                player_id=message.from_user.id
-            )
+        play_state: PlayerState = await play_state_service.get_player_state_with_game(
+            player_id=message.from_user.id
         )
 
         if play_state.game.active_player_id == message.from_user.id:
@@ -239,3 +235,19 @@ async def attack_enemy_player(message: types.Message):
 async def end_move(message: types.Message):
     """Конец хода."""
     async with db_helper.session_context() as session:
+        move_service = MoveServices(session=session)
+        player_state_service = PlayerStateServices(sesssion=session)
+
+        player_state: PlayerState = (
+            await player_state_service.get_player_state_with_game(
+                player_id=message.from_user.id
+            )
+        )
+        move_service.pre_make_move(
+            player_state=player_state,
+            game=player_state.game,
+        )
+        move_service.after_the_move(
+            player_state=player_state,
+            game=player_state.game,
+        )

@@ -148,7 +148,6 @@ class MoveServices(BaseService):
     async def after_the_move(
         self,
         player_state: PlayerState,
-        enemy_player_state: PlayerState,
         game: Game,
     ):
         """Действия после окончания хода"""
@@ -160,25 +159,35 @@ class MoveServices(BaseService):
 
         card_instance_service = CardInstanceServices(session=self.session)
         hand_service = HandServices(session=self.session)
-
+        self.logger.info(
+            "Активный позльзователь - %s, не активный - %s",
+            game.active_player,
+            game.non_active_player_id,
+            )
         game.active_player_id, game.non_active_player_id = (
             game.non_active_player_id,
             game.active_player_id,
         )  # не забыть что нужно закоммитить
 
         cards_intances = card_instance_service.get_player_cards_instance_in_play(
-            player_state
+            player_state=player_state,
         )
-
-        card_instance_service.change_zone_of_cards(
-            cards_intances
-        )  # не забыть что нужно закоммитить
+        if cards_intances:
+            card_instance_service.change_zone_of_cards(
+                card_instances=cards_intances,
+            )  # не забыть что нужно закоммитить
 
         hand: list[PlayerCardInstance] = hand_service.create_hand(
-            player_id=player_state.player_id
+            player_id=player_state.player_id,
         )
 
         player_state.shield = sum([card_instance.card.shield for card_instance in hand])
         self.logger.info("щит равен - %s", player_state.shield)
 
         self.session.commit()
+        
+        self.logger.info(
+            "Активный позльзователь - %s, не активный - %s",
+            game.active_player,
+            game.non_active_player_id,
+            )
