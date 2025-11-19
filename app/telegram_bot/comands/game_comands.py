@@ -187,6 +187,15 @@ async def enemy_game_parametrs(message: types.Message):
         )
 
 
+@router.message(F.text == MoveKBText.ATTACK_CHAMPION)
+async def attack_enemy_player(message: types.Message):
+    """Атака чемпиона противника."""
+    # 1) Получить всех чемпионов противника
+    # 2) Выдать список для атаки
+    async with db_helper.session_context() as session:
+        pass
+
+
 @router.message(F.text == MoveKBText.ATTACK)
 async def attack_enemy_player(message: types.Message):
     """Атака противника."""

@@ -192,4 +192,5 @@ class PlayerStateServices(BaseService):
                 player_state.game_id,
                 player_state.player_id,
             )
+            raise ActiveGameError(message="❌ Не возможна атака не в свой ход")
         return player_state
