@@ -184,7 +184,7 @@ class MoveServices(BaseService):
         player_state.shield = sum([card_instance.card.shield for card_instance in hand])
         self.logger.info("щит равен - %s", player_state.shield)
 
-        self.session.commit()
+        self.session.flush()
         
         self.logger.info(
             "Активный позльзователь - %s, не активный - %s",

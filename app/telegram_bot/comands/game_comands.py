@@ -35,10 +35,12 @@ async def handle_market(message: types.Message):
     async with db_helper.session_context() as session:
         game_service = GameServices(session=session)
         market_servise = MarketServices(session=session)
-        game: Game = await game_service.get_active_game(player_id=message.from_user.id)
+        game: Game = await game_service.get_active_game(
+            player_id=message.from_user.id
+        )
 
-        market_cards: list[PlayerCardInstance] = await market_servise.get_market_cards(
-            game_id=game.id
+        market_cards: list[PlayerCardInstance] = (
+            await market_servise.get_market_cards(game_id=game.id)
         )
 
         media = []  # переделать дублирующийся код
@@ -76,7 +78,9 @@ async def handle_hand(message: types.Message):
     async with db_helper.session_context() as session:
         game_service = GameServices(session=session)
         hand_services = HandServices(session=session)
-        game: Game = await game_service.get_active_game(player_id=message.from_user.id)
+        game: Game = await game_service.get_active_game(
+            player_id=message.from_user.id
+        )
 
         if message.text == MoveKBText.HAND:
             hand_cards: list[PlayerCardInstance] = (
@@ -132,8 +136,10 @@ async def handle_game_parametrs(message: types.Message):
     async with db_helper.session_context() as session:
         play_state_service = PlayerStateServices(session=session)
 
-        play_state: PlayerState = await play_state_service.get_player_state_with_game(
-            player_id=message.from_user.id
+        play_state: PlayerState = (
+            await play_state_service.get_player_state_with_game(
+                player_id=message.from_user.id
+            )
         )
 
         if play_state.game.active_player_id == message.from_user.id:
@@ -259,4 +265,12 @@ async def end_move(message: types.Message):
         move_service.after_the_move(
             player_state=player_state,
             game=player_state.game,
+        )
+        await session.commit()
+
+        await message.answer(text="Ваш ход окончен. Ходит Ваш противник")
+
+        await message.bot.send_message(
+            text="Ваш ход!",
+            chat_id=player_state.game.active_player_id,
         )
