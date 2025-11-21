@@ -199,7 +199,8 @@ async def attack_enemy_player(message: types.Message):
     # 1) Получить всех чемпионов противника
     # 2) Выдать список для атаки
     async with db_helper.session_context() as session:
-        pass
+        
+        champions_card = ...
 
 
 @router.message(F.text == MoveKBText.ATTACK)
@@ -238,10 +239,16 @@ async def attack_enemy_player(message: types.Message):
             enemy_state=enemy_state,
         )
         await message.answer(
-            text=f"Вы нанесли противнику ⚔️{attack} урона\nОсталось здоровья 💚{enemy_state.health}"
+            text=(
+                f"Вы нанесли противнику ⚔️{attack} урона\nОсталось "
+                f"здоровья 💚{enemy_state.health}"
+            )
         )
         await message.bot.send_message(
-            text=f"Ваш противник нанес ⚔️{attack} урона\nОсталось здоровья 💚{enemy_state.health}",
+            text=(
+                f"Ваш противник нанес ⚔️{attack} урона\nОсталось "
+                f"здоровья 💚{enemy_state.health}"
+            ),
             chat_id=game.non_active_player_id,
         )
 

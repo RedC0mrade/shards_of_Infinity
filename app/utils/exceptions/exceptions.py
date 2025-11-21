@@ -5,8 +5,10 @@ class GameError(Exception):
         super().__init__(message)
         self.message = message
 
+
 class WrongUserId(GameError):
     """Не правильно указан id."""
+
     pass
 
 
@@ -51,7 +53,14 @@ class DoNotHaveCardInZone(GameError):
 
     pass
 
+
 class Invulnerability(GameError):
     """Невозможно атаковать."""
+
+    pass
+
+
+class ChampionError(GameError):
+    """Проблема с чемпионом."""
 
     pass
