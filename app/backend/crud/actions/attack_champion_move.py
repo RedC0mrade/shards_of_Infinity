@@ -10,7 +10,7 @@ from app.backend.crud.base_service import BaseService
 from app.utils.exceptions.exceptions import ChampionError
 
 
-class AttackChampionService(BaseService):
+class ChampionService(BaseService):
 
     async def attack_the_champion(
         card_instance_id: int,
@@ -20,7 +20,7 @@ class AttackChampionService(BaseService):
         pass
 
     async def get_champions(self, player_id: int) -> list[PlayerCardInstance]:
-        """Получаем чемпионов в руке."""
+        """Получаем чемпионов противника в игре."""
 
         self.logger.info("Получаем чемпионов для игрока с id -%s", player_id)
 
@@ -33,11 +33,11 @@ class AttackChampionService(BaseService):
             .join(Card, Card.id == PlayerCardInstance.card_id)
             .join(Game, Game.id == PlayerCardInstance.game_id)
             .where(
-                PlayerState.player_id == player_id,
                 Game.status == GameStatus.IN_PROGRESS,
-                Game.non_active_player_id == player_id,
+                Game.active_player_id == player_id,
                 PlayerCardInstance.zone == CardZone.IN_PLAY,
                 Card.card_type == CardType.CHAMPION,
+                PlayerState.player_id == Game.non_active_player_id,
             )
         )
 

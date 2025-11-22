@@ -9,6 +9,7 @@ from app.backend.core.models.play_card_instance import (
     PlayerCardInstance,
 )
 from app.backend.core.models.player_state import PlayerState
+from app.backend.crud.actions.attack_champion_move import ChampionService
 from app.backend.crud.actions.attack_move import AttackService
 from app.backend.crud.actions.defeat_move import DefeatService
 from app.backend.crud.actions.game_move import MoveServices
@@ -200,7 +201,9 @@ async def attack_enemy_player(message: types.Message):
     # 2) Выдать список для атаки
     async with db_helper.session_context() as session:
         
-        champions_card = ...
+        champion_service = ChampionService(session=session)
+        champions_card = await champion_service.get_champions(
+            player_id=message.from_user.id)
 
 
 @router.message(F.text == MoveKBText.ATTACK)
