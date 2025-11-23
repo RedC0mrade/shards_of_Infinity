@@ -21,7 +21,7 @@ from app.backend.crud.player_state_crud import PlayerStateServices
 from app.backend.factories.database import db_helper
 
 from app.telegram_bot.keyboards.game_move_keyboard import MoveKBText
-from app.telegram_bot.keyboards.hand_keyboard import make_card_move_keyboard
+from app.telegram_bot.keyboards.hand_keyboard import CardCallback, MarketCallback, make_card_move_keyboard
 from app.utils.logger import get_logger
 
 router = Router(name=__name__)
@@ -60,7 +60,8 @@ async def handle_market(message: types.Message):
             await message.answer(
                 text="Выберите карту для покупки",
                 reply_markup=make_card_move_keyboard(
-                    instance_data=market_cards, market=True
+                    instance_data=market_cards,
+                    callback_cls = MarketCallback,
                 ),
             )
 
@@ -127,6 +128,7 @@ async def handle_hand(message: types.Message):
                 "Выберите карту:",
                 reply_markup=make_card_move_keyboard(
                     instance_data=hand_cards,
+                    callback_cls = CardCallback,
                 ),
             )
 
