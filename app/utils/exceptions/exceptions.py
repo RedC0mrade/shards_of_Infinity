@@ -64,3 +64,8 @@ class ChampionError(GameError):
     """Проблема с чемпионом."""
 
     pass
+
+class CardInstanceError(GameError):
+    """Проблема с состоянием карты."""
+
+    pass

@@ -85,7 +85,7 @@ wilds_data = [
         "champion_health": 0,
         "faction": "wilds",
         "card_type": "ally",
-        "icon": "card_6.jpeg",
+        "icon": "card_4.jpeg",
         "effects": [
             {
                 "action": "attack",
@@ -111,7 +111,7 @@ wilds_data = [
         "champion_health": 0,
         "faction": "wilds",
         "card_type": "ally",
-        "icon": "card_6.jpeg",
+        "icon": "card_4.jpeg",
         "effects": [
             {
                 "action": "attack",
@@ -137,7 +137,7 @@ wilds_data = [
         "champion_health": 0,
         "faction": "wilds",
         "card_type": "ally",
-        "icon": "card_6.jpeg",
+        "icon": "card_4.jpeg",
         "effects": [
             {
                 "action": "attack",

@@ -40,7 +40,7 @@ class HandServices(BaseService):
             )
         )
         result: Result = await self.session.execute(stmt)
-        hand = result.scalars().all()
+        hand = result.unique().scalars().all()
 
         for card in hand:
             self.logger.info(
@@ -64,7 +64,7 @@ class HandServices(BaseService):
         )
 
         result: Result = await self.session.execute(stmt)
-        cards = result.scalars().all()
+        cards = result.unique().scalars().all()
         for card in cards:
             self.logger.info(
                 "Картa id - %s, zone - %s",
@@ -96,7 +96,7 @@ class HandServices(BaseService):
             )
         )
         result: Result = await self.session.execute(stmt)
-        deck = result.scalars().all()
+        deck = result.unique().scalars().all()
 
         self.logger.info("Колода игрока %s", deck)
 
@@ -120,11 +120,11 @@ class HandServices(BaseService):
                 )
             )
             result: Result = await self.session.execute(stmt)
-            discards: list[PlayerCardInstance] = result.scalars().all()
+            discards: list[PlayerCardInstance] = result.unique().scalars().all()
 
             self.logger.info("Карты в бросе %s", discards)
 
-            hand_cards = deck
+            hand_cards = deck.copy()
 
             while len(hand_cards) < hand_count:
 

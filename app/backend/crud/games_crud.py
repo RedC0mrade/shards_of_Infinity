@@ -210,7 +210,7 @@ class GameServices(BaseService):
             ),
         )
         result: Result = await self.session.execute(stmt)
-        game: Game = result.scalar_one_or_none()
+        game: Game = result.unique().scalar_one_or_none()
         if not game:
             self.logger.warning(
                 "Нет активной игры у пользователя c id %s",

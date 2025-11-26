@@ -31,7 +31,7 @@ class MarketServices(BaseService):
         )
 
         result: Result = await self.session.execute(stmt)
-        market_cards = result.scalars().all()
+        market_cards = result.unique().scalars().all()
 
         if not market_cards:
             self.logger.warning(

@@ -123,27 +123,25 @@ class MoveServices(BaseService):
             session=self.session,
             player_state=player_state,
         )
-        await play_state_executor.faction_count(card=card)  # Считаем разыранные карты
+        await play_state_executor.faction_count(
+            card=card
+        )  # Считаем разыранные карты
         self.logger.info(
             "faction_count отработала. Переходим к функции change_card_zone"
         )
         card_service = CardServices(session=self.session)
 
         start_zone = CardZone.MARKET if mercenary else CardZone.HAND
-        answer = await card_service.change_card_zone(
+        await card_service.change_card_zone(
             card_id=card.id,
             game_id=game.id,
             start_zone=start_zone,
             end_zone=CardZone.IN_PLAY,
         )
-        if not answer[0]:
-            self.logger.debug("Ошибка - текст ошибки: %s", answer[1])
-            return answer[1]
 
         self.logger.info("Функция change_card_zone отработала. делаем commit")
 
         await self.session.commit()
-        return answer
 
     async def after_the_move(
         self,
@@ -163,14 +161,16 @@ class MoveServices(BaseService):
             "Активный позльзователь - %s, не активный - %s",
             game.active_player,
             game.non_active_player_id,
-            )
+        )
         game.active_player_id, game.non_active_player_id = (
             game.non_active_player_id,
             game.active_player_id,
         )  # не забыть что нужно закоммитить
 
-        cards_intances = card_instance_service.get_player_cards_instance_in_play(
-            player_state=player_state,
+        cards_intances = (
+            card_instance_service.get_player_cards_instance_in_play(
+                player_state=player_state,
+            )
         )
         if cards_intances:
             card_instance_service.change_zone_of_cards(
@@ -181,13 +181,15 @@ class MoveServices(BaseService):
             player_id=player_state.player_id,
         )
 
-        player_state.shield = sum([card_instance.card.shield for card_instance in hand])
+        player_state.shield = sum(
+            [card_instance.card.shield for card_instance in hand]
+        )
         self.logger.info("щит равен - %s", player_state.shield)
 
         self.session.flush()
-        
+
         self.logger.info(
             "Активный позльзователь - %s, не активный - %s",
             game.active_player,
             game.non_active_player_id,
-            )
+        )

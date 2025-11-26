@@ -10,8 +10,7 @@ from app.backend.core.models.play_card_instance import (
 from app.backend.core.models.player_state import PlayerState
 from app.backend.crud.base_service import BaseService
 from app.backend.schemas.card import CreateCardSchema
-from app.utils.logger import get_logger
-
+from app.utils.exceptions.exceptions import CardInstanceError
 
 class CardServices(BaseService):
 
@@ -92,7 +91,7 @@ class CardServices(BaseService):
         )
 
         result: Result = await self.session.execute(stmt)
-        instance: PlayerCardInstance = result.scalar_one_or_none()
+        instance: PlayerCardInstance = result.unique().scalar_one_or_none()
 
         if not instance:
             self.logger.error(
@@ -100,11 +99,11 @@ class CardServices(BaseService):
                 card_id,
                 game_id,
             )
-            return (False, "Не правильно выбрана карта")
+            raise CardInstanceError(message = "Не правильно выбрана карта")
 
         if instance.zone != start_zone:
             self.logger.error("Не правильная зона - %s", instance.zone)
-            return (False, "Карта уже была разыграна")
+            raise CardInstanceError(message = "Карта уже была разыграна")
 
         instance.zone = end_zone
         instance.position_on_market = None
@@ -114,4 +113,3 @@ class CardServices(BaseService):
             instance.position_on_market,
         )
         await self.session.commit()
-        return (True, "")

@@ -103,7 +103,7 @@ class CardInstanceServices(BaseService):
             PlayerCardInstance.zone == card_zone,
         )
         result: Result = await self.session.execute(stmt)
-        card_instance: PlayerCardInstance = result.scalar_one_or_none()
+        card_instance: PlayerCardInstance = result.unique().scalar_one_or_none()
 
         if not card_instance:
             self.logger.warning(

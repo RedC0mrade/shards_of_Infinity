@@ -1,3 +1,4 @@
+from pathlib import Path
 from aiogram import Router, F
 from aiogram.types import CallbackQuery, FSInputFile
 
@@ -21,6 +22,7 @@ from app.utils.logger import get_logger
 
 router = Router(name=__name__)
 logger = get_logger(__name__)
+media_dir = Path(__file__).parent.parent.parent.parent / "media"
 
 
 @router.callback_query(MarketCallback.filter())
@@ -66,7 +68,7 @@ async def handle_buy_card(
             )
 
 
-        photo = FSInputFile(card_instance.card.icon)
+        photo = FSInputFile(media_dir / Path(card_instance.card.icon))
 
         # Обрабатываем случай, если карта наёмник
         if card_instance.card.card_type == CardType.MERCENARY:
@@ -82,22 +84,19 @@ async def handle_buy_card(
             )
             return
 
-        answer = await buy_service.buy_card_from_market(
+        await buy_service.buy_card_from_market(
             card_instance=card_instance,
             card=card_instance.card,
             player_state=player_state,
             game=player_state.game,
             player_id=callback.from_user.id,
         )
-        if answer[0]:
-            await callback.message.answer_photo(
-                photo=photo,
-                caption=f"Вы купили карту {card_instance.card.name}",
-            )
-            await callback.bot.send_photo(
-                photo=photo,
-                caption=f"Ваш противник купил карту: {card_instance.card.name}",
-                chat_id=player_state.game.non_active_player_id,
-            )
-        else:
-            await callback.message.answer(text=answer[1])
+        await callback.message.answer_photo(
+            photo=photo,
+            caption=f"Вы купили карту {card_instance.card.name}",
+        )
+        await callback.bot.send_photo(
+            photo=photo,
+            caption=f"Ваш противник купил карту: {card_instance.card.name}",
+            chat_id=player_state.game.non_active_player_id,
+        )

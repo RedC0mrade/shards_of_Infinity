@@ -85,7 +85,7 @@ class BuyServices(BaseService):
             PlayerCardInstance.zone == CardZone.COMMON_DECK,
         )
         result: Result = await self.session.execute(stmt)
-        available_cards_instance_id = result.scalars().all()
+        available_cards_instance_id = result.unique().scalars().all()
         self.logger.info(
             "Получаем id состояния карты в общей колоде, всего карт - %s",
             len(available_cards_instance_id),
