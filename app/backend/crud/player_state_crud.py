@@ -158,7 +158,11 @@ class PlayerStateServices(BaseService):
                 player_id,
             )
             raise NotYourTurn(message="❌ Ходит Ваш противник")
-        self.logger.info("id player_state игрока - %s", player_state.id)
+        self.logger.warning(
+            "id player_state игрока - %s, id игры - %s",
+            player_state.id,
+            player_state.game.id,
+        )
         return player_state
 
     async def get_enemy_player_state_with_game(

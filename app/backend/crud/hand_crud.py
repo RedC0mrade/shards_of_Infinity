@@ -52,7 +52,7 @@ class HandServices(BaseService):
             raise DoNotHaveCardInZone(message="❌ Нет карт.")
         return hand
 
-    async def get_cards_in_play(
+    async def get_cards_in_play(  # Проверить на дублирование с CardInstanceServices.get_player_cards_instance_in_play
         self,
         card_zone: CardZone,
         game_id: int,

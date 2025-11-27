@@ -141,7 +141,7 @@ class CardInstanceServices(BaseService):
         return card_instanse
 
     async def get_player_cards_instance_in_play(
-        self, player_state: PlayerState, card_zone
+        self, player_state: PlayerState
     ) -> list[PlayerCardInstance]:
         """Получаем все карты игрока из руки и со стола, исключая чемпионов."""
 
@@ -160,7 +160,9 @@ class CardInstanceServices(BaseService):
         )
 
         result: Result = await self.session.execute(stmt)
-        card_instances: list[PlayerCardInstance] = result.scalars().all()
+        card_instances: list[PlayerCardInstance] = (
+            result.unique().scalars().all()
+        )
         for card_instance in card_instances:
             self.logger.info(
                 "🃏 Карта '%s' (тип: %s, фракция: %s) находится в зоне %s.",
@@ -185,7 +187,7 @@ class CardInstanceServices(BaseService):
                 card_instance.card.faction,
                 card_instance.zone,
             )
-        # await self.session.flush() наверное не нужно, проверить
+        await self.session.flush() # наверное не нужно, проверить
 
     async def zetta_check(self, player_state: PlayerState):
         """Проверка на неуязвимость."""

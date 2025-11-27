@@ -42,6 +42,10 @@ class MoveServices(BaseService):
             player_state.order_count,
             player_state.demirealm_count,
         )
+        self.logger.warning(
+            "Game id - %s",
+            game.id,
+        )
         player_state.power = 0
         player_state.shield = 0
         player_state.crystals = 0
@@ -76,7 +80,7 @@ class MoveServices(BaseService):
             0,
         )
         self.logger.info(
-            "Состояние player_state на конец функции, power - %s,\n shild - %s,\n crystals - %s,\n wilds - %s,\n homodeus - %s,\n order - %s,\n demirealm - %s",
+            "Состояние player_state на конец функции, \npower - %s,\n shild - %s,\n crystals - %s,\n wilds - %s,\n homodeus - %s,\n order - %s,\n demirealm - %s",
             player_state.power,
             player_state.shield,
             player_state.crystals,
@@ -159,8 +163,12 @@ class MoveServices(BaseService):
         hand_service = HandServices(session=self.session)
         self.logger.info(
             "Активный позльзователь - %s, не активный - %s",
-            game.active_player,
+            game.active_player_id,
             game.non_active_player_id,
+        )
+        self.logger.warning(
+            "Game id в after_the_move - %s",
+            game.id,
         )
         game.active_player_id, game.non_active_player_id = (
             game.non_active_player_id,
@@ -168,16 +176,19 @@ class MoveServices(BaseService):
         )  # не забыть что нужно закоммитить
 
         cards_intances = (
-            card_instance_service.get_player_cards_instance_in_play(
+            await card_instance_service.get_player_cards_instance_in_play(
                 player_state=player_state,
             )
         )
         if cards_intances:
-            card_instance_service.change_zone_of_cards(
+            self.logger.info("Разыгранные карты:")
+            for instace in cards_intances:
+                self.logger.info("  - %s", instace.card.name)
+            await card_instance_service.change_zone_of_cards(
                 card_instances=cards_intances,
             )  # не забыть что нужно закоммитить
 
-        hand: list[PlayerCardInstance] = hand_service.create_hand(
+        hand: list[PlayerCardInstance] = await hand_service.create_hand(
             player_id=player_state.player_id,
         )
 
@@ -186,10 +197,10 @@ class MoveServices(BaseService):
         )
         self.logger.info("щит равен - %s", player_state.shield)
 
-        self.session.flush()
+        await self.session.flush()
 
         self.logger.info(
             "Активный позльзователь - %s, не активный - %s",
-            game.active_player,
+            game.active_player_id,
             game.non_active_player_id,
         )

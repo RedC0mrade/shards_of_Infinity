@@ -263,26 +263,37 @@ async def end_move(message: types.Message):
     """Конец хода."""
     async with db_helper.session_context() as session:
         move_service = MoveServices(session=session)
-        player_state_service = PlayerStateServices(sesssion=session)
+        player_state_service = PlayerStateServices(session=session)
 
         player_state: PlayerState = (
             await player_state_service.get_player_state_with_game(
                 player_id=message.from_user.id
             )
         )
-        move_service.pre_make_move(
+        logger.critical(
+            "id player_state игрока - %s, id игры - %s",
+            player_state.id,
+            player_state.game.id,
+        )
+        await move_service.pre_make_move(
             player_state=player_state,
             game=player_state.game,
         )
-        move_service.after_the_move(
+        logger.critical(
+            "id player_state игрока - %s, id игры - %s перед after_the_move",
+            player_state.id,
+            player_state.game.id,
+        )
+        await move_service.after_the_move(
             player_state=player_state,
             game=player_state.game,
         )
-        await session.commit()
-
-        await message.answer(text="Ваш ход окончен. Ходит Ваш противник")
+        # await session.commit()
+        
+        await message.answer(text="Ваш ход окончен. Ходит Ваш противник") # Прикрепить клавиатуру не активного игорька
 
         await message.bot.send_message(
             text="Ваш ход!",
             chat_id=player_state.game.active_player_id,
         )
+        await session.commit()
