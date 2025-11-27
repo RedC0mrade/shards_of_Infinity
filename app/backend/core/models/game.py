@@ -37,7 +37,7 @@ class Game(Base):
     )
 
     status: Mapped[GameStatus] = mapped_column(
-        Enum(GameStatus), default=GameStatus.WAITING
+        Enum(GameStatus, native_enum=False, validate_strings=True,), default=GameStatus.WAITING
     )
 
     player1_id: Mapped[int] = mapped_column(ForeignKey("users.id"))

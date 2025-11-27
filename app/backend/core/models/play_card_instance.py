@@ -65,7 +65,13 @@ class PlayerCardInstance(Base):
     )
     card_id: Mapped[int] = mapped_column(ForeignKey("cards.id"))
 
-    zone: Mapped[CardZone] = mapped_column(Enum(CardZone))
+    zone: Mapped[CardZone] = mapped_column(
+        Enum(
+            CardZone,
+            native_enum=False,
+            validate_strings=True,
+        )
+    )
     position_on_market: Mapped[int | None] = mapped_column(
         Integer,
         default=None,

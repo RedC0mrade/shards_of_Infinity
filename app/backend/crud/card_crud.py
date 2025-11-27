@@ -72,7 +72,7 @@ class CardServices(BaseService):
 
         return card
 
-    async def change_card_zone(
+    async def change_card_zone( # Переместить в PlayerCardInstance
         self,
         card_id: int,
         game_id: int,

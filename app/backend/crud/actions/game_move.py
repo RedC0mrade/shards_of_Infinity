@@ -33,7 +33,7 @@ class MoveServices(BaseService):
         # 1) Обнулить все показатели. Атаки, защиты, щита
         # 2) Обновить обновить счетчик фракций
         self.logger.info(
-            "Состояние player_state на начало функции, power - %s,\n shild - %s,\n crystals - %s,\n wilds - %s,\n homodeus - %s,\n order - %s,\n demirealm - %s",
+            "Состояние player_state на начало функции,\n ---power - %s,\n ---shild - %s,\n ---crystals - %s,\n ---wilds - %s,\n ---homodeus - %s,\n ---order - %s,\n ---demirealm - %s",
             player_state.power,
             player_state.shield,
             player_state.crystals,
@@ -80,7 +80,7 @@ class MoveServices(BaseService):
             0,
         )
         self.logger.info(
-            "Состояние player_state на конец функции, \npower - %s,\n shild - %s,\n crystals - %s,\n wilds - %s,\n homodeus - %s,\n order - %s,\n demirealm - %s",
+            "Состояние player_state на конец функции,\n +++power - %s,\n +++shild - %s,\n +++crystals - %s,\n +++wilds - %s,\n +++homodeus - %s,\n +++order - %s,\n +++demirealm - %s",
             player_state.power,
             player_state.shield,
             player_state.crystals,
@@ -179,6 +179,10 @@ class MoveServices(BaseService):
             await card_instance_service.get_player_cards_instance_in_play(
                 player_state=player_state,
             )
+        )
+        self.logger.info(
+            "отработала card_instance_service.get_player_cards_instance_in_play, результат - %s",
+            cards_intances,
         )
         if cards_intances:
             self.logger.info("Разыгранные карты:")

@@ -117,7 +117,7 @@ class Card(Base):
         default=0,
     )
     faction: Mapped[CardFaction] = mapped_column(
-        Enum(CardFaction),
+        Enum(CardFaction, native_enum=False, validate_strings=True,),
         nullable=False,
     )
     card_type: Mapped[CardType] = mapped_column(
@@ -126,7 +126,7 @@ class Card(Base):
     )
     icon: Mapped[str] = mapped_column(String(100), nullable=False)
     start_card: Mapped[StartCardPlayer] = mapped_column(
-        Enum(StartCardPlayer),
+        Enum(StartCardPlayer, native_enum=False, validate_strings=True,),
         nullable=False,
         default=StartCardPlayer.OTHER,
     )
@@ -149,13 +149,13 @@ class CardEffect(Base):
         )
     )
     card: Mapped[Card] = relationship(back_populates="effects")
-    action: Mapped["CardAction"] = mapped_column(Enum(CardAction))
+    action: Mapped["CardAction"] = mapped_column(Enum(CardAction, native_enum=False, validate_strings=True,))
     value: Mapped[int] = mapped_column(
         Integer,
         nullable=True,
     )
     effect_type: Mapped[EffectType] = mapped_column(
-        Enum(EffectType),
+        Enum(EffectType, native_enum=False, validate_strings=True,),
         nullable=False,
     )
     condition_type: Mapped[ConditionType | None] = mapped_column(
