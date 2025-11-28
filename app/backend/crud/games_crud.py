@@ -46,9 +46,8 @@ class GameServices(BaseService):
         self.logger.info("Игра %s существует", game)
         if not game:
             self.logger.critical("Game not found")
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail=f"Invalid invitation link.",
+            raise GameTokenError(
+                message="Не правильный код.",
             )
         game.player2_id = game_data.player2_id
         game.status = GameStatus.IN_PROGRESS

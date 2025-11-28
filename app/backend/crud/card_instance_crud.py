@@ -187,7 +187,7 @@ class CardInstanceServices(BaseService):
                 card_instance.card.faction,
                 card_instance.zone,
             )
-        await self.session.flush() # наверное не нужно, проверить
+        await self.session.flush()  # наверное не нужно, проверить
 
     async def zetta_check(self, player_state: PlayerState):
         """Проверка на неуязвимость."""

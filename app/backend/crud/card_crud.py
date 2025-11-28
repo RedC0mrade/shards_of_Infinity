@@ -12,6 +12,7 @@ from app.backend.crud.base_service import BaseService
 from app.backend.schemas.card import CreateCardSchema
 from app.utils.exceptions.exceptions import CardInstanceError
 
+
 class CardServices(BaseService):
 
     async def get_all_cards_in_the_deck(self) -> list[Card]:
@@ -72,7 +73,7 @@ class CardServices(BaseService):
 
         return card
 
-    async def change_card_zone( # Переместить в PlayerCardInstance
+    async def change_card_zone(  # Переместить в PlayerCardInstance
         self,
         card_id: int,
         game_id: int,
@@ -99,11 +100,11 @@ class CardServices(BaseService):
                 card_id,
                 game_id,
             )
-            raise CardInstanceError(message = "Не правильно выбрана карта")
+            raise CardInstanceError(message="Не правильно выбрана карта")
 
         if instance.zone != start_zone:
             self.logger.error("Не правильная зона - %s", instance.zone)
-            raise CardInstanceError(message = "Карта уже была разыграна")
+            raise CardInstanceError(message="Карта уже была разыграна")
 
         instance.zone = end_zone
         instance.position_on_market = None
