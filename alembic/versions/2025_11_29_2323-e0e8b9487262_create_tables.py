@@ -1,8 +1,8 @@
 """Create tables
 
-Revision ID: 9a28550035f8
+Revision ID: e0e8b9487262
 Revises:
-Create Date: 2025-11-06 19:06:58.559954
+Create Date: 2025-11-29 23:23:05.336946
 
 """
 
@@ -13,7 +13,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = "9a28550035f8"
+revision: str = "e0e8b9487262"
 down_revision: Union[str, Sequence[str], None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -38,12 +38,20 @@ def upgrade() -> None:
                 "ORDER",
                 "WILDS",
                 name="cardfaction",
+                native_enum=False,
             ),
             nullable=False,
         ),
         sa.Column(
             "card_type",
-            sa.Enum("ALLY", "CHAMPION", "MERCENARY", "RELIC", name="cardtype"),
+            sa.Enum(
+                "ALLY",
+                "CHAMPION",
+                "MERCENARY",
+                "RELIC",
+                name="cardtype",
+                native_enum=False,
+            ),
             nullable=False,
         ),
         sa.Column("icon", sa.String(length=100), nullable=False),
@@ -54,6 +62,7 @@ def upgrade() -> None:
                 "SECOND_PLAYER",
                 "OTHER",
                 name="startcardplayer",
+                native_enum=False,
             ),
             nullable=False,
         ),
@@ -112,13 +121,16 @@ def upgrade() -> None:
                 "TAKE_DEMIREALM_CARD",
                 "TAKE_MERCENARY_FROM_RESET",
                 name="cardaction",
+                native_enum=False,
             ),
             nullable=False,
         ),
         sa.Column("value", sa.Integer(), nullable=True),
         sa.Column(
             "effect_type",
-            sa.Enum("BASE", "CONDITIONAL", name="effecttype"),
+            sa.Enum(
+                "BASE", "CONDITIONAL", name="effecttype", native_enum=False
+            ),
             nullable=False,
         ),
         sa.Column(
@@ -162,7 +174,13 @@ def upgrade() -> None:
         sa.Column("created_at", sa.DateTime(), nullable=False),
         sa.Column(
             "status",
-            sa.Enum("WAITING", "IN_PROGRESS", "FINISHED", name="gamestatus"),
+            sa.Enum(
+                "WAITING",
+                "IN_PROGRESS",
+                "FINISHED",
+                name="gamestatus",
+                native_enum=False,
+            ),
             nullable=False,
         ),
         sa.Column("player1_id", sa.BigInteger(), nullable=False),
@@ -277,6 +295,7 @@ def upgrade() -> None:
                 "MARKET",
                 "PLAYER_DECK",
                 name="cardzone",
+                native_enum=False,
             ),
             nullable=False,
         ),
