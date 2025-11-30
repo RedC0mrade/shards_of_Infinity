@@ -36,7 +36,7 @@ class ChampionService(BaseService):
                 Game.status == GameStatus.IN_PROGRESS,
                 Game.active_player_id == player_id,
                 PlayerCardInstance.zone == CardZone.IN_PLAY,
-                Card.card_type == CardType.CHAMPION,
+                Card.card_type == CardType.CHAMPION.name,
                 PlayerState.player_id == Game.non_active_player_id,
             )
         )

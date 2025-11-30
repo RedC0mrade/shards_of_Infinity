@@ -121,7 +121,7 @@ class Card(Base):
         nullable=False,
     )
     card_type: Mapped[CardType] = mapped_column(
-        Enum(CardType, native_enum=False, validate_strings=True),
+        Enum(CardType),
         nullable=False,
     )
     icon: Mapped[str] = mapped_column(String(100), nullable=False)
