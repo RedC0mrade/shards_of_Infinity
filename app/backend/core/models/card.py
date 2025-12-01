@@ -11,7 +11,7 @@ from sqlalchemy import (
     Enum,
 )
 
-from .base_model import Base
+from .base_model import Base, CustomEnum
 
 
 class CardFaction(str, enum.Enum):
@@ -53,6 +53,7 @@ class CardAction(str, enum.Enum):
     TAKE_CHAMPION_FROM_RESET = "take_champion_from_reset"
     TAKE_DEMIREALM_CARD = "take_demirealm_card"
     TAKE_MERCENARY_FROM_RESET = "take_mercenary_from_reset"
+
 
 class EffectType(str, enum.Enum):
     BASE = "base"
@@ -117,16 +118,16 @@ class Card(Base):
         default=0,
     )
     faction: Mapped[CardFaction] = mapped_column(
-        Enum(CardFaction, native_enum=False, validate_strings=True,),
+        CustomEnum(CardFaction, name="cardfaction"),
         nullable=False,
     )
     card_type: Mapped[CardType] = mapped_column(
-        Enum(CardType),
+        CustomEnum(CardType, name="cardtype"),
         nullable=False,
     )
     icon: Mapped[str] = mapped_column(String(100), nullable=False)
     start_card: Mapped[StartCardPlayer] = mapped_column(
-        Enum(StartCardPlayer, native_enum=False, validate_strings=True,),
+        CustomEnum(StartCardPlayer, name="startcardplayer"),
         nullable=False,
         default=StartCardPlayer.OTHER,
     )
@@ -149,17 +150,19 @@ class CardEffect(Base):
         )
     )
     card: Mapped[Card] = relationship(back_populates="effects")
-    action: Mapped["CardAction"] = mapped_column(Enum(CardAction, native_enum=False, validate_strings=True,))
+    action: Mapped["CardAction"] = mapped_column(
+        CustomEnum(CardAction, name="cardaction")
+    )
     value: Mapped[int] = mapped_column(
         Integer,
         nullable=True,
     )
     effect_type: Mapped[EffectType] = mapped_column(
-        Enum(EffectType, native_enum=False, validate_strings=True,),
+        CustomEnum(EffectType, name="effecttype"),
         nullable=False,
     )
     condition_type: Mapped[ConditionType | None] = mapped_column(
-        Enum(ConditionType),
+        CustomEnum(ConditionType, name="conditiontype"),
         nullable=True,
     )
     condition_value: Mapped[int | None] = mapped_column(

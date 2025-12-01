@@ -1,8 +1,8 @@
 """Create tables
 
-Revision ID: b60d6c41579c
+Revision ID: 10e962f39c02
 Revises:
-Create Date: 2025-11-30 22:59:11.377273
+Create Date: 2025-12-01 21:11:01.158160
 
 """
 
@@ -13,7 +13,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = "b60d6c41579c"
+revision: str = "10e962f39c02"
 down_revision: Union[str, Sequence[str], None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -32,12 +32,11 @@ def upgrade() -> None:
         sa.Column(
             "faction",
             sa.Enum(
-                "test",
-                "DEMIREALM",
-                "HOMODEUS",
-                "NEUTRAL",
-                "ORDER",
-                "WILDS",
+                "demirealm",
+                "homodeus",
+                "neutral",
+                "order",
+                "wilds",
                 name="cardfaction",
                 native_enum=False,
             ),
@@ -45,14 +44,7 @@ def upgrade() -> None:
         ),
         sa.Column(
             "card_type",
-            sa.Enum(
-                "test",
-                "ALLY",
-                "CHAMPION",
-                "MERCENARY",
-                "RELIC",
-                name="cardtype",
-            ),
+            sa.Enum("ALLY", "CHAMPION", "MERCENARY", "RELIC", name="cardtype"),
             nullable=False,
         ),
         sa.Column("icon", sa.String(length=100), nullable=False),

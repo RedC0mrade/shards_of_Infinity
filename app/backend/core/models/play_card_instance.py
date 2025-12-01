@@ -13,7 +13,7 @@ from sqlalchemy import (
     text,
 )
 
-from .base_model import Base
+from .base_model import Base, CustomEnum
 import enum
 
 if TYPE_CHECKING:
@@ -66,11 +66,7 @@ class PlayerCardInstance(Base):
     card_id: Mapped[int] = mapped_column(ForeignKey("cards.id"))
 
     zone: Mapped[CardZone] = mapped_column(
-        Enum(
-            CardZone,
-            native_enum=False,
-            validate_strings=True,
-        )
+        CustomEnum(CardZone, name="cardzone")
     )
     position_on_market: Mapped[int | None] = mapped_column(
         Integer,

@@ -22,13 +22,13 @@ class PlayerState(Base):
 
     health: Mapped[int] = mapped_column(
         Integer, default=50
-    )  # Стартовое здоровье
+    ) 
     mastery: Mapped[int] = mapped_column(
         Integer, default=0
-    )  # Уровень мастерства
+    ) 
     crystals: Mapped[int] = mapped_column(
         Integer, default=0
-    )  # Кристаллы (ресурс)
+    )  
     power: Mapped[int] = mapped_column(Integer, default=0)  # Урон (боевые очки)
     shield: Mapped[int] = mapped_column(
         Integer,
