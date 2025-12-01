@@ -2,10 +2,9 @@ from __future__ import annotations
 import enum
 
 from datetime import datetime
-from typing import TYPE_CHECKING, List, Optional
+from typing import TYPE_CHECKING, List
 from sqlalchemy import (
     DateTime,
-    Enum,
     String,
     func,
     ForeignKey,

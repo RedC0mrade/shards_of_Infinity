@@ -1,8 +1,8 @@
 """Create tables
 
-Revision ID: 10e962f39c02
+Revision ID: e964552d49a5
 Revises:
-Create Date: 2025-12-01 21:11:01.158160
+Create Date: 2025-12-01 21:29:54.952536
 
 """
 
@@ -13,7 +13,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = "10e962f39c02"
+revision: str = "e964552d49a5"
 down_revision: Union[str, Sequence[str], None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -44,16 +44,23 @@ def upgrade() -> None:
         ),
         sa.Column(
             "card_type",
-            sa.Enum("ALLY", "CHAMPION", "MERCENARY", "RELIC", name="cardtype"),
+            sa.Enum(
+                "ally",
+                "champion",
+                "mercenary",
+                "relic",
+                name="cardtype",
+                native_enum=False,
+            ),
             nullable=False,
         ),
         sa.Column("icon", sa.String(length=100), nullable=False),
         sa.Column(
             "start_card",
             sa.Enum(
-                "FIRST_PLAYER",
-                "SECOND_PLAYER",
-                "OTHER",
+                "first_player",
+                "second_player",
+                "other",
                 name="startcardplayer",
                 native_enum=False,
             ),
@@ -90,29 +97,29 @@ def upgrade() -> None:
         sa.Column(
             "action",
             sa.Enum(
-                "ALL_FRACTIONS",
-                "ATTACK",
-                "CHAMPION_DESTROY",
-                "CHOOSE_CARD_FROM_MARKET",
-                "COPY_ALL_EFFECTS_HOMODEUS",
-                "COPY_EFFECT",
-                "CRYSTAL",
-                "CARD_DESTROY",
-                "DOUBLE_CHOICE",
-                "DOUBLE_DAMAGE",
-                "ENEMY_LOSE_MIGHT",
-                "HEALING",
-                "INVULNERABILITY_ALL",
-                "INVULNERABILITY_CARD",
-                "MIGHT",
-                "NONE",
-                "PLAY_HOMODEUS_CHAMPION_FROM_MARKET",
-                "SPECIAL",
-                "TAKE_CARD",
-                "TAKE_CARD_FROM_MARKET",
-                "TAKE_CHAMPION_FROM_RESET",
-                "TAKE_DEMIREALM_CARD",
-                "TAKE_MERCENARY_FROM_RESET",
+                "all_fractions",
+                "attack",
+                "champion_destroy",
+                "choose_card_from_market",
+                "copy_all_effects_homodeus",
+                "copy_effect",
+                "crystal",
+                "card_destroy",
+                "double_choice",
+                "double_damage",
+                "enemy_lose_might",
+                "healing",
+                "invulnerability_all",
+                "invulnerability_card",
+                "might",
+                "none",
+                "play_homodeus_champion_from_market",
+                "special",
+                "take_card",
+                "take_card_from_market",
+                "take_champion_from_reset",
+                "take_demirealm_card",
+                "take_mercenary_from_reset",
                 name="cardaction",
                 native_enum=False,
             ),
@@ -122,33 +129,34 @@ def upgrade() -> None:
         sa.Column(
             "effect_type",
             sa.Enum(
-                "BASE", "CONDITIONAL", name="effecttype", native_enum=False
+                "base", "conditional", name="effecttype", native_enum=False
             ),
             nullable=False,
         ),
         sa.Column(
             "condition_type",
             sa.Enum(
-                "CARD_FROM_HAND",
-                "CARD_ON_TABLE",
-                "CHAMPION_ON_TABLE",
-                "DEMIREALM_IN_RESET",
-                "DEMIREALM_ON_TABLE",
-                "ENEMY_HAS_CHAMPION",
-                "GENERAL_DRACONARIUS",
-                "HOMODEUS_ON_TABLE",
-                "MASTERY",
-                "NONE",
-                "ORDER_ON_TABLE",
-                "PLAY_FROM_HAND",
-                "PLAYER_HEALTH",
-                "PLUS_VALUE_FOR_EACH_HOMODEUS_CHAMPION_IN_GAME",
-                "PLUS_TWO_FOR_EACH_DEMIREALM_IN_RESET",
-                "PLUS_TWO_FOR_EACH_WILDS_IN_PLAY",
-                "WILDS_HOMODEUS_DEMIREALM_ON_TABLE",
-                "WILDS_ON_TABLE",
-                "WHD_CHAMPION",
+                "card_from_hand",
+                "card_on_table",
+                "champion_on_table",
+                "demirealm_in_reset",
+                "demirealm_on_table",
+                "enemy_has_champion",
+                "general_draconarius",
+                "homodeus_on_table",
+                "mastery",
+                "none",
+                "order_on_table",
+                "play_from_hand",
+                "player_health",
+                "plus_value_for_each_homodeus_champion_in_game",
+                "plus_two_for_each_demirealm_in_reset",
+                "plus_two_for_each_wilds_in_play",
+                "wilds_homodeus_demirealm_on_table",
+                "wilds_on_table",
+                "whd_champion",
                 name="conditiontype",
+                native_enum=False,
             ),
             nullable=True,
         ),
@@ -168,9 +176,9 @@ def upgrade() -> None:
         sa.Column(
             "status",
             sa.Enum(
-                "WAITING",
-                "IN_PROGRESS",
-                "FINISHED",
+                "waiting",
+                "in_progress",
+                "finished",
                 name="gamestatus",
                 native_enum=False,
             ),
@@ -279,14 +287,14 @@ def upgrade() -> None:
         sa.Column(
             "zone",
             sa.Enum(
-                "CHAMPION",
-                "COMMON_DECK",
-                "DISCARD",
-                "EXILED",
-                "HAND",
-                "IN_PLAY",
-                "MARKET",
-                "PLAYER_DECK",
+                "champion",
+                "common_deck",
+                "discard",
+                "exiled",
+                "hand",
+                "in_play",
+                "market",
+                "player_deck",
                 name="cardzone",
                 native_enum=False,
             ),
