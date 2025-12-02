@@ -16,19 +16,14 @@ class PlayerState(Base):
 
     player = relationship("TelegramUser", back_populates="player_states")
     game_id: Mapped[int] = mapped_column(
-        Integer, ForeignKey("games.id", ondelete="CASCADE"),
+        Integer,
+        ForeignKey("games.id", ondelete="CASCADE"),
     )
     player_id: Mapped[int] = mapped_column(BigInteger, ForeignKey("users.id"))
 
-    health: Mapped[int] = mapped_column(
-        Integer, default=50
-    ) 
-    mastery: Mapped[int] = mapped_column(
-        Integer, default=0
-    ) 
-    crystals: Mapped[int] = mapped_column(
-        Integer, default=0
-    )  
+    health: Mapped[int] = mapped_column(Integer, default=50)
+    mastery: Mapped[int] = mapped_column(Integer, default=0)
+    crystals: Mapped[int] = mapped_column(Integer, default=0)
     power: Mapped[int] = mapped_column(Integer, default=0)  # Урон (боевые очки)
     shield: Mapped[int] = mapped_column(
         Integer,
