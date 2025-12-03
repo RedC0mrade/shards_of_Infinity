@@ -66,7 +66,13 @@ class CardInstanceServices(BaseService):
                     zone=CardZone.MARKET,
                 )
                 market_cards_instance.append(market)
-
+                self.logger.info(
+                    "Создаем экземпляр карты для рынка - %s, зона - %s, позиция на рынке - %s, владелец - %s",
+                    market.card_id,
+                    market.zone,
+                    market.position_on_market,
+                    market.player_state_id,
+                )
             else:
                 card_instance = PlayerCardInstance(
                     player_state_id=None,
@@ -76,11 +82,16 @@ class CardInstanceServices(BaseService):
                     delete_mercenary=False,
                 )
                 self.logger.info(
-                    "Создаем экземпляр карты - %s", card_instance.card_id
+                    "Создаем экземпляр карты - %s, владелец - %s",
+                    card_instance.card_id,
+                    card_instance.player_state_id,
                 )
                 cards_instances.append(card_instance)
+        self.logger.debug("No error 1")
         self.session.add_all(cards_instances)
+        self.logger.debug("No error 2")
         self.session.add_all(market_cards_instance)
+        self.logger.debug("No error 3")
         # await self.session.commit()
 
     async def get_card_instance_in_some_card_zone(

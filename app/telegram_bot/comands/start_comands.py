@@ -141,10 +141,12 @@ async def process_invite_code(message: types.Message, state: FSMContext):
         await hand_service.create_hand(game.non_active_player_id)
 
         # создаем состояние для всех карт кроме стартовых
-        await card_instance_service.create_card_instance_for_all_cards(game_id=game.id)
-        
-        await session.commit()
+        await card_instance_service.create_card_instance_for_all_cards(
+            game_id=game.id
+        )
 
+        await session.commit()
+        logger.debug("No error 4")
         await message.bot.send_message(
             chat_id=game.non_active_player_id,
             text="🤖 Игра начинается, ходит ваш противник, удачи",
@@ -165,7 +167,9 @@ async def keyboard_return(message: types.Message):
     async with db_helper.session_context() as session:
         game_service = GameServices(session=session)
 
-        game: Game = await game_service.get_active_game(player_id=message.from_user.id)
+        game: Game = await game_service.get_active_game(
+            player_id=message.from_user.id
+        )
 
         if game.active_player_id == message.from_user.id:
             await message.answer(

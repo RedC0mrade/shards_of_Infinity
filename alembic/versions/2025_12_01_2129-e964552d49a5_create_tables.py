@@ -320,11 +320,11 @@ def upgrade() -> None:
         ),
         sa.Column("id", sa.Integer(), nullable=False),
         sa.CheckConstraint(
-            "(zone != 'MARKET') OR (position_on_market IS NOT NULL)",
+            "(zone != 'market') OR (position_on_market IS NOT NULL)",
             name=op.f("ck_player_card_instances_market_position_required"),
         ),
         sa.CheckConstraint(
-            "(zone = 'MARKET') OR (position_on_market IS NULL)",
+            "(zone = 'market') OR (position_on_market IS NULL)",
             name=op.f("ck_player_card_instances_position_only_for_market"),
         ),
         sa.ForeignKeyConstraint(

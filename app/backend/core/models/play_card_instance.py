@@ -37,11 +37,11 @@ class PlayerCardInstance(Base):
     __tablename__ = "player_card_instances"
     __table_args__ = (
         CheckConstraint(
-            "(zone != 'MARKET') OR (position_on_market IS NOT NULL)",
+            "(zone != 'market') OR (position_on_market IS NOT NULL)",
             name="market_position_required",
         ),
         CheckConstraint(
-            "(zone = 'MARKET') OR (position_on_market IS NULL)",
+            "(zone = 'market') OR (position_on_market IS NULL)",
             name="position_only_for_market",
         ),
         UniqueConstraint(  # Добавляем уникальность для game_id и card_id
