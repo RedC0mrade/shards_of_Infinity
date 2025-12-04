@@ -25,7 +25,7 @@ class GameServices(BaseService):
             game_data.player1_id,
             game_data.invite_token,
         )
-
+        await self.has_active_game(game_data.player1_id)
         game = Game(**game_data.model_dump())
 
         self.session.add(game)

@@ -121,6 +121,8 @@ async def handle_hand(message: types.Message):
                     media=FSInputFile(icon_path),
                 )
             )
+        if not media:
+            return await message.answer("❌ Нет карт")
         await message.answer_media_group(media)
         if message.text == MoveKBText.HAND:
 

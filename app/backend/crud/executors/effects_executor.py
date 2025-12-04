@@ -20,10 +20,11 @@ class EffectExecutor:
 
     async def execute(self, effect: CardEffect):
         self.logger.info("Эффект %s", effect.action)
+
         method_name = (
-            f"do_{effect.action.name.lower()}_"
-            f"{effect.effect_type.name.lower()}_"
-            f"{effect.condition_type.name.lower()}"
+            f"do_{effect.action}_"
+            f"{effect.effect_type}_"
+            f"{effect.condition_type}"
         )
         self.logger.info("method_name - %s", method_name)
         method = getattr(self, method_name, None)

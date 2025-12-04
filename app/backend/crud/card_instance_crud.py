@@ -142,7 +142,7 @@ class CardInstanceServices(BaseService):
         )
 
         result: Result = await self.session.execute(stmt)
-        card_instanse = result.scalar_one_or_none()
+        card_instanse = result.unique().scalar_one_or_none()
 
         if not card_instanse:
             self.logger.warning(
@@ -171,10 +171,14 @@ class CardInstanceServices(BaseService):
         )
 
         result: Result = await self.session.execute(stmt)
-        card_instances: list[PlayerCardInstance] = (
+        card_instances_in_play: list[PlayerCardInstance] = (
             result.unique().scalars().all()
         )
-        for card_instance in card_instances:
+        self.logger.debug(
+            "карты игрока со стола, исключая чемпионов. -%s",
+            card_instances_in_play,
+        )
+        for card_instance in card_instances_in_play:
             self.logger.info(
                 "🃏 Карта '%s' (тип: %s, фракция: %s) находится в зоне %s.",
                 card_instance.card.name,
@@ -182,7 +186,35 @@ class CardInstanceServices(BaseService):
                 card_instance.card.faction,
                 card_instance.zone,
             )
-        return card_instances
+        stmt = (
+            select(PlayerCardInstance)
+            .join(
+                PlayerState,
+                PlayerCardInstance.player_state_id == PlayerState.id,
+            )
+            .join(Card, Card.id == PlayerCardInstance.card_id)
+            .where(
+                PlayerState.player_id == player_state.player_id,
+                PlayerCardInstance.zone == CardZone.HAND,
+            )
+        )
+        result: Result = await self.session.execute(stmt)
+        card_instances_hand: list[PlayerCardInstance] = (
+            result.unique().scalars().all()
+        )
+        self.logger.debug(
+            "карты игрока руки. -%s",
+            card_instances_hand,
+        )
+        for card_instance in card_instances_hand:
+            self.logger.info(
+                "🃏 Карта '%s' (тип: %s, фракция: %s) находится в зоне %s.",
+                card_instance.card.name,
+                card_instance.card.card_type,
+                card_instance.card.faction,
+                card_instance.zone,
+            )
+        return card_instances_in_play + card_instances_hand
 
     async def change_zone_of_cards(
         self,
