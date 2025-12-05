@@ -17,6 +17,7 @@ class MoveKBText:
     DEFEAT = "Сдаться"
     SHILD = "Щит"
     CHAMPION_PLAY = "Разыграть свойства чемптонов"
+    MASTERY = "Добавить мастерство"
 
 
 def in_play_card_keyboard():
