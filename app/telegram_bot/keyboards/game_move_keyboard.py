@@ -33,12 +33,14 @@ def in_play_card_keyboard():
     enemy_parameters_button = KeyboardButton(text=MoveKBText.ENEMY_PARAMETERS)
     player_discard_button = KeyboardButton(text=MoveKBText.PLAYER_DISCARD)
     champion_play_button = KeyboardButton(text=MoveKBText.CHAMPION_PLAY)
+    mastery_button = KeyboardButton(text=MoveKBText.MASTERY)
 
     button_row = [
         attack_button,
         attack_champion_button,
         end_button,
         defeat_button,
+        mastery_button,
     ]
 
     cards_row = [

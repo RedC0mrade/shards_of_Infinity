@@ -33,7 +33,7 @@ class MoveServices(BaseService):
         # 1) Обнулить все показатели. Атаки, защиты, щита
         # 2) Обновить обновить счетчик фракций
         self.logger.info(
-            "Состояние player_state на начало функции,\n ---power - %s,\n ---shild - %s,\n ---crystals - %s,\n ---wilds - %s,\n ---homodeus - %s,\n ---order - %s,\n ---demirealm - %s",
+            "Состояние player_state на начало функции,\n ---power - %s,\n ---shild - %s,\n ---crystals - %s,\n ---wilds - %s,\n ---homodeus - %s,\n ---order - %s,\n ---demirealm - %s,\n ---nconcentration -%s",
             player_state.power,
             player_state.shield,
             player_state.crystals,
@@ -41,6 +41,7 @@ class MoveServices(BaseService):
             player_state.homodeus_count,
             player_state.order_count,
             player_state.demirealm_count,
+            player_state.concentration,
         )
         self.logger.warning(
             "Game id - %s",
@@ -49,6 +50,7 @@ class MoveServices(BaseService):
         player_state.power = 0
         player_state.shield = 0
         player_state.crystals = 0
+        player_state.concentration = False
 
         stmt = (
             select(Card.faction, func.count())
@@ -80,7 +82,7 @@ class MoveServices(BaseService):
             0,
         )
         self.logger.info(
-            "Состояние player_state на конец функции,\n +++power - %s,\n +++shild - %s,\n +++crystals - %s,\n +++wilds - %s,\n +++homodeus - %s,\n +++order - %s,\n +++demirealm - %s",
+            "Состояние player_state на конец функции,\n +++power - %s,\n +++shild - %s,\n +++crystals - %s,\n +++wilds - %s,\n +++homodeus - %s,\n +++order - %s,\n +++demirealm - %s,\n +++nconcentration -%s",
             player_state.power,
             player_state.shield,
             player_state.crystals,
@@ -88,6 +90,7 @@ class MoveServices(BaseService):
             player_state.homodeus_count,
             player_state.order_count,
             player_state.demirealm_count,
+            player_state.concentration,
         )
         await self.session.flush()  # закомитится в хендлере
 

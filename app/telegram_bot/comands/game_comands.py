@@ -21,7 +21,12 @@ from app.backend.crud.player_state_crud import PlayerStateServices
 from app.backend.factories.database import db_helper
 
 from app.telegram_bot.keyboards.game_move_keyboard import MoveKBText
-from app.telegram_bot.keyboards.hand_keyboard import CardCallback, MarketCallback, make_card_move_keyboard
+from app.telegram_bot.keyboards.hand_keyboard import (
+    CardCallback,
+    MarketCallback,
+    make_card_move_keyboard,
+)
+from app.utils.exceptions.exceptions import GameError
 from app.utils.logger import get_logger
 
 router = Router(name=__name__)
@@ -61,7 +66,7 @@ async def handle_market(message: types.Message):
                 text="Выберите карту для покупки",
                 reply_markup=make_card_move_keyboard(
                     instance_data=market_cards,
-                    callback_cls = MarketCallback,
+                    callback_cls=MarketCallback,
                 ),
             )
 
@@ -130,7 +135,7 @@ async def handle_hand(message: types.Message):
                 "Выберите карту:",
                 reply_markup=make_card_move_keyboard(
                     instance_data=hand_cards,
-                    callback_cls = CardCallback,
+                    callback_cls=CardCallback,
                 ),
             )
 
@@ -204,10 +209,11 @@ async def attack_enemy_player(message: types.Message):
     # 1) Получить всех чемпионов противника
     # 2) Выдать список для атаки
     async with db_helper.session_context() as session:
-        
+
         champion_service = ChampionService(session=session)
         champions_card = await champion_service.get_champions(
-            player_id=message.from_user.id)
+            player_id=message.from_user.id
+        )
 
 
 @router.message(F.text == MoveKBText.ATTACK)
@@ -269,7 +275,8 @@ async def end_move(message: types.Message):
 
         player_state: PlayerState = (
             await player_state_service.get_player_state_with_game(
-                player_id=message.from_user.id
+                player_id=message.from_user.id,
+                active_player=True,
             )
         )
         logger.critical(
@@ -291,11 +298,35 @@ async def end_move(message: types.Message):
             game=player_state.game,
         )
         # await session.commit()
-        
-        await message.answer(text="Ваш ход окончен. Ходит Ваш противник") # Прикрепить клавиатуру не активного игорька
+
+        await message.answer(
+            text="Ваш ход окончен. Ходит Ваш противник"
+        )  # Прикрепить клавиатуру не активного игорька
 
         await message.bot.send_message(
             text="Ваш ход!",
             chat_id=player_state.game.active_player_id,
         )
+        await session.commit()
+
+
+@router.message(F.text == MoveKBText.MASTERY)
+async def get_concentration(message: types.Message):
+    """Добавление +1 к мастерству."""
+    async with db_helper.session_context() as session:
+        player_state_service = PlayerStateServices(session=session)
+
+        player_state: PlayerState = (
+            await player_state_service.get_player_state_with_game(
+                player_id=message.from_user.id,
+                active_player=True,
+            )
+        )
+
+        if player_state.concentration:
+            raise GameError(
+                "Нельзя использовать концентрацию два раза за один ход"
+            )
+        player_state.mastery += 1
+        player_state.concentration = False
         await session.commit()

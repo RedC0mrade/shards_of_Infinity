@@ -30,6 +30,7 @@ class PlayerState(Base):
         default=0,
         server_default="0",
     )
+
     wilds_count: Mapped[int] = mapped_column(
         Integer,
         default=0,
@@ -51,6 +52,11 @@ class PlayerState(Base):
         server_default="0",
     )
     invulnerability: Mapped[bool] = mapped_column(
+        Boolean,
+        default=False,
+        server_default=text("FALSE"),
+    )
+    concentration: Mapped[bool] = mapped_column(
         Boolean,
         default=False,
         server_default=text("FALSE"),

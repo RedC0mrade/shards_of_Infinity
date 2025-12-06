@@ -69,3 +69,9 @@ class CardInstanceError(GameError):
     """Проблема с состоянием карты."""
 
     pass
+
+
+class MasteryError(GameError):
+    """Мастерство уже разыграно"""
+
+    pass
