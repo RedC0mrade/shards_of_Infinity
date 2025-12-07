@@ -78,17 +78,28 @@ class EffectExecutor:
             self.player_state.power,
         )
 
-    async def do_attack_conditional_card_on_table(
+    # async def do_attack_conditional_card_on_table(
+    #     self,
+    #     value: int,
+    #     condition_value: int,
+    # ):
+    #     if self.player_state.wilds_count >= condition_value:
+    #         self.player_state.power += value
+    #     self.logger.info(
+    #         " функция - do_attack_conditional_card_on_table, значение - %s",
+    #         self.player_state.power,
+    #     )
+    async def do_attack_conditional_wilds_on_table(
         self,
         value: int,
         condition_value: int,
     ):
         if self.player_state.wilds_count >= condition_value:
             self.player_state.power += value
-        self.logger.info(
-            " функция - do_attack_conditional_card_on_table, значение - %s",
-            self.player_state.power,
-        )
+            self.logger.info(
+                " функция - do_attack_conditional_card_on_table, значение - %s",
+                self.player_state.power,
+            )
 
     async def do_healing_base_none(
         self,

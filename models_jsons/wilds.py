@@ -18,7 +18,7 @@ wilds_data = [
             },
             {
                 "action": "attack",
-                "value": 2,
+                "value": 5,
                 "effect_type": "conditional",
                 "condition_type": "wilds_on_table",
                 "condition_value": 1
@@ -44,7 +44,7 @@ wilds_data = [
             },
             {
                 "action": "attack",
-                "value": 2,
+                "value": 5,
                 "effect_type": "conditional",
                 "condition_type": "wilds_on_table",
                 "condition_value": 1
@@ -70,7 +70,7 @@ wilds_data = [
             },
             {
                 "action": "attack",
-                "value": 2,
+                "value": 5,
                 "effect_type": "conditional",
                 "condition_type": "wilds_on_table",
                 "condition_value": 1

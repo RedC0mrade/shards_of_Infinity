@@ -25,6 +25,9 @@
 # SET status = 'FINISHED'::gamestatus
 # WHERE id = 1;
 
+# UPDATE player_card_instances
+# SET player_state_id = 2, zone = 'hand'
+# WHERE id = 22;
 
 # ruff check .  # проверка кода
 # ruff format .  # форматирование (как black)
