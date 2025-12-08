@@ -95,27 +95,8 @@ wilds_data = [
                 "condition_value": 0
             },
             {
-                "action": "healing",
-                "value": 6,
-                "effect_type": "conditional",
-                "condition_type": "wilds_on_table",
-                "condition_value": 0
-            }
-        ]
-    },
-    {
-        "name": "Страж Шардвуда",
-        "crystals_cost": 4,
-        "description": "Получите 2 атаки и возьмите карту. Единение - получите 6 здоровья если в этот ход сыграли другого Союзника природы.",
-        "shield": 0,
-        "champion_health": 0,
-        "faction": "wilds",
-        "card_type": "ally",
-        "icon": "card_4.jpeg",
-        "effects": [
-            {
-                "action": "attack",
-                "value": 2,
+                "action": "take_card",
+                "value": 1,
                 "effect_type": "base",
                 "condition_type": "none",
                 "condition_value": 0
@@ -142,6 +123,46 @@ wilds_data = [
             {
                 "action": "attack",
                 "value": 2,
+                "effect_type": "base",
+                "condition_type": "none",
+                "condition_value": 0
+            },
+            {
+                "action": "take_card",
+                "value": 1,
+                "effect_type": "base",
+                "condition_type": "none",
+                "condition_value": 0
+            },
+            {
+                "action": "healing",
+                "value": 6,
+                "effect_type": "conditional",
+                "condition_type": "wilds_on_table",
+                "condition_value": 0
+            }
+        ]
+    },
+    {
+        "name": "Страж Шардвуда",
+        "crystals_cost": 4,
+        "description": "Получите 2 атаки и возьмите карту. Единение - получите 6 здоровья если в этот ход сыграли другого Союзника природы.",
+        "shield": 0,
+        "champion_health": 0,
+        "faction": "wilds",
+        "card_type": "ally",
+        "icon": "card_4.jpeg",
+        "effects": [
+            {
+                "action": "attack",
+                "value": 2,
+                "effect_type": "base",
+                "condition_type": "none",
+                "condition_value": 0
+            },
+            {
+                "action": "take_card",
+                "value": 1,
                 "effect_type": "base",
                 "condition_type": "none",
                 "condition_value": 0

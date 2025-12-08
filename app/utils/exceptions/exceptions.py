@@ -75,3 +75,8 @@ class MasteryError(GameError):
     """Мастерство уже разыграно"""
 
     pass
+
+class ConcentrationError(GameError):
+    """Невозможно получить могущество."""
+
+    pass

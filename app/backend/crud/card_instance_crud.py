@@ -154,7 +154,7 @@ class CardInstanceServices(BaseService):
     async def get_player_cards_instance_in_play(
         self, player_state: PlayerState
     ) -> list[PlayerCardInstance]:
-        """Получаем все карты игрока из руки и со стола, исключая чемпионов."""
+        """Получаем все карты игрока со стола, исключая чемпионов."""
 
         stmt = (
             select(PlayerCardInstance)
@@ -257,3 +257,12 @@ class CardInstanceServices(BaseService):
             raise Invulnerability(
                 message="⚔️ Невозможно атаковать противника, разыграна карта чемпиона Зетта, энкриптор"
             )
+
+    async def take_card_to_hand(
+        self,
+        player_state: PlayerState,
+        number_cards: int,
+    ):
+        """Добавляем карты в руку игрока"""
+        
+        stmt = select(PlayerCardInstance).where(PlayerCardInstance.player_state_id == player_state.id, PlayerCardInstance.zone == CardZone.PLAYER_DECK)

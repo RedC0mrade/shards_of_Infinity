@@ -315,6 +315,7 @@ async def get_concentration(message: types.Message):
     """Добавление +1 к мастерству."""
     async with db_helper.session_context() as session:
         player_state_service = PlayerStateServices(session=session)
+        move_service = MoveServices(session=session)
 
         player_state: PlayerState = (
             await player_state_service.get_player_state_with_game(
@@ -323,10 +324,4 @@ async def get_concentration(message: types.Message):
             )
         )
 
-        if player_state.concentration:
-            raise GameError(
-                "Нельзя использовать концентрацию два раза за один ход"
-            )
-        player_state.mastery += 1
-        player_state.concentration = False
-        await session.commit()
+        await move_service.get_mastery(player_state=player_state)

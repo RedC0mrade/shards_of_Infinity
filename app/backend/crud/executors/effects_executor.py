@@ -36,6 +36,8 @@ class EffectExecutor:
         else:
             self.logger.error("Проблема с effect")
 
+# ----------------------------- crystal ---------------------------------
+
     async def do_crystal_base_none(
         self,
         value: int,
@@ -59,6 +61,8 @@ class EffectExecutor:
             self.player_state.crystals,
         )
 
+# ----------------------------- attack ---------------------------------
+
     async def do_attack_base_none(
         self,
         value: int,
@@ -78,17 +82,6 @@ class EffectExecutor:
             self.player_state.power,
         )
 
-    # async def do_attack_conditional_card_on_table(
-    #     self,
-    #     value: int,
-    #     condition_value: int,
-    # ):
-    #     if self.player_state.wilds_count >= condition_value:
-    #         self.player_state.power += value
-    #     self.logger.info(
-    #         " функция - do_attack_conditional_card_on_table, значение - %s",
-    #         self.player_state.power,
-    #     )
     async def do_attack_conditional_wilds_on_table(
         self,
         value: int,
@@ -100,6 +93,8 @@ class EffectExecutor:
                 " функция - do_attack_conditional_card_on_table, значение - %s",
                 self.player_state.power,
             )
+
+# ----------------------------- healing ---------------------------------
 
     async def do_healing_base_none(
         self,
@@ -115,7 +110,7 @@ class EffectExecutor:
             self.player_state.health,
         )
 
-    async def do_healing_conditional_card_on_table(
+    async def do_healing_conditional_wilds_on_table(
         self,
         value: int,
         condition_value: int,
@@ -129,3 +124,12 @@ class EffectExecutor:
             " функция - do_healing_conditional_card_on_table, значение - %s",
             self.player_state.health,
         )
+
+# ----------------------------- take_card ---------------------------------
+
+    async def do_take_card_base_none(
+        self,
+        value: int,
+        condition_value: int,
+    ):
+        pass

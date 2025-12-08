@@ -19,6 +19,10 @@ from app.backend.crud.card_instance_crud import CardInstanceServices
 from app.backend.crud.executors.effects_executor import EffectExecutor
 from app.backend.crud.executors.ps_count_executor import PlayStateExecutor
 from app.backend.crud.hand_crud import HandServices
+from app.utils.exceptions.exceptions import (
+    ConcentrationError,
+    NotEnoughCrystals,
+)
 from app.utils.logger import get_logger
 
 
@@ -211,3 +215,26 @@ class MoveServices(BaseService):
             game.active_player_id,
             game.non_active_player_id,
         )
+
+    async def get_mastery(
+        self,
+        player_state: PlayerState,
+    ):
+        if player_state.crystals == 0:
+            raise NotEnoughCrystals(
+                "Нет достаточно кристалов для концентрации"
+            )
+        if player_state.concentration == True:
+            raise ConcentrationError(
+                "Вы уже использовали концентрацию в этот ход"
+            )
+        if player_state.mastery >= 30:
+            player_state.concentration = 30
+            raise ConcentrationError(
+                "Достигнуто максимальное количество могущества"
+            )
+        player_state.concentration = True
+        player_state.concentration += 1
+        player_state.crystals -= 1
+
+        self.session.commit()
