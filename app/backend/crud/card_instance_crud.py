@@ -264,5 +264,16 @@ class CardInstanceServices(BaseService):
         number_cards: int,
     ):
         """Добавляем карты в руку игрока"""
-        
-        stmt = select(PlayerCardInstance).where(PlayerCardInstance.player_state_id == player_state.id, PlayerCardInstance.zone == CardZone.PLAYER_DECK)
+
+        stmt = select(PlayerCardInstance).where(
+            PlayerCardInstance.player_state_id == player_state.id,
+            PlayerCardInstance.zone == CardZone.PLAYER_DECK,
+        )
+        result: Result = self.session.execute(stmt)
+        card_instanses = result.unique().scalars().all()
+
+        if len(card_instanses) < number_cards:
+            stmt = select(PlayerCardInstance).where(
+            PlayerCardInstance.player_state_id == player_state.id,
+            PlayerCardInstance.zone == CardZone.,
+        )
