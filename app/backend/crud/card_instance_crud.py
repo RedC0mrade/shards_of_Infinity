@@ -87,11 +87,8 @@ class CardInstanceServices(BaseService):
                     card_instance.player_state_id,
                 )
                 cards_instances.append(card_instance)
-        self.logger.debug("No error 1")
         self.session.add_all(cards_instances)
-        self.logger.debug("No error 2")
         self.session.add_all(market_cards_instance)
-        self.logger.debug("No error 3")
         # await self.session.commit()
 
     async def get_card_instance_in_some_card_zone(
@@ -152,7 +149,7 @@ class CardInstanceServices(BaseService):
         return card_instanse
 
     async def get_player_cards_instance_in_play(
-        self, player_state: PlayerState
+        self, player_state: PlayerState,
     ) -> list[PlayerCardInstance]:
         """Получаем все карты игрока со стола, исключая чемпионов."""
 
@@ -263,17 +260,42 @@ class CardInstanceServices(BaseService):
         player_state: PlayerState,
         number_cards: int,
     ):
-        """Добавляем карты в руку игрока"""
+        """Добавляем карты в руку игрока для effects"""
 
         stmt = select(PlayerCardInstance).where(
             PlayerCardInstance.player_state_id == player_state.id,
             PlayerCardInstance.zone == CardZone.PLAYER_DECK,
         )
         result: Result = self.session.execute(stmt)
-        card_instanses = result.unique().scalars().all()
+        card_instanses: list[PlayerCardInstance] = result.unique().scalars().all()
+        self. logger.info("Карты игрока в колоде:")
+        for card in card_instanse:
+            self.logger.info("Карта %s", card.)
 
         if len(card_instanses) < number_cards:
+            
+            for card_instanse in card_instanses:
+                card_instanse.zone = CardZone.HAND
+
             stmt = select(PlayerCardInstance).where(
             PlayerCardInstance.player_state_id == player_state.id,
-            PlayerCardInstance.zone == CardZone.,
-        )
+            PlayerCardInstance.zone == CardZone.DISCARD,
+            )
+            result: Result = await self.session.execute(stmt)
+
+            discard_cards: list[PlayerCardInstance] = result.unique().scalars().all()
+
+            for card in discard_cards:
+                card.zone == CardZone.PLAYER_DECK
+            
+            missing_cards = number_cards - len(card_instanses)
+            
+            cards_to_hand = sample(discard_cards, missing_cards)
+
+            for card in cards_to_hand:
+                card.zone == CardZone.HAND
+        else:
+            cards_to_hand = sample(card_instanses, number_cards)
+
+            for card in cards_to_hand:
+                card.zone == CardZone.HAND
