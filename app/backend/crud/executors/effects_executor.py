@@ -3,6 +3,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.backend.core.models.card import CardEffect
 from app.backend.core.models.game import Game
 from app.backend.core.models.player_state import PlayerState
+from app.backend.crud.card_instance_crud import CardInstanceServices
 from app.utils.logger import get_logger
 
 
@@ -36,7 +37,7 @@ class EffectExecutor:
         else:
             self.logger.error("Проблема с effect")
 
-# ----------------------------- crystal ---------------------------------
+    # ----------------------------- crystal ---------------------------------
 
     async def do_crystal_base_none(
         self,
@@ -61,7 +62,7 @@ class EffectExecutor:
             self.player_state.crystals,
         )
 
-# ----------------------------- attack ---------------------------------
+    # ----------------------------- attack ---------------------------------
 
     async def do_attack_base_none(
         self,
@@ -94,7 +95,7 @@ class EffectExecutor:
                 self.player_state.power,
             )
 
-# ----------------------------- healing ---------------------------------
+    # ----------------------------- healing ---------------------------------
 
     async def do_healing_base_none(
         self,
@@ -125,11 +126,15 @@ class EffectExecutor:
             self.player_state.health,
         )
 
-# ----------------------------- take_card ---------------------------------
+    # ----------------------------- take_card ---------------------------------
 
     async def do_take_card_base_none(
         self,
         value: int,
         condition_value: int,
     ):
-        pass
+        card_instance_services = CardInstanceServices(session=self.session)
+        await card_instance_services.take_card_to_hand(
+            player_state=self.player_state,
+            number_cards=value,
+        )

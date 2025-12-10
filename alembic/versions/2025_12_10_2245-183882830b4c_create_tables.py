@@ -1,8 +1,8 @@
 """Create tables
 
-Revision ID: 4297f2a1da7b
+Revision ID: 183882830b4c
 Revises:
-Create Date: 2025-12-04 14:39:45.024193
+Create Date: 2025-12-10 22:45:40.911417
 
 """
 
@@ -13,7 +13,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = "4297f2a1da7b"
+revision: str = "183882830b4c"
 down_revision: Union[str, Sequence[str], None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -261,6 +261,12 @@ def upgrade() -> None:
         ),
         sa.Column(
             "invulnerability",
+            sa.Boolean(),
+            server_default=sa.text("FALSE"),
+            nullable=False,
+        ),
+        sa.Column(
+            "concentration",
             sa.Boolean(),
             server_default=sa.text("FALSE"),
             nullable=False,

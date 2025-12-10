@@ -149,7 +149,8 @@ class CardInstanceServices(BaseService):
         return card_instanse
 
     async def get_player_cards_instance_in_play(
-        self, player_state: PlayerState,
+        self,
+        player_state: PlayerState,
     ) -> list[PlayerCardInstance]:
         """Получаем все карты игрока со стола, исключая чемпионов."""
 
@@ -267,35 +268,63 @@ class CardInstanceServices(BaseService):
             PlayerCardInstance.zone == CardZone.PLAYER_DECK,
         )
         result: Result = self.session.execute(stmt)
-        card_instanses: list[PlayerCardInstance] = result.unique().scalars().all()
-        self. logger.info("Карты игрока в колоде:")
-        for card in card_instanse:
-            self.logger.info("Карта %s", card.)
+        card_instanses: list[PlayerCardInstance] = (
+            result.unique().scalars().all()
+        )
+        self.logger.info("Карты игрока в колоде:")
+        for instanse in card_instanses:
+            self.logger.info("         Карта %s", instanse.id)
 
         if len(card_instanses) < number_cards:
-            
+            self.logger.info(
+                "Нужно взять карт - %s, карт в колоде -%s",
+                number_cards,
+                len(card_instanses),
+            )
             for card_instanse in card_instanses:
                 card_instanse.zone = CardZone.HAND
 
             stmt = select(PlayerCardInstance).where(
-            PlayerCardInstance.player_state_id == player_state.id,
-            PlayerCardInstance.zone == CardZone.DISCARD,
+                PlayerCardInstance.player_state_id == player_state.id,
+                PlayerCardInstance.zone == CardZone.DISCARD,
             )
             result: Result = await self.session.execute(stmt)
 
-            discard_cards: list[PlayerCardInstance] = result.unique().scalars().all()
-
+            discard_cards: list[PlayerCardInstance] = (
+                result.unique().scalars().all()
+            )
+            self.logger.info(
+                "Количество карт в сбросе у игрока - %s",
+                len(discard_cards),
+            )
+            self.logger.info("Переносим карты в колоду:")
             for card in discard_cards:
+                self.logger.info(
+                    "      Карта - %s",
+                    card.card.name,
+                )
                 card.zone == CardZone.PLAYER_DECK
-            
+
             missing_cards = number_cards - len(card_instanses)
-            
-            cards_to_hand = sample(discard_cards, missing_cards)
+            self.logger.info(
+                "Количество карт которые нужно добрать - %s",
+                missing_cards,
+            )
+
+            cards_to_hand: list[PlayerCardInstance] = sample(
+                discard_cards,
+                missing_cards,
+            )
+            self.logger.info("Карты Которые переходят в руку:")
 
             for card in cards_to_hand:
+                self.logger.info("         - %s", card.card.name)
                 card.zone == CardZone.HAND
         else:
             cards_to_hand = sample(card_instanses, number_cards)
-
+            self.logger.info(
+                "      Карты которые переходят в руку - %s", card.card.name
+            )
             for card in cards_to_hand:
                 card.zone == CardZone.HAND
+        await self.session.commit()
