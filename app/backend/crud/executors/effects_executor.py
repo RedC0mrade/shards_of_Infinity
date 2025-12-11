@@ -138,3 +138,22 @@ class EffectExecutor:
             player_state=self.player_state,
             number_cards=value,
         )
+
+    # ---------------------------------- might --------------------------------
+    async def do_might_base_none(
+            self,
+            value: int,
+            condition_value: int,
+    ):
+        if self.player_state.mastery == 30:
+            pass
+        else:
+            self.player_state.mastery += value
+
+    async def do_healing_conditional_mastery(
+            self,
+            value: int,
+            condition_value: int,
+
+    ):
+        if self.player_state.mastery == 
