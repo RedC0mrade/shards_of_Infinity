@@ -135,6 +135,16 @@ class EffectExecutor:
             self.player_state.health,
         )
 
+    async def do_healing_conditional_mastery(
+            self,
+            value: int,
+            condition_value: int,
+
+    ):
+        if self.player_state.mastery == condition_value:
+            self.player_state.health += value
+            ----
+            
     # ----------------------------- take_card ---------------------------------
 
     async def do_take_card_base_none(
@@ -142,14 +152,7 @@ class EffectExecutor:
         value: int,
         condition_value: int,
     ):
-        """
-        Взять карты в руку без условий.
-        
-        Args:
-            value: Количество карт для взятия
-            condition_value: Значение условия (не используется в этой функции)
-        """
-        # Логируем начало операции
+
         self.logger.debug(
             "Начало do_take_card_base_none: запрошено %s карт, условие %s",
             value,
@@ -160,10 +163,6 @@ class EffectExecutor:
             player_state=self.player_state,
             number_cards=value,
         )
-<<<<<<< HEAD
-        self.logger.debug("Конец функции do_take_card_base_none")
-=======
-
     # ---------------------------------- might --------------------------------
     async def do_might_base_none(
             self,
@@ -174,12 +173,3 @@ class EffectExecutor:
             pass
         else:
             self.player_state.mastery += value
-
-    async def do_healing_conditional_mastery(
-            self,
-            value: int,
-            condition_value: int,
-
-    ):
-        if self.player_state.mastery == 
->>>>>>> 0ffe5fe7fa2f60dd5d16f1607478b71807282eb7
