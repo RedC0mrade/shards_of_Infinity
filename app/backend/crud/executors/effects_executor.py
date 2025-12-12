@@ -95,6 +95,15 @@ class EffectExecutor:
                 self.player_state.power,
             )
 
+    async def do_attack_conditional_player_health(
+            self,
+            value: int,
+            condition_value: int,
+    ):
+        
+        if self.player_state.health == condition_value:
+            self.player_state.power += value
+
     # ----------------------------- healing ---------------------------------
 
     async def do_healing_base_none(
@@ -133,8 +142,22 @@ class EffectExecutor:
         value: int,
         condition_value: int,
     ):
+        """
+        Взять карты в руку без условий.
+        
+        Args:
+            value: Количество карт для взятия
+            condition_value: Значение условия (не используется в этой функции)
+        """
+        # Логируем начало операции
+        self.logger.debug(
+            "Начало do_take_card_base_none: запрошено %s карт, условие %s",
+            value,
+            condition_value,
+        )
         card_instance_services = CardInstanceServices(session=self.session)
         await card_instance_services.take_card_to_hand(
             player_state=self.player_state,
             number_cards=value,
         )
+        self.logger.debug("Конец функции do_take_card_base_none")

@@ -248,7 +248,7 @@ class CardInstanceServices(BaseService):
             Card.name == "Зетта, энкриптор",
             Game.non_active_player_id == player_state.player_id,
         )
-        result: Result = self.session.execute(stmt)
+        result: Result = await self.session.execute(stmt)
         zetta = result.scalar_one_or_none()
         self.logger.warning("Проверка zetta_check - %s", zetta)
         if zetta:
@@ -267,7 +267,7 @@ class CardInstanceServices(BaseService):
             PlayerCardInstance.player_state_id == player_state.id,
             PlayerCardInstance.zone == CardZone.PLAYER_DECK,
         )
-        result: Result = self.session.execute(stmt)
+        result: Result = await self.session.execute(stmt)
         card_instanses: list[PlayerCardInstance] = (
             result.unique().scalars().all()
         )
@@ -300,10 +300,10 @@ class CardInstanceServices(BaseService):
             self.logger.info("Переносим карты в колоду:")
             for card in discard_cards:
                 self.logger.info(
-                    "      Карта - %s",
-                    card.card.name,
+                    "      Карта c id- %s",
+                    card.id,
                 )
-                card.zone == CardZone.PLAYER_DECK
+                card.zone = CardZone.PLAYER_DECK
 
             missing_cards = number_cards - len(card_instanses)
             self.logger.info(
@@ -318,13 +318,15 @@ class CardInstanceServices(BaseService):
             self.logger.info("Карты Которые переходят в руку:")
 
             for card in cards_to_hand:
-                self.logger.info("         - %s", card.card.name)
-                card.zone == CardZone.HAND
+                self.logger.info("         id - %s", card.id)
+                card.zone = CardZone.HAND
         else:
             cards_to_hand = sample(card_instanses, number_cards)
-            self.logger.info(
-                "      Карты которые переходят в руку - %s", card.card.name
-            )
+            self.logger.info("Карты (id) которые переходят в руку:")
             for card in cards_to_hand:
-                card.zone == CardZone.HAND
+                card.zone = CardZone.HAND
+                
+                self.logger.info(
+                "      id - %s", card.id
+            )
         await self.session.commit()
