@@ -441,14 +441,14 @@ wilds_data = [
         "effects": [
             {
                 "action": "take_card",
-                "value": 0,
+                "value": 1,
                 "effect_type": "base",
                 "condition_type": "none",
                 "condition_value": 0
             },
             {
                 "action": "champion_destroy",
-                "value": 0,
+                "value": 1,
                 "effect_type": "conditional",
                 "condition_type": "wilds_on_table",
                 "condition_value": 1
@@ -467,14 +467,14 @@ wilds_data = [
         "effects": [
             {
                 "action": "take_card",
-                "value": 0,
+                "value": 1,
                 "effect_type": "base",
                 "condition_type": "none",
                 "condition_value": 0
             },
             {
                 "action": "champion_destroy",
-                "value": 0,
+                "value": 1,
                 "effect_type": "conditional",
                 "condition_type": "wilds_on_table",
                 "condition_value": 1

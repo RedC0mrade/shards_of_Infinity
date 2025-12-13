@@ -20,6 +20,10 @@ from app.backend.crud.market_crud1 import MarketServices
 from app.backend.crud.player_state_crud import PlayerStateServices
 from app.backend.factories.database import db_helper
 
+from app.telegram_bot.keyboards.champios_keyboard import (
+    ChampionCallback,
+    attack_champion_keyboard,
+)
 from app.telegram_bot.keyboards.game_move_keyboard import MoveKBText
 from app.telegram_bot.keyboards.hand_keyboard import (
     CardCallback,
@@ -204,7 +208,7 @@ async def enemy_game_parametrs(message: types.Message):
 
 
 @router.message(F.text == MoveKBText.ATTACK_CHAMPION)
-async def attack_enemy_player(message: types.Message):
+async def attack_enemy_champion(message: types.Message):
     """Атака чемпиона противника."""
     # 1) Получить всех чемпионов противника
     # 2) Выдать список для атаки
@@ -214,6 +218,23 @@ async def attack_enemy_player(message: types.Message):
         champions_card = await champion_service.get_champions(
             player_id=message.from_user.id
         )
+        if champions_card:
+            media = []  # переделать дублирующийся код
+            for champion in champions_card:
+                card = champion.card
+
+                icon_path = media_dir / Path(card.icon)
+                logger.info("Путь до карты %s", icon_path)
+                media.append(
+                    InputMediaPhoto(
+                        media=FSInputFile(icon_path),
+                    )
+                )
+            await message.answer(
+                text="Выберите Чемпиона для Атаки",
+                reply_markup=attack_champion_keyboard,
+                instance_data=champions_card,
+            )
 
 
 @router.message(F.text == MoveKBText.ATTACK)

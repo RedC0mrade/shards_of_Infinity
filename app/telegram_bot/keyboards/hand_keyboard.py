@@ -21,39 +21,6 @@ class MarketCallback(
     name: str
 
 
-class ChampionCallback(
-    CallbackData,
-    prefix="champion",
-):
-    id: int
-    name: str
-
-
-# def make_card_move_keyboard(
-#     instance_data: list[PlayerCardInstance],
-#     market: bool = False,
-# ) -> InlineKeyboardMarkup:
-#     card_buttons = []
-#     """Клавиатура отвечает за отображение клавиатуры
-#         выбора карт. Флаг market указывает это карта с руки или с рынка."""
-
-#     callback_class = MarketCallback if market else CardCallback
-
-#     for card_instance in instance_data:
-#         button = InlineKeyboardButton(
-#             text=card_instance.card.name,
-#             callback_data=callback_class(
-#                 id=card_instance.card.id,
-#                 name=card_instance.card.name,
-#             ).pack(),
-#         )
-#         card_buttons.append(button)
-
-#     keyboard_layout = [card_buttons[i:i+3] for i in range(0, len(card_buttons), 3)]
-#     markup = InlineKeyboardMarkup(inline_keyboard=keyboard_layout)
-#     return markup
-
-
 def make_card_move_keyboard(
     instance_data: list[PlayerCardInstance],
     callback_cls: type[CallbackData],

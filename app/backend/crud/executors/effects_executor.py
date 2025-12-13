@@ -96,15 +96,15 @@ class EffectExecutor:
             )
 
     async def do_attack_conditional_player_health(
-            self,
-            value: int,
-            condition_value: int,
+        self,
+        value: int,
+        condition_value: int,
     ):
-        
+
         if self.player_state.health == condition_value:
             self.player_state.power += value
 
-    # ----------------------------- healing ---------------------------------
+    # ----------------------------- healing ----------------------------------
 
     async def do_healing_base_none(
         self,
@@ -136,15 +136,15 @@ class EffectExecutor:
         )
 
     async def do_healing_conditional_mastery(
-            self,
-            value: int,
-            condition_value: int,
-
+        self,
+        value: int,
+        condition_value: int,
     ):
         if self.player_state.mastery == condition_value:
             self.player_state.health += value
-            ----
-            
+            if self.player_state.health < 50:
+                self.player_state.mastery = 50
+
     # ----------------------------- take_card ---------------------------------
 
     async def do_take_card_base_none(
@@ -163,13 +163,24 @@ class EffectExecutor:
             player_state=self.player_state,
             number_cards=value,
         )
+
     # ---------------------------------- might --------------------------------
+
     async def do_might_base_none(
-            self,
-            value: int,
-            condition_value: int,
+        self,
+        value: int,
+        condition_value: int,
     ):
         if self.player_state.mastery == 30:
             pass
         else:
             self.player_state.mastery += value
+
+    # ------------------------------- champion destroy ------------------------
+
+    async def do_champion_destroy_conditional_wilds_on_table(
+        self,
+        value: int,
+        condition_value: int,
+    ):
+        pass

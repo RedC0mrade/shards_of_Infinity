@@ -22,7 +22,10 @@ class ChampionService(BaseService):
     async def get_champions(self, player_id: int) -> list[PlayerCardInstance]:
         """Получаем чемпионов противника в игре."""
 
-        self.logger.info("Получаем чемпионов для игрока с id -%s", player_id)
+        self.logger.info(
+            "Получаем чемпионов для противника игрока с id -%s",
+            player_id,
+        )
 
         stmt = (
             select(PlayerCardInstance)
@@ -48,7 +51,7 @@ class ChampionService(BaseService):
 
         if not cards_instance:
             self.logger.info(
-                "Игрок с id - %s, имеет чемпионов",
+                "Противник игрок с id - %s, не имеет чемпионов",
                 player_id,
             )
             raise ChampionError(message="У противника нет чемпионов в игре")
