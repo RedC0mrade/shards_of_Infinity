@@ -18,6 +18,7 @@ from app.telegram_bot.keyboards.hand_keyboard import MarketCallback
 
 from app.backend.factories.database import db_helper
 from app.telegram_bot.keyboards.mersery_keyboard import play_mercenary
+from app.utils.exceptions.exceptions import ChampionError
 from app.utils.logger import get_logger
 
 
@@ -26,8 +27,40 @@ logger = get_logger(__name__)
 media_dir = Path(__file__).parent.parent.parent.parent / "media"
 
 
+# id: int
+# name: str
+# champion_health: int
+
+
 @router.callback_query(ChampionCallback.filter())
 async def handle_attack_champion(
     callback: CallbackQuery,
     callback_data: ChampionCallback,
 ):
+    async with db_helper.session_context() as session:
+
+        card_instance_services = CardInstanceServices(session=session)
+        player_state_services = PlayerStateServices(session=session)
+
+        player_state: PlayerState = (
+            await player_state_services.get_player_state_with_game(
+                player_id=callback.from_user.id,
+                active_player=True,
+            )
+        )
+
+        card_instance: PlayerCardInstance = card_instance_services.get_card_instance_for_id(card_instanse_id=callback_data.id)
+        if player_state.power < callback_data.champion_health:
+            logger.info(
+                "Ататка игорька - %s, здоровье чемпиона - %s",
+                callback_data.champion_health,
+                player_state.power,
+            )
+
+            raise ChampionError(
+                message="Недостаточно очков атаки для уничтожения чемпиона"
+            )
+        player_state.power -= callback_data.champion_health
+        card_instance.zone = CardZone.DISCARD
+
+        session.commit()
