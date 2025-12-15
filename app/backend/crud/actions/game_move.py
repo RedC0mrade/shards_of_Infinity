@@ -163,6 +163,7 @@ class MoveServices(BaseService):
 
         # 0) Поменять активного и не активного игрока местами
         # 1) Сбросить все карты из руки и на столе, кроме чемпионов
+        # 1.1) Наемников, которые разыраны в этот ход удалить из игры
         # 2) Набрать новые карты
         # 3) Посчитать щиты
 
@@ -191,6 +192,7 @@ class MoveServices(BaseService):
             "отработала card_instance_service.get_player_cards_instance_in_play, результат - %s",
             cards_intances,
         )
+        Нужно отобрать чемптонов и наемников
         if cards_intances:
             self.logger.info("Разыгранные карты:")
             for instace in cards_intances:

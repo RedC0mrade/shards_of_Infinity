@@ -43,16 +43,10 @@ async def mercenary_play(
 
         player_state: PlayerState = (
             await player_state_services.get_player_state_with_game(
-                player_id=callback.from_user.id
+                player_id=callback.from_user.id,
+                active_player=True,
             )
         )
-        if player_state.game.active_player_id != callback.from_user.id:
-            logger.warning(
-                "active_player_id = %s, callback.from_user.id = %s",
-                player_state.game.active_player_id,
-                callback.from_user.id,
-            )
-            raise NotYourTurn("Пожалуйста, дождитесь своего хода 🕐")
 
         card_instance: PlayerCardInstance = (
             await card_instance_services.get_card_instance_for_id(

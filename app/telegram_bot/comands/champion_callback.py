@@ -49,7 +49,11 @@ async def handle_attack_champion(
             )
         )
 
-        card_instance: PlayerCardInstance = card_instance_services.get_card_instance_for_id(card_instanse_id=callback_data.id)
+        card_instance: PlayerCardInstance = (
+            card_instance_services.get_card_instance_for_id(
+                card_instanse_id=callback_data.id
+            )
+        )
         if player_state.power < callback_data.champion_health:
             logger.info(
                 "Ататка игорька - %s, здоровье чемпиона - %s",
