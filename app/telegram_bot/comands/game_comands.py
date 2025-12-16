@@ -238,7 +238,7 @@ async def attack_enemy_player(message: types.Message):
     # 2) Проверить есть ли неуязвимость у атакуемого
     # 3) Нанести урон
     # 4) Проверить не опустилось ли здоровье ниже нуля
-    # 4.1) Если опустилось вывести сообщения ирокам
+    # 4.1) Если попустилось вывести сообщения ирокам
     # 4.2) Сменить статус игры на финиш
     async with db_helper.session_context() as session:
         game_service = GameServices(session=session)

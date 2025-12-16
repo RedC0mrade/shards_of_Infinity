@@ -5,6 +5,7 @@ from app.backend.core.models.card import (
     Card,
     CardAction,
     CardFaction,
+    CardType,
     EffectType,
 )
 from app.backend.core.models.game import Game
@@ -183,7 +184,7 @@ class MoveServices(BaseService):
             game.active_player_id,
         )  # не забыть что нужно закоммитить
 
-        cards_intances = (
+        cards_intances: list[PlayerCardInstance] = (
             await card_instance_service.get_player_cards_instance_in_play(
                 player_state=player_state,
             )
@@ -192,7 +193,18 @@ class MoveServices(BaseService):
             "отработала card_instance_service.get_player_cards_instance_in_play, результат - %s",
             cards_intances,
         )
-        Нужно отобрать чемптонов и наемников
+        # Нужно отобрать чемптонов и наемников
+        champion_instances = filter(lambda x: x.card.card_type == CardType.CHAMPION, cards_intances)
+
+        if champion_instances:
+            self.logger.info("Разыгранные карты:")
+            for instace in champion_instances:
+                self.logger.info("  - %s", instace.card.name)
+        delete_mercenary_instances = filter(lambda x: x.delete_mercenary == True, cards_intances)
+        if champion_instances:
+            self.logger.info("Разыгранные карты:")
+            for instace in champion_instances:
+                self.logger.info("  - %s", instace.card.name)
         if cards_intances:
             self.logger.info("Разыгранные карты:")
             for instace in cards_intances:
