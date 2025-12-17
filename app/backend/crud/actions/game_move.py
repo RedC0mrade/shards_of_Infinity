@@ -193,26 +193,48 @@ class MoveServices(BaseService):
             "отработала card_instance_service.get_player_cards_instance_in_play, результат - %s",
             cards_intances,
         )
-        # Нужно отобрать чемптонов и наемников
-        champion_instances = filter(lambda x: x.card.card_type == CardType.CHAMPION, cards_intances)
-
-        if champion_instances:
-            self.logger.info("Разыгранные карты:")
-            for instace in champion_instances:
-                self.logger.info("  - %s", instace.card.name)
-        delete_mercenary_instances = filter(lambda x: x.delete_mercenary == True, cards_intances)
-        if champion_instances:
-            self.logger.info("Разыгранные карты:")
-            for instace in champion_instances:
-                self.logger.info("  - %s", instace.card.name)
         if cards_intances:
-            self.logger.info("Разыгранные карты:")
-            for instace in cards_intances:
-                self.logger.info("  - %s", instace.card.name)
-            await card_instance_service.change_zone_of_cards(
-                card_instances=cards_intances,
-            )  # не забыть что нужно закоммитить
+            delete_mercenary, cards_in_play = [], []
 
+        # # Нужно отобрать чемптонов и наемников
+        #     champion_instances = filter(lambda x: x.card.card_type == CardType.CHAMPION, cards_intances)
+        #     if champion_instances:
+        #         self.logger.info("Разыгранные карты:")
+        #         for instace in champion_instances:
+        #             self.logger.info("  - %s", instace.card.name)
+
+        #     delete_mercenary_instances = filter(lambda x: x.delete_mercenary == True, cards_intances)
+        #     if delete_mercenary_instances:
+        #         self.logger.info("Разыгранные карты:")
+        #         for instace in delete_mercenary_instances:
+        #             self.logger.info("  - %s", instace.card.name)
+
+
+        #     if cards_intances:
+        #         self.logger.info("Разыгранные карты:")
+        #         for instace in cards_intances:
+        #             self.logger.info("  - %s", instace.card.name)
+        #         await card_instance_service.change_zone_of_cards(
+        #             card_instances=cards_intances,
+        #         )  # не забыть что нужно закоммитить
+            self.logger.info("Разыгранные карты:")
+            for instance in cards_intances:
+                self.logger.info("-----delete_mercenary - %s", instance.card.name,)
+                if instance.delete_mercenary == True:
+                    delete_mercenary.append(instance)
+                    if instance.card.card_type == CardType.CHAMPION:
+                        self.logger.info("-----champion_instances - %s", instance.card.name,)
+                        continue
+                self.logger.info("-----in_play_instances - %s", instance.card.name,)
+                cards_in_play.append(instance)
+            await card_instance_service.change_zone_of_cards(
+                    card_instances=cards_in_play,
+                )
+            await card_instance_service.change_zone_of_cards(
+                    card_instances=delete_mercenary,
+                    card_zone=CardZone.EXILED
+                )  # не забыть что нужно закоммитить
+            
         hand: list[PlayerCardInstance] = await hand_service.create_hand(
             player_id=player_state.player_id,
         )

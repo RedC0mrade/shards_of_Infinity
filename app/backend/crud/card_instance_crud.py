@@ -217,10 +217,11 @@ class CardInstanceServices(BaseService):
     async def change_zone_of_cards(
         self,
         card_instances: list[PlayerCardInstance],
+        card_zone: CardZone = CardZone.DISCARD,
     ) -> list[PlayerCardInstance]:
         """Меняем зону карты в PlayerCardInstance"""
         for card_instance in card_instances:
-            card_instance.zone = CardZone.DISCARD
+            card_instance.zone = card_zone
             self.logger.info(
                 "🃏 Карта '%s' (тип: %s, фракция: %s) находится в зоне %s.",
                 card_instance.card.name,
@@ -228,7 +229,7 @@ class CardInstanceServices(BaseService):
                 card_instance.card.faction,
                 card_instance.zone,
             )
-        await self.session.flush()  # наверное не нужно, проверить
+        # await self.session.flush()  # наверное не нужно, проверить
 
     async def zetta_check(self, player_state: PlayerState):
         """Проверка на неуязвимость."""
