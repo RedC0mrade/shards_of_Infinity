@@ -17,6 +17,7 @@ from app.telegram_bot.keyboards.hand_keyboard import MarketCallback
 
 from app.backend.factories.database import db_helper
 from app.telegram_bot.keyboards.mersery_keyboard import play_mercenary
+from app.utils.exceptions.exceptions import MarketError, NotYourTurn
 from app.utils.logger import get_logger
 
 
@@ -47,7 +48,7 @@ async def handle_buy_card(
                 player_state.game.active_player_id,
                 callback.from_user.id,
             )
-            return await callback.answer(text="Пожалуйста, дождитесь своего хода")
+            raise NotYourTurn(message="Пожалуйста, дождитесь своего хода")
 
         card_instance: PlayerCardInstance = (
             await card_instanse_service.get_card_instance_in_some_card_zone(
@@ -59,8 +60,8 @@ async def handle_buy_card(
 
         if not card_instance:
             logger.warning("Нет карты на рынке с id - %s", callback_data.id)
-            return await callback.answer(
-                text=(
+            raise MarketError(
+                message=(
                     "Эта карта было уже куплена, "
                     "сделайте новый запрос карт рынка, "
                     'с помощью кнопки "Рынок"'

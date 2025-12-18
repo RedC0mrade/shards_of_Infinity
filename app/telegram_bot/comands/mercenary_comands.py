@@ -93,6 +93,8 @@ async def mercenary_play(
                 caption=f"Ваш противник разыграл карту: {card_instance.card.name}",
                 chat_id=player_state.game.non_active_player_id,
             )
+            card_instance.delete_mercenary == True
+            await session.commit()
         else:
             await buy_service.buy_card_from_market(
                 card_instance=card_instance,
