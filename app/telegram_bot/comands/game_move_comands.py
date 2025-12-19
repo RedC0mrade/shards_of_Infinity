@@ -39,17 +39,10 @@ async def handle_play_card(
 
         player_state: PlayerState = (
             await player_state_services.get_player_state_with_game(
-                player_id=callback.from_user.id
+                player_id=callback.from_user.id,
+                active_player=True,
             )
         )
-        if player_state.game.active_player_id != callback.from_user.id:
-            logger.warning(
-                "active_player_id = %s, callback.from_user.id = %s",
-                player_state.game.active_player_id,
-                callback.from_user.id,
-            )
-            await callback.answer(text="Пожалуйста, дождитесь своего хода")
-            return
 
         card: Card = await card_services.get_hand_card(
             player_state_id=player_state.id,
