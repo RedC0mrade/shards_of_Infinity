@@ -13,7 +13,7 @@ from app.utils.exceptions.exceptions import ChampionError
 class ChampionService(BaseService):
 
     async def attack_the_champion(
-        card_instance_id: int,
+        card_instance: PlayerCardInstance,
         player_state: PlayerState,
     ):
         """Атака выбранного чемпиона."""

@@ -9,6 +9,7 @@ from app.backend.core.models.play_card_instance import (
 )
 from app.backend.core.models.player_state import PlayerState
 from app.backend.crud.actions.buy_move import BuyServices
+from app.backend.crud.actions.champion_move import ChampionService
 from app.backend.crud.card_crud import CardServices
 from app.backend.crud.card_instance_crud import CardInstanceServices
 from app.backend.crud.actions.game_move import MoveServices
@@ -41,6 +42,7 @@ async def handle_attack_champion(
 
         card_instance_services = CardInstanceServices(session=session)
         player_state_services = PlayerStateServices(session=session)
+        champion_service = ChampionService(session=session)
 
         player_state: PlayerState = (
             await player_state_services.get_player_state_with_game(
@@ -54,6 +56,7 @@ async def handle_attack_champion(
                 card_instanse_id=callback_data.id
             )
         )
+
         if player_state.power < callback_data.champion_health:
             logger.info(
                 "Ататка игорька - %s, здоровье чемпиона - %s",

@@ -9,7 +9,7 @@ from app.backend.core.models.play_card_instance import (
     PlayerCardInstance,
 )
 from app.backend.core.models.player_state import PlayerState
-from app.backend.crud.actions.attack_champion_move import ChampionService
+from app.backend.crud.actions.champion_move import ChampionService
 from app.backend.crud.actions.attack_move import AttackService
 from app.backend.crud.actions.defeat_move import DefeatService
 from app.backend.crud.actions.game_move import MoveServices

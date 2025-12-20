@@ -108,11 +108,7 @@ class MoveServices(BaseService):
         mercenary: bool = False,
     ) -> str:
         """Игрок разыгрывает карту."""
-        # Розыгрыш карты:
-        # - Проверить есть ли карта в руке
-        # - Отыграть эффект
-        # - Обновить счетчик фрацкий сыграных в этом ходу
-        # - Поместить карту в сброс
+
         self.logger.info(
             "Игрок с id - %s делает ход картой - %s, в игре с id - %s",
             player_id,
@@ -127,9 +123,25 @@ class MoveServices(BaseService):
         )
 
         for effect in card.effects:
-            await effect_executor.execute(effect)  # Отрабатываем эффекты
+            self.logger.info(
+                "Обрабатываем эффект: action=%s type=%s condition=%s",
+                effect.action,
+                effect.effect_type,
+                effect.condition_type,
+            )
+            result = await effect_executor.execute(
+                effect
+            )  # Отрабатываем эффекты
+            # ⛔ Эффект требует выбора игрока
+            if result and result.stop_flow:
+                self.logger.info(
+                    "Эффект %s требует пользовательского выбора, "
+                    "прерываем выполнение хода",
+                    effect.action,
+                )
+                return result
 
-        self.logger.info("Все эффекты обработаны. Переходим к faction_count")
+        self.logger.info("Все эффекты карты '%s' обработаны", card.name)
 
         play_state_executor = PlayStateExecutor(
             session=self.session,
@@ -138,9 +150,8 @@ class MoveServices(BaseService):
         await play_state_executor.faction_count(
             card=card
         )  # Считаем разыранные карты
-        self.logger.info(
-            "faction_count отработала. Переходим к функции change_card_zone"
-        )
+        self.logger.info("faction_count выполнен для карты '%s'", card.name)
+
         card_service = CardServices(session=self.session)
 
         start_zone = CardZone.MARKET if mercenary else CardZone.HAND
@@ -154,6 +165,12 @@ class MoveServices(BaseService):
         self.logger.info("Функция change_card_zone отработала. делаем commit")
 
         await self.session.commit()
+
+        self.logger.info(
+            "Ход игрока %s картой '%s' успешно завершён",
+            player_id,
+            card.name,
+        )
 
     async def after_the_move(
         self,
@@ -196,45 +213,52 @@ class MoveServices(BaseService):
         if cards_intances:
             delete_mercenary, cards_in_play = [], []
 
-        # # Нужно отобрать чемптонов и наемников
-        #     champion_instances = filter(lambda x: x.card.card_type == CardType.CHAMPION, cards_intances)
-        #     if champion_instances:
-        #         self.logger.info("Разыгранные карты:")
-        #         for instace in champion_instances:
-        #             self.logger.info("  - %s", instace.card.name)
+            # # Нужно отобрать чемптонов и наемников
+            #     champion_instances = filter(lambda x: x.card.card_type == CardType.CHAMPION, cards_intances)
+            #     if champion_instances:
+            #         self.logger.info("Разыгранные карты:")
+            #         for instace in champion_instances:
+            #             self.logger.info("  - %s", instace.card.name)
 
-        #     delete_mercenary_instances = filter(lambda x: x.delete_mercenary == True, cards_intances)
-        #     if delete_mercenary_instances:
-        #         self.logger.info("Разыгранные карты:")
-        #         for instace in delete_mercenary_instances:
-        #             self.logger.info("  - %s", instace.card.name)
+            #     delete_mercenary_instances = filter(lambda x: x.delete_mercenary == True, cards_intances)
+            #     if delete_mercenary_instances:
+            #         self.logger.info("Разыгранные карты:")
+            #         for instace in delete_mercenary_instances:
+            #             self.logger.info("  - %s", instace.card.name)
 
-
-        #     if cards_intances:
-        #         self.logger.info("Разыгранные карты:")
-        #         for instace in cards_intances:
-        #             self.logger.info("  - %s", instace.card.name)
-        #         await card_instance_service.change_zone_of_cards(
-        #             card_instances=cards_intances,
-        #         )  # не забыть что нужно закоммитить
+            #     if cards_intances:
+            #         self.logger.info("Разыгранные карты:")
+            #         for instace in cards_intances:
+            #             self.logger.info("  - %s", instace.card.name)
+            #         await card_instance_service.change_zone_of_cards(
+            #             card_instances=cards_intances,
+            #         )  # не забыть что нужно закоммитить
             self.logger.info("Разыгранные карты:")
             for instance in cards_intances:
-                self.logger.info("-----delete_mercenary - %s", instance.card.name,)
+                self.logger.info(
+                    "-----delete_mercenary - %s",
+                    instance.card.name,
+                )
                 if instance.delete_mercenary == True:
                     delete_mercenary.append(instance)
                     if instance.card.card_type == CardType.CHAMPION:
-                        self.logger.info("-----champion_instances - %s", instance.card.name,)
+                        self.logger.info(
+                            "-----champion_instances - %s",
+                            instance.card.name,
+                        )
                         continue
-                self.logger.info("-----in_play_instances - %s", instance.card.name,)
+                self.logger.info(
+                    "-----in_play_instances - %s",
+                    instance.card.name,
+                )
                 cards_in_play.append(instance)
             await card_instance_service.change_zone_of_cards(
-                    card_instances=cards_in_play,
-                )
+                card_instances=cards_in_play,
+            )
             await card_instance_service.change_zone_of_cards(
-                    card_instances=delete_mercenary,
-                    card_zone=CardZone.EXILED
-                )  # не забыть что нужно закоммитить
-            
+                card_instances=delete_mercenary, card_zone=CardZone.EXILED
+            )  # не забыть что нужно закоммитить
+
         hand: list[PlayerCardInstance] = await hand_service.create_hand(
             player_id=player_state.player_id,
         )
@@ -257,9 +281,7 @@ class MoveServices(BaseService):
         player_state: PlayerState,
     ):
         if player_state.crystals == 0:
-            raise NotEnoughCrystals(
-                "Нет достаточно кристалов для концентрации"
-            )
+            raise NotEnoughCrystals("Нет достаточно кристалов для концентрации")
         if player_state.concentration == True:
             raise ConcentrationError(
                 "Вы уже использовали концентрацию в этот ход"
