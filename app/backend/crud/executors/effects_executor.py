@@ -30,12 +30,13 @@ class EffectExecutor:
         self.logger.info("method_name - %s", method_name)
         method = getattr(self, method_name, None)
         if method:
-            await method(
+            return await method(
                 value=effect.value,
                 condition_value=effect.condition_value,
             )
         else:
             self.logger.error("Проблема с effect")
+            return None
 
     # ----------------------------- crystal ---------------------------------
 

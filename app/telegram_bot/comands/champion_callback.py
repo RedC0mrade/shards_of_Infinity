@@ -57,17 +57,9 @@ async def handle_attack_champion(
             )
         )
 
-        if player_state.power < callback_data.champion_health:
-            logger.info(
-                "Ататка игорька - %s, здоровье чемпиона - %s",
-                callback_data.champion_health,
-                player_state.power,
-            )
-
-            raise ChampionError(
-                message="Недостаточно очков атаки для уничтожения чемпиона"
-            )
-        player_state.power -= callback_data.champion_health
-        card_instance.zone = CardZone.DISCARD
+        await champion_service.attack_the_champion(
+            card_instance_id=card_instance,
+            player_state=player_state,
+        )
 
         session.commit()

@@ -13,11 +13,23 @@ from app.utils.exceptions.exceptions import ChampionError
 class ChampionService(BaseService):
 
     async def attack_the_champion(
+        self,
         card_instance: PlayerCardInstance,
         player_state: PlayerState,
     ):
         """Атака выбранного чемпиона."""
-        pass
+        
+        if player_state.power < card_instance.card.champion_health:
+            self.logger.info(
+                "Ататка игорька - %s, здоровье чемпиона - %s",
+                card_instance.card.champion_health,
+                player_state.power,
+            )
+            raise ChampionError(
+                message="Недостаточно очков атаки для уничтожения чемпиона"
+            )
+        player_state.power -= card_instance.card.champion_health
+        card_instance.zone = CardZone.DISCARD
 
     async def get_champions(self, player_id: int) -> list[PlayerCardInstance]:
         """Получаем чемпионов противника в игре."""

@@ -116,11 +116,31 @@ class MoveServices(BaseService):
             game.id,
         )
 
+        card_service = CardServices(session=self.session)
+
+        start_zone = CardZone.MARKET if mercenary else CardZone.HAND
+        await card_service.change_card_zone(
+            card_id=card.id,
+            game_id=game.id,
+            start_zone=start_zone,
+            end_zone=CardZone.IN_PLAY,
+        )
+
         effect_executor = EffectExecutor(
             session=self.session,
             player_state=player_state,
             game=game,
         )
+        play_state_executor = PlayStateExecutor(
+            session=self.session,
+            player_state=player_state,
+        )
+
+        self.logger.info("Функция change_card_zone отработала. делаем commit")
+        await play_state_executor.faction_count(
+            card=card
+        )  # Считаем разыранные карты
+        self.logger.info("faction_count выполнен для карты '%s'", card.name)
 
         for effect in card.effects:
             self.logger.info(
@@ -143,26 +163,6 @@ class MoveServices(BaseService):
 
         self.logger.info("Все эффекты карты '%s' обработаны", card.name)
 
-        play_state_executor = PlayStateExecutor(
-            session=self.session,
-            player_state=player_state,
-        )
-        await play_state_executor.faction_count(
-            card=card
-        )  # Считаем разыранные карты
-        self.logger.info("faction_count выполнен для карты '%s'", card.name)
-
-        card_service = CardServices(session=self.session)
-
-        start_zone = CardZone.MARKET if mercenary else CardZone.HAND
-        await card_service.change_card_zone(
-            card_id=card.id,
-            game_id=game.id,
-            start_zone=start_zone,
-            end_zone=CardZone.IN_PLAY,
-        )
-
-        self.logger.info("Функция change_card_zone отработала. делаем commit")
 
         await self.session.commit()
 
