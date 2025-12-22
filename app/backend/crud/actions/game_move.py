@@ -17,7 +17,7 @@ from app.backend.core.models.player_state import PlayerState
 from app.backend.crud.base_service import BaseService
 from app.backend.crud.card_crud import CardServices
 from app.backend.crud.card_instance_crud import CardInstanceServices
-from app.backend.crud.executors.effects_executor import EffectExecutor
+from app.backend.crud.executors.effects_executor import EffectExecutor, EffectResult
 from app.backend.crud.executors.ps_count_executor import PlayStateExecutor
 from app.backend.crud.hand_crud import HandServices
 from app.utils.exceptions.exceptions import (
@@ -149,7 +149,7 @@ class MoveServices(BaseService):
                 effect.effect_type,
                 effect.condition_type,
             )
-            result = await effect_executor.execute(
+            result: EffectResult = await effect_executor.execute(
                 effect
             )  # Отрабатываем эффекты
             # ⛔ Эффект требует выбора игрока

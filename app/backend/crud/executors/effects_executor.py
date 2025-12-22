@@ -1,10 +1,21 @@
+from dataclasses import dataclass
 from sqlalchemy.ext.asyncio import AsyncSession
+from aiogram.types import InlineKeyboardMarkup
 
 from app.backend.core.models.card import CardEffect
 from app.backend.core.models.game import Game
 from app.backend.core.models.player_state import PlayerState
+from app.backend.crud.actions.champion_move import ChampionService
 from app.backend.crud.card_instance_crud import CardInstanceServices
+from app.telegram_bot.keyboards.champios_keyboard import attack_champion_keyboard
 from app.utils.logger import get_logger
+
+
+@dataclass
+class EffectResult:
+    text: str | None = None
+    keyboard: InlineKeyboardMarkup | None = None
+    stop_flow: bool = False
 
 
 class EffectExecutor:
@@ -184,4 +195,17 @@ class EffectExecutor:
         value: int,
         condition_value: int,
     ):
-        pass
+        if self.player_state.wilds_count >= condition_value:
+            champion_service = ChampionService(session=self.session)
+            champions = champion_service.get_champions(
+                player_id=self.player_state.player_id
+            )
+            keyboard = attack_champion_keyboard(
+                instance_data=champions,
+            )
+
+            return EffectResult(
+                text="Выберите чемпиона для уничтожения:",
+                keyboard=keyboard,
+                stop_flow=True,
+            )
