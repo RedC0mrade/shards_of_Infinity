@@ -1,3 +1,4 @@
+from pathlib import Path
 from aiogram import Router, F
 from aiogram.types import CallbackQuery, FSInputFile
 
@@ -21,6 +22,7 @@ from app.utils.logger import get_logger
 
 router = Router(name=__name__)
 logger = get_logger(__name__)
+media_dir = Path(__file__).parent.parent.parent.parent / "media"
 
 #     card_instance_id: int
 #     play_now: bool
@@ -66,7 +68,7 @@ async def mercenary_play(
             logger.warning("Неверная зона карты - %s", card_instance.zone)
             raise GameError("Эта карта уже не находится на рынке. 🃏")
 
-        photo = FSInputFile(card_instance.card.icon)
+        photo = FSInputFile(media_dir / Path(card_instance.card.icon))
 
         if callback_data.play_now:
             position_on_market = card_instance.position_on_market

@@ -24,7 +24,8 @@ class BuyServices(BaseService):
         game: Game,
         player_id: int,
     ) -> tuple[bool, str]:
-        """Игрок покупает карту с рынка"""
+        """Игрок покупает карту с рынка."""
+        
         self.logger.info(
             "Игрок id - %s покупает карту - %s, в игре id - %s, зоне - %s",
             player_id,
