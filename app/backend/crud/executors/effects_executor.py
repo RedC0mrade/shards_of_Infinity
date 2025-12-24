@@ -197,7 +197,7 @@ class EffectExecutor:
     ):
         if self.player_state.wilds_count >= condition_value:
             champion_service = ChampionService(session=self.session)
-            champions = champion_service.get_champions(
+            champions = await champion_service.get_champions(
                 player_id=self.player_state.player_id
             )
             keyboard = attack_champion_keyboard(

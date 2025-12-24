@@ -1,5 +1,4 @@
 from sqlalchemy import Result, delete, func, or_, select
-from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.backend.core.models.card import (
     Card,
@@ -17,14 +16,16 @@ from app.backend.core.models.player_state import PlayerState
 from app.backend.crud.base_service import BaseService
 from app.backend.crud.card_crud import CardServices
 from app.backend.crud.card_instance_crud import CardInstanceServices
-from app.backend.crud.executors.effects_executor import EffectExecutor, EffectResult
+from app.backend.crud.executors.effects_executor import (
+    EffectExecutor,
+    EffectResult,
+)
 from app.backend.crud.executors.ps_count_executor import PlayStateExecutor
 from app.backend.crud.hand_crud import HandServices
 from app.utils.exceptions.exceptions import (
     ConcentrationError,
     NotEnoughCrystals,
 )
-from app.utils.logger import get_logger
 
 
 class MoveServices(BaseService):
@@ -162,7 +163,6 @@ class MoveServices(BaseService):
                 return result
 
         self.logger.info("Все эффекты карты '%s' обработаны", card.name)
-
 
         await self.session.commit()
 

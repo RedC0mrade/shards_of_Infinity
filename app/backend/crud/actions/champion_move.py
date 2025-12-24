@@ -56,7 +56,7 @@ class ChampionService(BaseService):
             )
         )
 
-        result: Result = self.session.execute(stmt)
+        result: Result = await self.session.execute(stmt)
         cards_instance: list[PlayerCardInstance] = result.scalars().all()
 
         self.logger.info("cards_instance - %s", cards_instance)
