@@ -7,7 +7,9 @@ from app.backend.core.models.game import Game
 from app.backend.core.models.player_state import PlayerState
 from app.backend.crud.actions.champion_move import ChampionService
 from app.backend.crud.card_instance_crud import CardInstanceServices
-from app.telegram_bot.keyboards.champios_keyboard import attack_champion_keyboard
+from app.telegram_bot.keyboards.champios_keyboard import (
+    attack_champion_keyboard,
+)
 from app.utils.logger import get_logger
 
 
@@ -31,7 +33,11 @@ class EffectExecutor:
         self.logger = get_logger(self.__class__.__name__)
 
     async def execute(self, effect: CardEffect):
-        self.logger.info("Эффект %s", effect.action)
+        self.logger.error(
+            "Эффект - %s, значение - %s",
+            effect.action,
+            effect.value,
+        )
 
         method_name = (
             f"do_{effect.action}_"
@@ -195,6 +201,10 @@ class EffectExecutor:
         value: int,
         condition_value: int,
     ):
+        """Уничтожаем чемпиона врага."""
+        
+        self.player_state.wilds_count += 1
+        
         if self.player_state.wilds_count >= condition_value:
             champion_service = ChampionService(session=self.session)
             champions = await champion_service.get_champions(

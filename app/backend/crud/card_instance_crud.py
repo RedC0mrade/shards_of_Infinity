@@ -229,7 +229,8 @@ class CardInstanceServices(BaseService):
                 card_instance.card.faction,
                 card_instance.zone,
             )
-        # await self.session.flush()  # наверное не нужно, проверить
+        self.logger.info("change_zone_of_cards отработала, делаем коммит")
+        await self.session.commit()
 
     async def zetta_check(self, player_state: PlayerState):
         """Проверка на неуязвимость."""
@@ -263,7 +264,6 @@ class CardInstanceServices(BaseService):
         number_cards: int,
     ):
         """Добавляем карты в руку игрока для effects"""
-
         stmt = select(PlayerCardInstance).where(
             PlayerCardInstance.player_state_id == player_state.id,
             PlayerCardInstance.zone == CardZone.PLAYER_DECK,
@@ -326,8 +326,6 @@ class CardInstanceServices(BaseService):
             self.logger.info("Карты (id) которые переходят в руку:")
             for card in cards_to_hand:
                 card.zone = CardZone.HAND
-                
-                self.logger.info(
-                "      id - %s", card.id
-            )
+
+                self.logger.info("      id - %s", card.id)
         await self.session.commit()
