@@ -45,10 +45,12 @@ async def handle_market(message: types.Message):
     async with db_helper.session_context() as session:
         game_service = GameServices(session=session)
         market_servise = MarketServices(session=session)
-        game: Game = await game_service.get_active_game(player_id=message.from_user.id)
+        game: Game = await game_service.get_active_game(
+            player_id=message.from_user.id
+        )
 
-        market_cards: list[PlayerCardInstance] = await market_servise.get_market_cards(
-            game_id=game.id
+        market_cards: list[PlayerCardInstance] = (
+            await market_servise.get_market_cards(game_id=game.id)
         )
 
         media = []  # переделать дублирующийся код
@@ -87,7 +89,9 @@ async def handle_hand(message: types.Message):
     async with db_helper.session_context() as session:
         game_service = GameServices(session=session)
         hand_services = HandServices(session=session)
-        game: Game = await game_service.get_active_game(player_id=message.from_user.id)
+        game: Game = await game_service.get_active_game(
+            player_id=message.from_user.id
+        )
 
         if message.text == MoveKBText.HAND:
             hand_cards: list[PlayerCardInstance] = (
@@ -146,8 +150,10 @@ async def handle_game_parametrs(message: types.Message):
     async with db_helper.session_context() as session:
         play_state_service = PlayerStateServices(session=session)
 
-        play_state: PlayerState = await play_state_service.get_player_state_with_game(
-            player_id=message.from_user.id
+        play_state: PlayerState = (
+            await play_state_service.get_player_state_with_game(
+                player_id=message.from_user.id
+            )
         )
 
         if play_state.game.active_player_id == message.from_user.id:
@@ -209,8 +215,8 @@ async def attack_enemy_champion(message: types.Message):
     async with db_helper.session_context() as session:
 
         champion_service = ChampionService(session=session)
-        champions_card: list[PlayerCardInstance] = await champion_service.get_champions(
-            player_id=message.from_user.id
+        champions_card: list[PlayerCardInstance] = (
+            await champion_service.get_champions(player_id=message.from_user.id)
         )
         if champions_card:
             media = []  # переделать дублирующийся код
