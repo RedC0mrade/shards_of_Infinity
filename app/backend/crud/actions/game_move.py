@@ -70,7 +70,9 @@ class MoveServices(BaseService):
             .group_by(Card.faction)
         )
         result: Result = await self.session.execute(stmt)
-        faction_counts = dict(result.all()) # счетчик фракций чемпионы которых остались на столе
+        faction_counts = dict(
+            result.all()
+        )  # счетчик фракций чемпионы которых остались на столе
 
         player_state.wilds_count = faction_counts.get(
             CardFaction.WILDS,
