@@ -89,6 +89,13 @@ class EffectExecutor:
     ):
         self.player_state.power += value
 
+    async def do_attack_conditional_player_health(
+        self,
+        value: int,
+        condition_value: int,
+    ):
+        if self.player_state.health == condition_value:
+            self.player_state.power += value
     async def do_attack_conditional_mastery(
         self,
         value: int,
@@ -193,6 +200,8 @@ class EffectExecutor:
             pass
         else:
             self.player_state.mastery += value
+            if self.player_state.mastery > 30:
+                self.player_state.mastery = 30
 
     # ------------------------------- champion destroy ------------------------
 

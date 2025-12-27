@@ -375,7 +375,7 @@ wilds_data = [
         "effects": [
             {
                 "action": "healing",
-                "value": 5,
+                "value": 4,
                 "effect_type": "base",
                 "condition_type": "none",
                 "condition_value": 0
