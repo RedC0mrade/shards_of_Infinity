@@ -40,9 +40,7 @@ class EffectExecutor:
         )
 
         method_name = (
-            f"do_{effect.action}_"
-            f"{effect.effect_type}_"
-            f"{effect.condition_type}"
+            f"do_{effect.action}_" f"{effect.effect_type}_" f"{effect.condition_type}"
         )
         self.logger.info("method_name - %s", method_name)
         method = getattr(self, method_name, None)
@@ -96,6 +94,7 @@ class EffectExecutor:
     ):
         if self.player_state.health == condition_value:
             self.player_state.power += value
+
     async def do_attack_conditional_mastery(
         self,
         value: int,
@@ -211,9 +210,9 @@ class EffectExecutor:
         condition_value: int,
     ):
         """Уничтожаем чемпиона врага."""
-        
+
         self.player_state.wilds_count += 1
-        
+
         if self.player_state.wilds_count >= condition_value:
             champion_service = ChampionService(session=self.session)
             champions = await champion_service.get_champions(
@@ -228,3 +227,16 @@ class EffectExecutor:
                 keyboard=keyboard,
                 stop_flow=True,
             )
+
+    # ------------------------------- card_destroy ----------------------------
+
+    async def do_card_destroy_base_none(
+        self,
+        value: int,
+        condition_value: int,            
+    ):
+        """Удалить свою карту из руки или колоды."""
+
+        self.player_state.demirealm_count += 1
+
+        
