@@ -14,13 +14,13 @@ class DestroyCardService(BaseService):
 
         stmt = (
             select(PlayerCardInstance)
-            .join(Game, PlayerCardInstance.game_id == Game.id)
             .where(
                 or_(
                     PlayerCardInstance.zone == CardZone.DISCARD,
                     PlayerCardInstance.zone == CardZone.HAND,
                 ),
                 PlayerCardInstance.player_state_id == player_state_id,
+                PlayerCardInstance.game_id == game_id,
             )
         )
         result: Result = self.session.execute(stmt)

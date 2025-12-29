@@ -33,7 +33,7 @@ class EffectExecutor:
         self.logger = get_logger(self.__class__.__name__)
 
     async def execute(self, effect: CardEffect):
-        self.logger.error(
+        self.logger.info(
             "Эффект - %s, значение - %s",
             effect.action,
             effect.value,

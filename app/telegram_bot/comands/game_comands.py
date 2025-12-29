@@ -230,10 +230,11 @@ async def attack_enemy_champion(message: types.Message):
                         media=FSInputFile(icon_path),
                     )
                 )
+            await message.answer_media_group(media=media)
             await message.answer(
                 text="Выберите Чемпиона для Атаки",
-                reply_markup=attack_champion_keyboard,
-                instance_data=champions_card,
+                reply_markup=attack_champion_keyboard(
+                instance_data=champions_card,)
             )
 
 

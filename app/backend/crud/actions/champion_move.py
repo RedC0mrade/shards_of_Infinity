@@ -18,7 +18,7 @@ class ChampionService(BaseService):
         player_state: PlayerState,
     ):
         """Атака выбранного чемпиона."""
-        
+
         if player_state.power < card_instance.card.champion_health:
             self.logger.info(
                 "Ататка игорька - %s, здоровье чемпиона - %s",
@@ -28,6 +28,7 @@ class ChampionService(BaseService):
             raise ChampionError(
                 message="Недостаточно очков атаки для уничтожения чемпиона"
             )
+        self.logger.info("Атакуем чемпиона - %s")
         player_state.power -= card_instance.card.champion_health
         card_instance.zone = CardZone.DISCARD
 
@@ -57,7 +58,9 @@ class ChampionService(BaseService):
         )
 
         result: Result = await self.session.execute(stmt)
-        cards_instance: list[PlayerCardInstance] = result.scalars().all()
+        cards_instance: list[PlayerCardInstance] = (
+            result.unique().scalars().all()
+        )
 
         self.logger.info("cards_instance - %s", cards_instance)
 

@@ -52,14 +52,25 @@ async def handle_attack_champion(
         )
 
         card_instance: PlayerCardInstance = (
-            card_instance_services.get_card_instance_for_id(
+            await card_instance_services.get_card_instance_for_id(
                 card_instanse_id=callback_data.id
             )
         )
 
         await champion_service.attack_the_champion(
-            card_instance_id=card_instance,
+            card_instance=card_instance,
             player_state=player_state,
         )
 
-        session.commit()
+        photo = FSInputFile(media_dir / Path(card_instance.card.icon))
+
+        await callback.message.answer_photo(
+            photo=photo,
+            caption=f"Вы уничтожили чемпиона {card_instance.card.name}",
+        )
+        await callback.bot.send_photo(
+            photo=photo,
+            caption=f"Ваш противник уничтожили чемпиона: {card_instance.card.name}",
+            chat_id=player_state.game.non_active_player_id,
+        )
+        await session.commit()
