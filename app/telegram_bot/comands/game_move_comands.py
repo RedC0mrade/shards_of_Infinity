@@ -33,7 +33,6 @@ async def handle_play_card(
     logger.info("Обрабатываем команду розыгрыша карт")
     async with db_helper.session_context() as session:
         card_services = CardServices(session=session)
-        # card_instance_services = CardInstanceServices(session=session)
         player_state_services = PlayerStateServices(session=session)
         move_services = MoveServices(session=session)
 

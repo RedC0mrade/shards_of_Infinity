@@ -1,8 +1,5 @@
-from sqlalchemy import Result, select
 from app.backend.core.models.card import StartCardPlayer
 from app.backend.core.models.game import Game
-from app.backend.core.models.player_state import PlayerState
-from app.backend.core.models.user import TelegramUser
 from app.backend.crud.actions.game_move import MoveServices
 from app.backend.crud.card_instance_crud import CardInstanceServices
 from app.backend.crud.games_crud import GameServices
@@ -11,7 +8,6 @@ from app.backend.crud.market_crud1 import MarketServices
 from app.backend.crud.player_state_crud import PlayerStateServices
 from app.backend.factories.database import db_helper
 from aiogram import Router, types, F
-from aiogram.types import ReplyKeyboardRemove
 from aiogram.filters import CommandStart, Command
 from aiogram.fsm.context import FSMContext
 

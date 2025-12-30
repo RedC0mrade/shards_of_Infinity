@@ -19,7 +19,7 @@ class GameTokenError(GameError):
 
 
 class ActiveGameError(GameError):
-    """Пробле с активной игрой."""
+    """Проблема с активной игрой."""
 
     pass
 
@@ -78,5 +78,10 @@ class MasteryError(GameError):
 
 class ConcentrationError(GameError):
     """Невозможно получить могущество."""
+
+    pass
+
+class ShieldError(GameError):
+    """Невозможно атаковать пока не сняты щиты."""
 
     pass

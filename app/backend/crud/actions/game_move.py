@@ -38,6 +38,8 @@ class MoveServices(BaseService):
         # Что необходимо сделать перед ходом
         # 1) Обнулить все показатели. Атаки, защиты, щита
         # 2) Обновить обновить счетчик фракций
+        card_inctance_service = CardInstanceServices(session=self.session)
+
         self.logger.info(
             "Состояние player_state на начало функции,\n ---power - %s,\n ---shild - %s,\n ---crystals - %s,\n ---wilds - %s,\n ---homodeus - %s,\n ---order - %s,\n ---demirealm - %s,\n ---nconcentration -%s",
             player_state.power,
@@ -101,6 +103,16 @@ class MoveServices(BaseService):
             player_state.demirealm_count,
             player_state.concentration,
         )
+
+        cards_in_action: list[PlayerCardInstance] = (
+            await card_inctance_service.get_player_cards_in_hand_in_play(
+                player_state=player_state
+            )
+        )
+        player_state.shield = sum(
+            [card_instance.card.shield for card_instance in cards_in_action]
+        )
+        self.logger.info("щит равен - %s", player_state.shield)
         await self.session.flush()  # закомитится в хендлере
 
     async def make_move(
@@ -157,6 +169,10 @@ class MoveServices(BaseService):
                     "прерываем выполнение хода",
                     effect.action,
                 )
+                await play_state_executor.faction_count(card=card)
+                self.logger.info(
+                    "faction_count выполнен для карты '%s'", card.name
+                )
                 return result
 
         self.logger.info("Все эффекты карты '%s' обработаны", card.name)
@@ -205,7 +221,7 @@ class MoveServices(BaseService):
         )  # не забыть что нужно закоммитить
 
         cards_intances: list[PlayerCardInstance] = (
-            await card_instance_service.get_player_cards_instance_in_play(
+            await card_instance_service.get_player_cards_instance_in_play_exept_champions(
                 player_state=player_state,
             )
         )
@@ -242,14 +258,7 @@ class MoveServices(BaseService):
                 card_instances=delete_mercenary, card_zone=CardZone.EXILED
             )  # не забыть что нужно закоммитить
 
-        hand: list[PlayerCardInstance] = await hand_service.create_hand(
-            player_id=player_state.player_id,
-        )
-
-        player_state.shield = sum(
-            [card_instance.card.shield for card_instance in hand]
-        )
-        self.logger.info("щит равен - %s", player_state.shield)
+        await hand_service.create_hand(player_id=player_state.player_id)
 
         await self.session.flush()
 

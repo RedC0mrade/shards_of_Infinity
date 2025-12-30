@@ -1,6 +1,6 @@
 from random import sample
 from typing import TYPE_CHECKING
-from sqlalchemy import Result, select
+from sqlalchemy import Result, or_, select
 from sqlalchemy.orm import joinedload
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -148,7 +148,41 @@ class CardInstanceServices(BaseService):
 
         return card_instanse
 
-    async def get_player_cards_instance_in_play(
+    async def get_player_cards_in_hand_in_play(
+        self,
+        player_state: PlayerState,
+    ) -> list[PlayerCardInstance]:
+        """Получаем все карты игрока в игре и в руке."""
+        stmt = (
+            select(PlayerCardInstance)
+            .join(Card, Card.id == PlayerCardInstance.card_id)
+            .where(
+                PlayerCardInstance.player_state_id == player_state.id,
+                or_(
+                    PlayerCardInstance.zone == CardZone.HAND,
+                    PlayerCardInstance.zone == CardZone.IN_PLAY,
+                ),
+            )
+        )
+        result: Result = await self.session.execute(stmt)
+        card_instances: list[PlayerCardInstance] = (
+            result.unique().scalars().all()
+        )
+        self.logger.debug(
+            "карты игрока для подсчета щитов. -%s",
+            card_instances,
+        )
+        for card_instance in card_instances:
+            self.logger.info(
+                "🃏 Карта '%s' (тип: %s, фракция: %s) находится в зоне %s.",
+                card_instance.card.name,
+                card_instance.card.card_type,
+                card_instance.card.faction,
+                card_instance.zone,
+            )
+        return card_instances
+
+    async def get_player_cards_instance_in_play_exept_champions(
         self,
         player_state: PlayerState,
     ) -> list[PlayerCardInstance]:

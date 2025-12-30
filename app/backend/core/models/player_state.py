@@ -20,7 +20,7 @@ class PlayerState(Base):
         ForeignKey("games.id", ondelete="CASCADE"),
     )
     player_id: Mapped[int] = mapped_column(BigInteger, ForeignKey("users.id"))
-
+    
     health: Mapped[int] = mapped_column(Integer, default=50)
     mastery: Mapped[int] = mapped_column(Integer, default=0)
     crystals: Mapped[int] = mapped_column(Integer, default=0)

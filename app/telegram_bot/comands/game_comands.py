@@ -224,7 +224,6 @@ async def attack_enemy_champion(message: types.Message):
                 card = champion.card
 
                 icon_path = media_dir / Path(card.icon)
-                logger.info("Путь до карты %s", icon_path)
                 media.append(
                     InputMediaPhoto(
                         media=FSInputFile(icon_path),
@@ -234,7 +233,8 @@ async def attack_enemy_champion(message: types.Message):
             await message.answer(
                 text="Выберите Чемпиона для Атаки",
                 reply_markup=attack_champion_keyboard(
-                instance_data=champions_card,)
+                    instance_data=champions_card,
+                ),
             )
 
 
@@ -243,6 +243,7 @@ async def attack_enemy_player(message: types.Message):
     """Атака противника."""
     # 1) Проверить является ли игрок активным
     # 2) Проверить есть ли неуязвимость у атакуемого
+    # 2.2) Проверить щит
     # 3) Нанести урон
     # 4) Проверить не опустилось ли здоровье ниже нуля
     # 4.1) Если попустилось вывести сообщения ирокам
@@ -301,13 +302,18 @@ async def end_move(message: types.Message):
                 active_player=True,
             )
         )
+        emeny_state: PlayerState = (
+            player_state_service.get_enemy_player_state_with_game(
+                player_id=player_state.player_id
+            )
+        )
         logger.critical(
             "id player_state игрока - %s, id игры - %s",
             player_state.id,
             player_state.game.id,
         )
         await move_service.pre_make_move(
-            player_state=player_state,
+            player_state=emeny_state,
             game=player_state.game,
         )
         logger.critical(

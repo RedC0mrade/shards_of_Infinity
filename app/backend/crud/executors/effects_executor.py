@@ -50,7 +50,7 @@ class EffectExecutor:
                 condition_value=effect.condition_value,
             )
         else:
-            self.logger.error("Проблема с effect")
+            self.logger.error("Проблема нет такого effect")
             return None
 
     # ----------------------------- crystal ---------------------------------
@@ -210,8 +210,6 @@ class EffectExecutor:
         condition_value: int,
     ):
         """Уничтожаем чемпиона врага."""
-
-        self.player_state.wilds_count += 1
 
         if self.player_state.wilds_count >= condition_value:
             champion_service = ChampionService(session=self.session)
