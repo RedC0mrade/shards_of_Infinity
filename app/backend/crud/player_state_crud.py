@@ -184,6 +184,9 @@ class PlayerStateServices(BaseService):
         )
         result: Result = await self.session.execute(stmt)
         player_state: PlayerState = result.scalar_one_or_none()
+
+        self.logger.debug("Сотояние противнеика - %s", player_state)
+        
         if not player_state:
             raise ActiveGameError(message="❌ У вас нет активной игры.")
         if (

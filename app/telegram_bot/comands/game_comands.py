@@ -21,7 +21,7 @@ from app.backend.crud.player_state_crud import PlayerStateServices
 from app.backend.factories.database import db_helper
 
 from app.telegram_bot.keyboards.champios_keyboard import (
-    ChampionCallback,
+    AtackChampionCallback,
     attack_champion_keyboard,
 )
 from app.telegram_bot.keyboards.game_move_keyboard import MoveKBText
@@ -234,6 +234,7 @@ async def attack_enemy_champion(message: types.Message):
                 text="Выберите Чемпиона для Атаки",
                 reply_markup=attack_champion_keyboard(
                     instance_data=champions_card,
+                    callback_cls=AtackChampionCallback,
                 ),
             )
 
@@ -303,7 +304,7 @@ async def end_move(message: types.Message):
             )
         )
         emeny_state: PlayerState = (
-            player_state_service.get_enemy_player_state_with_game(
+            await player_state_service.get_enemy_player_state_with_game(
                 player_id=player_state.player_id
             )
         )

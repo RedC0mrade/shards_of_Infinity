@@ -1,4 +1,6 @@
+from __future__ import annotations
 from dataclasses import dataclass
+from typing import TYPE_CHECKING
 from sqlalchemy.ext.asyncio import AsyncSession
 from aiogram.types import InlineKeyboardMarkup
 
@@ -12,11 +14,15 @@ from app.telegram_bot.keyboards.champios_keyboard import (
 )
 from app.utils.logger import get_logger
 
+if TYPE_CHECKING:
+    from app.backend.core.models.play_card_instance import PlayerCardInstance
+
 
 @dataclass
 class EffectResult:
     text: str | None = None
     keyboard: InlineKeyboardMarkup | None = None
+    card_instances: list[PlayerCardInstance] | None = None
     stop_flow: bool = False
 
 
@@ -40,7 +46,9 @@ class EffectExecutor:
         )
 
         method_name = (
-            f"do_{effect.action}_" f"{effect.effect_type}_" f"{effect.condition_type}"
+            f"do_{effect.action}_"
+            f"{effect.effect_type}_"
+            f"{effect.condition_type}"
         )
         self.logger.info("method_name - %s", method_name)
         method = getattr(self, method_name, None)
@@ -213,8 +221,10 @@ class EffectExecutor:
 
         if self.player_state.wilds_count >= condition_value:
             champion_service = ChampionService(session=self.session)
-            champions = await champion_service.get_champions(
-                player_id=self.player_state.player_id
+            champions: list[PlayerCardInstance] = (
+                await champion_service.get_champions(
+                    player_id=self.player_state.player_id
+                )
             )
             keyboard = attack_champion_keyboard(
                 instance_data=champions,
@@ -223,6 +233,7 @@ class EffectExecutor:
             return EffectResult(
                 text="Выберите чемпиона для уничтожения:",
                 keyboard=keyboard,
+                card_instances=champions,
                 stop_flow=True,
             )
 
@@ -231,10 +242,8 @@ class EffectExecutor:
     async def do_card_destroy_base_none(
         self,
         value: int,
-        condition_value: int,            
+        condition_value: int,
     ):
         """Удалить свою карту из руки или колоды."""
 
         self.player_state.demirealm_count += 1
-
-        

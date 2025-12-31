@@ -1,6 +1,6 @@
 from pathlib import Path
-from aiogram import Router, F
-from aiogram.types import CallbackQuery, FSInputFile
+from aiogram import Router, F, Bot
+from aiogram.types import CallbackQuery, FSInputFile, InputMediaPhoto
 
 from app.backend.core.models.card import Card
 from app.backend.core.models.play_card_instance import (
@@ -12,6 +12,10 @@ from app.backend.crud.card_crud import CardServices
 from app.backend.crud.card_instance_crud import CardInstanceServices
 from app.backend.crud.actions.game_move import MoveServices
 from app.backend.crud.player_state_crud import PlayerStateServices
+from app.telegram_bot.keyboards.champios_keyboard import (
+    DestroyChampionCallback,
+    attack_champion_keyboard,
+)
 from app.telegram_bot.keyboards.hand_keyboard import CardCallback
 
 from app.backend.factories.database import db_helper
@@ -61,12 +65,35 @@ async def handle_play_card(
             )
         logger.info("Получили карту %s c id - %s", card.name, card.id)
 
-        await move_services.make_move(
+        result = await move_services.make_move(
             card=card,
             player_state=player_state,
             game=player_state.game,
             player_id=callback.from_user.id,
         )
+
+        if result:
+            media = []
+            for champion in result:
+                card = champion.card
+
+                icon_path = media_dir / Path(card.icon)
+                media.append(
+                    InputMediaPhoto(
+                        media=FSInputFile(icon_path),
+                    )
+                )
+            await Bot.send_media_group(
+                chat_id=callback.message.chat.id,
+                media=media,
+            )
+            await callback.answer(
+                text="Выберите Чемпиона для Атаки",
+                reply_markup=attack_champion_keyboard(
+                    instance_data=result.card_instances,
+                    callback_cls=DestroyChampionCallback,
+                ),
+            )
 
         photo = FSInputFile(media_dir / Path(card.icon))
 
