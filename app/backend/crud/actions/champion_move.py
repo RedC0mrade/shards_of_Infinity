@@ -69,7 +69,7 @@ class ChampionService(BaseService):
                 "Противник игрок с id - %s, не имеет чемпионов",
                 player_id,
             )
-            raise ChampionError(message="У противника нет чемпионов в игре")
+            return None
         [
             self.logger.info(
                 "Игрок с id - %s имеет чемпионов в игре - %s имеет чемпиона - %s",

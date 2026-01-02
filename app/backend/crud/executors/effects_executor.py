@@ -1,5 +1,4 @@
 from __future__ import annotations
-from dataclasses import dataclass
 from typing import TYPE_CHECKING
 from sqlalchemy.ext.asyncio import AsyncSession
 from aiogram.types import InlineKeyboardMarkup
@@ -16,14 +15,6 @@ from app.utils.logger import get_logger
 
 if TYPE_CHECKING:
     from app.backend.core.models.play_card_instance import PlayerCardInstance
-
-
-@dataclass
-class EffectResult:
-    text: str | None = None
-    keyboard: InlineKeyboardMarkup | None = None
-    card_instances: list[PlayerCardInstance] | None = None
-    stop_flow: bool = False
 
 
 class EffectExecutor:
@@ -226,16 +217,12 @@ class EffectExecutor:
                     player_id=self.player_state.player_id
                 )
             )
-            keyboard = attack_champion_keyboard(
-                instance_data=champions,
-            )
 
-            return EffectResult(
-                text="Выберите чемпиона для уничтожения:",
-                keyboard=keyboard,
-                card_instances=champions,
-                stop_flow=True,
-            )
+            if champions:
+                self.logger.info("Получаем чемпионов - %s", champions)
+                return champions
+
+            self.logger.info("Чемпионов нет - %s", champions)
 
     # ------------------------------- card_destroy ----------------------------
 

@@ -29,7 +29,7 @@ class AttackService(BaseService):
         self.logger.info("Атака игрока после снятия щитов ровна", player_state.power)
 
         if player_state.power <= 0:
-            self.logger("Атака меньше или равна щиту выводим ошибку")
+            self.logger.info("Атака меньше или равна щиту выводим ошибку")
             raise ShieldError(message="Щит игрока больше или равен наносимому урону")
         
         enemy_state.health -= player_state.power

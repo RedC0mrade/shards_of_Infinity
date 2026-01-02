@@ -1,5 +1,9 @@
+from __future__ import annotations
+
 from pathlib import Path
 from aiogram import Router, F, Bot
+from typing import TYPE_CHECKING
+
 from aiogram.types import CallbackQuery, FSInputFile, InputMediaPhoto
 
 from app.backend.core.models.card import Card
@@ -65,7 +69,7 @@ async def handle_play_card(
             )
         logger.info("Получили карту %s c id - %s", card.name, card.id)
 
-        result = await move_services.make_move(
+        result: list[PlayerCardInstance] = await move_services.make_move(
             card=card,
             player_state=player_state,
             game=player_state.game,
@@ -73,27 +77,31 @@ async def handle_play_card(
         )
 
         if result:
+            logger.debug("result - %s", result)
+            logger.debug("Выбор чемпионов для уничтожения")
             media = []
             for champion in result:
                 card = champion.card
-
+                logger.info("--------------------------Чемпион - %s", card.name)
                 icon_path = media_dir / Path(card.icon)
                 media.append(
                     InputMediaPhoto(
                         media=FSInputFile(icon_path),
                     )
                 )
-            await Bot.send_media_group(
+            await callback.bot.send_media_group(
                 chat_id=callback.message.chat.id,
                 media=media,
             )
-            await callback.answer(
+            await callback.message.answer(
                 text="Выберите Чемпиона для Атаки",
                 reply_markup=attack_champion_keyboard(
-                    instance_data=result.card_instances,
+                    instance_data=result,
                     callback_cls=DestroyChampionCallback,
                 ),
             )
+            return 
+            
 
         photo = FSInputFile(media_dir / Path(card.icon))
 
