@@ -19,7 +19,6 @@ class DestroyChampionCallback(
     prefix="destroy_champion",
 ):
     id: int
-    name: str
     champion_health: int
 
 
@@ -37,7 +36,6 @@ def attack_champion_keyboard(
                 text=card_instance.card.name,
                 callback_data=callback_cls(
                     id=card_instance.id,
-                    name=card_instance.card.name,
                     champion_health=card_instance.card.champion_health,
                 ).pack(),
             )

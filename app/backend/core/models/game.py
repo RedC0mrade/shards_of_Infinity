@@ -4,6 +4,7 @@ import enum
 from datetime import datetime
 from typing import TYPE_CHECKING, List
 from sqlalchemy import (
+    BigInteger,
     DateTime,
     String,
     func,
@@ -40,16 +41,22 @@ class Game(Base):
         default=GameStatus.WAITING,
     )
 
-    player1_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
+    player1_id: Mapped[int] = mapped_column(
+        BigInteger,
+        ForeignKey("users.id"),
+    )
     player2_id: Mapped[int | None] = mapped_column(
+        BigInteger,
         ForeignKey("users.id"),
         nullable=True,
     )
     active_player_id: Mapped[int | None] = mapped_column(
+        BigInteger,
         ForeignKey("users.id"),
         nullable=True,
     )
     non_active_player_id: Mapped[int | None] = mapped_column(
+        BigInteger,
         ForeignKey("users.id"),
         nullable=True,
     )
@@ -68,6 +75,7 @@ class Game(Base):
         nullable=True,
     )
     winner_id: Mapped[int | None] = mapped_column(
+        BigInteger,
         ForeignKey("users.id"),
         nullable=True,
     )

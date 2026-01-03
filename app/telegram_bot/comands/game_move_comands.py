@@ -89,10 +89,21 @@ async def handle_play_card(
                         media=FSInputFile(icon_path),
                     )
                 )
-            await callback.bot.send_media_group(
-                chat_id=callback.message.chat.id,
-                media=media,
-            )
+            logger.info("icon_path = %s exists=%s", icon_path, icon_path.exists())
+            
+            if len(media) == 1:
+                logger.info("чемпион только 1")
+                await callback.bot.send_photo(
+                    chat_id=callback.message.chat.id,
+                    photo=media[0].media,
+                )
+            else:
+                logger.info("чемпионов больше 1")
+                await callback.bot.send_media_group(
+                    chat_id=callback.message.chat.id,
+                    media=media,
+                )
+            logger.info("отработал колбэк с медиа- %s", media)
             await callback.message.answer(
                 text="Выберите Чемпиона для Атаки",
                 reply_markup=attack_champion_keyboard(
@@ -100,6 +111,7 @@ async def handle_play_card(
                     callback_cls=DestroyChampionCallback,
                 ),
             )
+            logger.info("Отработала клавиатура")
             return 
             
 

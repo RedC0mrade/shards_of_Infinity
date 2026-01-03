@@ -33,7 +33,6 @@ media_dir = Path(__file__).parent.parent.parent.parent / "media"
 
 
 # id: int
-# name: str
 # champion_health: int
 
 

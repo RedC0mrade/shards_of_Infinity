@@ -22,8 +22,9 @@ class ChampionService(BaseService):
         if player_state.power < card_instance.card.champion_health:
             self.logger.info(
                 "Ататка игорька - %s, здоровье чемпиона - %s",
-                card_instance.card.champion_health,
                 player_state.power,
+                card_instance.card.champion_health,
+                
             )
             raise ChampionError(
                 message="Недостаточно очков атаки для уничтожения чемпиона"

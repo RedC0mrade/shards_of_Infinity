@@ -18,6 +18,7 @@ from app.backend.crud.games_crud import GameServices
 from app.backend.crud.hand_crud import HandServices
 from app.backend.crud.market_crud1 import MarketServices
 from app.backend.crud.player_state_crud import PlayerStateServices
+from app.backend.crud.users_crud import UserServices
 from app.backend.factories.database import db_helper
 
 from app.telegram_bot.keyboards.champios_keyboard import (
@@ -79,13 +80,12 @@ async def handle_market(message: types.Message):
     F.text.in_(
         [
             MoveKBText.HAND,
-            MoveKBText.CARDS_IN_PLAY,
             MoveKBText.PLAYER_DISCARD,
         ]
     )
 )
 async def handle_hand(message: types.Message):
-    """Выводим карты в руке, на столе"""
+    """Выводим карты в сбросе, на столе"""
     async with db_helper.session_context() as session:
         game_service = GameServices(session=session)
         hand_services = HandServices(session=session)
@@ -99,14 +99,6 @@ async def handle_hand(message: types.Message):
                     game_id=game.id,
                     card_zone=CardZone.HAND,
                     player_id=message.from_user.id,
-                )
-            )
-
-        elif message.text == MoveKBText.CARDS_IN_PLAY:
-            hand_cards: list[PlayerCardInstance] = (
-                await hand_services.get_cards_in_play(
-                    card_zone=CardZone.IN_PLAY,
-                    game_id=game.id,
                 )
             )
 
@@ -143,6 +135,71 @@ async def handle_hand(message: types.Message):
                 ),
             )
 
+@router.message(F.text == MoveKBText.CARDS_IN_PLAY)
+async def handle_cards_in_play(message: types.Message):
+    """Выводим карты на столе"""
+    async with db_helper.session_context() as session:
+        game_service = GameServices(session=session)
+        hand_service = HandServices(session=session)
+        user_service = UserServices(session=session)
+        game: Game = await game_service.get_active_game(
+            player_id=message.from_user.id
+        )
+        match message.from_user.id:
+            case game.active_player_id:
+                enemy_id = game.non_active_player_id
+            case game.non_active_player_id:
+                enemy_id = game.active_player_id
+
+
+        hand_cards: list[PlayerCardInstance] = (
+                await hand_service.get_cards_in_play(
+                    card_zone=CardZone.IN_PLAY,
+                    game_id=game.id,
+                    player_id=message.from_user.id,
+                )
+            )
+
+        media = []  # переделать дублирующийся код
+        for slot in hand_cards:
+            card = slot.card
+
+            icon_path = media_dir / Path(card.icon)
+            logger.info("Путь до карты %s", icon_path)
+            media.append(
+                InputMediaPhoto(
+                    media=FSInputFile(icon_path),
+                )
+            )
+        if not media:
+            return await message.answer("❌ Нет карт")
+        await message.answer(text="Карты разыгранные вами")
+        await message.answer_media_group(media)
+
+        
+        hand_cards: list[PlayerCardInstance] = (
+                await hand_service.get_cards_in_play(
+                    card_zone=CardZone.IN_PLAY,
+                    game_id=game.id,
+                    player_id=enemy_id,
+                )
+            )
+
+        media = []  # переделать дублирующийся код
+        for slot in hand_cards:
+            card = slot.card
+
+            icon_path = media_dir / Path(card.icon)
+            logger.info("Путь до карты %s", icon_path)
+            media.append(
+                InputMediaPhoto(
+                    media=FSInputFile(icon_path),
+                )
+            )
+        if not media:
+            return await message.answer("❌ Нет карт")
+        await message.answer(text="Карты разыгранные противником")
+        await message.answer_media_group(media)
 
 @router.message(F.text == MoveKBText.GAME_PARAMETERS)
 async def handle_game_parametrs(message: types.Message):

@@ -56,11 +56,20 @@ class HandServices(BaseService):
         self,
         card_zone: CardZone,
         game_id: int,
+        player_id: int,
     ) -> list[PlayerCardInstance]:
         """Получаем разыгранные карты."""
-        stmt = select(PlayerCardInstance).where(
-            PlayerCardInstance.game_id == game_id,
-            PlayerCardInstance.zone == card_zone,
+        stmt = (
+            select(PlayerCardInstance)
+            .join(
+                PlayerState,
+                PlayerState.id == PlayerCardInstance.player_state_id,
+            )
+            .where(
+                PlayerCardInstance.game_id == game_id,
+                PlayerCardInstance.zone == card_zone,
+                PlayerState.player_id == player_id,
+            )
         )
 
         result: Result = await self.session.execute(stmt)
@@ -155,5 +164,3 @@ class HandServices(BaseService):
         self.logger.info("Финальная рука: %s", hand_cards)
 
         return hand_cards
-
-    
