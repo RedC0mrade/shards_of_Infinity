@@ -172,9 +172,10 @@ async def handle_cards_in_play(message: types.Message):
                 )
             )
         if not media:
-            return await message.answer("❌ Нет карт")
-        await message.answer(text="Карты разыгранные вами")
-        await message.answer_media_group(media)
+            await message.answer(text="❌ У вас нет разыгранных карт")
+        else:
+            await message.answer(text="Карты разыгранные вами")
+            await message.answer_media_group(media)
 
         
         hand_cards: list[PlayerCardInstance] = (
@@ -197,9 +198,10 @@ async def handle_cards_in_play(message: types.Message):
                 )
             )
         if not media:
-            return await message.answer("❌ Нет карт")
-        await message.answer(text="Карты разыгранные противником")
-        await message.answer_media_group(media)
+            await message.answer(text="❌ У противника нет разыгранных чемпионов")
+        else:
+            await message.answer(text="Чемпионы разыгранные противником")
+            await message.answer_media_group(media)
 
 @router.message(F.text == MoveKBText.GAME_PARAMETERS)
 async def handle_game_parametrs(message: types.Message):
