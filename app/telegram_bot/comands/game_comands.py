@@ -25,7 +25,7 @@ from app.telegram_bot.keyboards.champios_keyboard import (
     AtackChampionCallback,
     attack_champion_keyboard,
 )
-from app.telegram_bot.keyboards.game_move_keyboard import MoveKBText
+from app.telegram_bot.keyboards.game_move_keyboard import MoveKBText, in_play_card_keyboard, non_play_card_keyboard
 from app.telegram_bot.keyboards.hand_keyboard import (
     CardCallback,
     MarketCallback,
@@ -388,12 +388,14 @@ async def end_move(message: types.Message):
         # await session.commit()
 
         await message.answer(
-            text="Ваш ход окончен. Ходит Ваш противник"
+            text="Ваш ход окончен. Ходит Ваш противник",
+            reply_markup=non_play_card_keyboard(),
         )  # Прикрепить клавиатуру не активного игорька
 
         await message.bot.send_message(
             text="Ваш ход!",
             chat_id=player_state.game.active_player_id,
+            reply_markup=in_play_card_keyboard(),
         )
         await session.commit()
 
