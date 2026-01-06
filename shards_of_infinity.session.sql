@@ -1,7 +1,14 @@
-UPDATE player_card_instances
-SET player_state_id = 1, zone = 'hand'
-WHERE id = 37;
+-- UPDATE player_card_instances
+-- SET player_state_id = 5, zone = 'hand'
+-- WHERE id = 27;
 
 -- UPDATE player_states
--- SET power = 20
--- WHERE id = 1;
+-- SET crystals = 20
+-- WHERE id = 2;    
+
+-- DELETE FROM games
+-- WHERE id = 2;
+
+UPDATE player_card_instances
+SET player_state_id = 5
+WHERE id = 309;

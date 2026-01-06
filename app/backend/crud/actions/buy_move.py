@@ -109,4 +109,6 @@ class BuyServices(BaseService):
 
         replacement_card_instance.zone = CardZone.MARKET
         replacement_card_instance.position_on_market = position_on_market
+        
+        self.logger.info("Выполняем коммит")
         await self.session.commit()

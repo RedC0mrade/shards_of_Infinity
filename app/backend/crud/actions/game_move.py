@@ -268,7 +268,7 @@ class MoveServices(BaseService):
     async def get_mastery(
         self,
         player_state: PlayerState,
-    ):
+    ) -> PlayerState:
         if player_state.crystals == 0:
             raise NotEnoughCrystals("Нет достаточно кристалов для концентрации")
         if player_state.concentration == True:
@@ -281,7 +281,8 @@ class MoveServices(BaseService):
                 "Достигнуто максимальное количество могущества"
             )
         player_state.concentration = True
-        player_state.concentration += 1
+        player_state.mastery += 1
         player_state.crystals -= 1
 
-        self.session.commit()
+        await self.session.commit()
+        return player_state

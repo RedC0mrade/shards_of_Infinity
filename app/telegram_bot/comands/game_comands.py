@@ -25,7 +25,11 @@ from app.telegram_bot.keyboards.champios_keyboard import (
     AtackChampionCallback,
     attack_champion_keyboard,
 )
-from app.telegram_bot.keyboards.game_move_keyboard import MoveKBText, in_play_card_keyboard, non_play_card_keyboard
+from app.telegram_bot.keyboards.game_move_keyboard import (
+    MoveKBText,
+    in_play_card_keyboard,
+    non_play_card_keyboard,
+)
 from app.telegram_bot.keyboards.hand_keyboard import (
     CardCallback,
     MarketCallback,
@@ -135,6 +139,7 @@ async def handle_hand(message: types.Message):
                 ),
             )
 
+
 @router.message(F.text == MoveKBText.CARDS_IN_PLAY)
 async def handle_cards_in_play(message: types.Message):
     """Выводим карты на столе"""
@@ -151,14 +156,13 @@ async def handle_cards_in_play(message: types.Message):
             case game.non_active_player_id:
                 enemy_id = game.active_player_id
 
-
         hand_cards: list[PlayerCardInstance] = (
-                await hand_service.get_cards_in_play(
-                    card_zone=CardZone.IN_PLAY,
-                    game_id=game.id,
-                    player_id=message.from_user.id,
-                )
+            await hand_service.get_cards_in_play(
+                card_zone=CardZone.IN_PLAY,
+                game_id=game.id,
+                player_id=message.from_user.id,
             )
+        )
 
         media = []  # переделать дублирующийся код
         for slot in hand_cards:
@@ -177,14 +181,13 @@ async def handle_cards_in_play(message: types.Message):
             await message.answer(text="Карты разыгранные вами")
             await message.answer_media_group(media)
 
-        
         hand_cards: list[PlayerCardInstance] = (
-                await hand_service.get_cards_in_play(
-                    card_zone=CardZone.IN_PLAY,
-                    game_id=game.id,
-                    player_id=enemy_id,
-                )
+            await hand_service.get_cards_in_play(
+                card_zone=CardZone.IN_PLAY,
+                game_id=game.id,
+                player_id=enemy_id,
             )
+        )
 
         media = []  # переделать дублирующийся код
         for slot in hand_cards:
@@ -198,10 +201,13 @@ async def handle_cards_in_play(message: types.Message):
                 )
             )
         if not media:
-            await message.answer(text="❌ У противника нет разыгранных чемпионов")
+            await message.answer(
+                text="❌ У противника нет разыгранных чемпионов"
+            )
         else:
             await message.answer(text="Чемпионы разыгранные противником")
             await message.answer_media_group(media)
+
 
 @router.message(F.text == MoveKBText.GAME_PARAMETERS)
 async def handle_game_parametrs(message: types.Message):
@@ -242,7 +248,6 @@ async def handle_game_parametrs(message: types.Message):
 @router.message(F.text == MoveKBText.ENEMY_PARAMETERS)
 async def enemy_game_parametrs(message: types.Message):
     """Выводим состояние противника"""
-
     async with db_helper.session_context() as session:
         player_state_service = PlayerStateServices(session=session)
 
@@ -301,13 +306,6 @@ async def attack_enemy_champion(message: types.Message):
 @router.message(F.text == MoveKBText.ATTACK)
 async def attack_enemy_player(message: types.Message):
     """Атака противника."""
-    # 1) Проверить является ли игрок активным
-    # 2) Проверить есть ли неуязвимость у атакуемого
-    # 2.2) Проверить щит
-    # 3) Нанести урон
-    # 4) Проверить не опустилось ли здоровье ниже нуля
-    # 4.1) Если попустилось вывести сообщения ирокам
-    # 4.2) Сменить статус игры на финиш
     async with db_helper.session_context() as session:
         game_service = GameServices(session=session)
         player_state_service = PlayerStateServices(session=session)
@@ -414,4 +412,9 @@ async def get_concentration(message: types.Message):
             )
         )
 
-        await move_service.get_mastery(player_state=player_state)
+        change_player_state: PlayerState = await move_service.get_mastery(
+            player_state=player_state
+        )
+        await message.answer(
+            text=(f"Мастерство ⚡ теперь равно = {change_player_state.mastery}")
+        )
