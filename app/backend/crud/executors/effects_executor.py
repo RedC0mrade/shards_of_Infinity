@@ -7,6 +7,7 @@ from app.backend.core.models.card import CardEffect
 from app.backend.core.models.game import Game
 from app.backend.core.models.player_state import PlayerState
 from app.backend.crud.actions.champion_move import ChampionService
+from app.backend.crud.actions.destroy_card_move import DestroyCardService
 from app.backend.crud.card_instance_crud import CardInstanceServices
 from app.telegram_bot.keyboards.champios_keyboard import (
     attack_champion_keyboard,
@@ -37,9 +38,7 @@ class EffectExecutor:
         )
 
         method_name = (
-            f"do_{effect.action}_"
-            f"{effect.effect_type}_"
-            f"{effect.condition_type}"
+            f"do_{effect.action}_" f"{effect.effect_type}_" f"{effect.condition_type}"
         )
         self.logger.info("method_name - %s", method_name)
         method = getattr(self, method_name, None)
@@ -212,10 +211,8 @@ class EffectExecutor:
 
         if self.player_state.wilds_count >= condition_value:
             champion_service = ChampionService(session=self.session)
-            champions: list[PlayerCardInstance] = (
-                await champion_service.get_champions(
-                    player_id=self.player_state.player_id
-                )
+            champions: list[PlayerCardInstance] = await champion_service.get_champions(
+                player_id=self.player_state.player_id
             )
 
             if champions:
@@ -233,4 +230,14 @@ class EffectExecutor:
     ):
         """Удалить свою карту из руки или колоды."""
 
-        self.player_state.demirealm_count += 1
+        destroy_service = DestroyCardService(session=self.session)
+        cards: list[PlayerCardInstance] = destroy_service.get_card_for_destroy(
+            game_id=self.game.id,
+            player_state_id=self.player_state.id,
+        )
+
+        if cards:
+            self.logger.info("Получаем карты - %s", cards)
+            return cards
+
+        self.logger.info("Карт нет - %s", cards)

@@ -6,7 +6,7 @@ from app.backend.crud.base_service import BaseService
 
 class DestroyCardService(BaseService):
 
-    async def destroy_card(
+    async def get_card_for_destroy(
         self,
         game_id: int,
         player_state_id: int,
@@ -23,7 +23,17 @@ class DestroyCardService(BaseService):
                 PlayerCardInstance.game_id == game_id,
             )
         )
-        result: Result = self.session.execute(stmt)
+        result: Result = await self.session.execute(stmt)
         card_instances = result.unique().scalars().all()
 
         return card_instances
+    
+    async def destroy_card(self, card_instance_id: int):
+        """Уничтожение карты противника."""
+
+        stmt = select(PlayerCardInstance).where(PlayerCardInstance.id == card_instance_id)
+
+        result: Result = await self.session.execute(stmt)
+        card_instance = result.unique().scalar_one_or_none()
+        if not card_instance:
+            raise
