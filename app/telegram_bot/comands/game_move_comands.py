@@ -78,11 +78,11 @@ async def handle_play_card(
 
         if result:
             logger.debug("result - %s", result)
-            logger.debug("Выбор чемпионов для уничтожения")
+            logger.debug("Обработка действиякоторое вернулось из effects_exector")
             media = []
             for champion in result:
                 card = champion.card
-                logger.info("--------------------------Чемпион - %s", card.name)
+                logger.info("--------------------------Карта действия - %s", card.name)
                 icon_path = media_dir / Path(card.icon)
                 media.append(
                     InputMediaPhoto(
@@ -92,7 +92,7 @@ async def handle_play_card(
             logger.info("icon_path = %s exists=%s", icon_path, icon_path.exists())
             
             if len(media) == 1:
-                logger.info("чемпион только 1")
+                logger.info("Карта только 1")
                 await callback.bot.send_photo(
                     chat_id=callback.message.chat.id,
                     photo=media[0].media,
