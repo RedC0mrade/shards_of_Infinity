@@ -10,7 +10,6 @@ class AtackChampionCallback(
     prefix="champion",
 ):
     id: int
-    name: str
     champion_health: int
 
 
