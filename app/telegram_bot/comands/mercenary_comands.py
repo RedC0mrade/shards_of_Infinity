@@ -24,11 +24,8 @@ router = Router(name=__name__)
 logger = get_logger(__name__)
 media_dir = Path(__file__).parent.parent.parent.parent / "media"
 
-#     card_instance_id: int
+#     id: int
 #     play_now: bool
-#     player_state_id: int
-#     game_id: int
-#     card_id: int
 
 
 @router.callback_query(MercenaryCallback.filter())

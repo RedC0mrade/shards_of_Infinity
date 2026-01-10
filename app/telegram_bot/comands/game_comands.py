@@ -25,6 +25,7 @@ from app.telegram_bot.keyboards.champios_keyboard import (
     AtackChampionCallback,
     attack_champion_keyboard,
 )
+from app.telegram_bot.keyboards.dmcc_keyboard import KeyboardFactory
 from app.telegram_bot.keyboards.game_move_keyboard import (
     MoveKBText,
     in_play_card_keyboard,
@@ -73,10 +74,7 @@ async def handle_market(message: types.Message):
         if message.from_user.id == game.active_player_id:
             await message.answer(
                 text="Выберите карту для покупки",
-                reply_markup=make_card_move_keyboard(
-                    instance_data=market_cards,
-                    callback_cls=MarketCallback,
-                ),
+                reply_markup=KeyboardFactory.market(instance_data=market_cards),
             )
 
 
@@ -106,7 +104,7 @@ async def handle_hand(message: types.Message):
                 )
             )
 
-        elif message.text == MoveKBText.PLAYER_DISCARD:
+        else:
             hand_cards: list[PlayerCardInstance] = (
                 await hand_services.get_cards_in_zone(
                     game_id=game.id,
@@ -133,9 +131,8 @@ async def handle_hand(message: types.Message):
 
             await message.answer(
                 "Выберите карту:",
-                reply_markup=make_card_move_keyboard(
+                reply_markup=KeyboardFactory.play_card(
                     instance_data=hand_cards,
-                    callback_cls=CardCallback,
                 ),
             )
 
@@ -176,7 +173,7 @@ async def handle_cards_in_play(message: types.Message):
                 )
             )
         if not media:
-            await message.answer(text="❌ У вас нет разыгранных карт")
+            await message.answer(text="❌ Нет разыгранных карт")
         else:
             await message.answer(text="Карты разыгранные вами")
             await message.answer_media_group(media)
@@ -202,10 +199,10 @@ async def handle_cards_in_play(message: types.Message):
             )
         if not media:
             await message.answer(
-                text="❌ У противника нет разыгранных чемпионов"
+                text="❌ У противника нет разыгранных карт"
             )
         else:
-            await message.answer(text="Чемпионы разыгранные противником")
+            await message.answer(text="Карты разыгранные противником")
             await message.answer_media_group(media)
 
 
@@ -296,9 +293,8 @@ async def attack_enemy_champion(message: types.Message):
             await message.answer_media_group(media=media)
             await message.answer(
                 text="Выберите Чемпиона для Атаки",
-                reply_markup=attack_champion_keyboard(
+                reply_markup=KeyboardFactory.attack_champion(
                     instance_data=champions_card,
-                    callback_cls=AtackChampionCallback,
                 ),
             )
 
