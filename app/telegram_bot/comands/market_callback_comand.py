@@ -9,10 +9,9 @@ from app.backend.core.models.play_card_instance import (
 )
 from app.backend.core.models.player_state import PlayerState
 from app.backend.crud.actions.buy_move import BuyServices
-from app.backend.crud.card_crud import CardServices
 from app.backend.crud.card_instance_crud import CardInstanceServices
-from app.backend.crud.actions.game_move import MoveServices
 from app.backend.crud.player_state_crud import PlayerStateServices
+from app.telegram_bot.keyboards.dmcc_keyboard import KeyboardFactory
 from app.telegram_bot.keyboards.hand_keyboard import MarketCallback
 
 from app.backend.factories.database import db_helper
@@ -68,19 +67,17 @@ async def handle_buy_card(
                 )
             )
 
-
         photo = FSInputFile(media_dir / Path(card_instance.card.icon))
 
         # Обрабатываем случай, если карта наёмник
+        logger.info("Тип карты - %s", card_instance.card.card_type)
         if card_instance.card.card_type == CardType.MERCENARY:
+            logger.info("Карта является наемником")
             await callback.message.answer_photo(
                 photo=photo,
                 caption="Вы купили карту наемника, выберите как её сыграть",
-                reply_markup=play_mercenary(
-                    card_instance_id=card_instance.id,
-                    player_state_id=player_state.id,
-                    game_id=player_state.game_id,
-                    card_id=card_instance.card.id,
+                reply_markup=KeyboardFactory.mercenary(
+                    card_instance_id=card_instance.id
                 ),
             )
             return

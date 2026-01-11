@@ -31,11 +31,7 @@ from app.telegram_bot.keyboards.game_move_keyboard import (
     in_play_card_keyboard,
     non_play_card_keyboard,
 )
-from app.telegram_bot.keyboards.hand_keyboard import (
-    CardCallback,
-    MarketCallback,
-    make_card_move_keyboard,
-)
+
 from app.utils.exceptions.exceptions import GameError
 from app.utils.logger import get_logger
 
@@ -114,17 +110,19 @@ async def handle_hand(message: types.Message):
             )
 
         media = []  # переделать дублирующийся код
+        logger.info("Карты для вывода ироку:")
         for slot in hand_cards:
             card = slot.card
 
             icon_path = media_dir / Path(card.icon)
-            logger.info("Путь до карты %s", icon_path)
+            logger.info("--------------- %s", card.name)
             media.append(
                 InputMediaPhoto(
                     media=FSInputFile(icon_path),
                 )
             )
         if not media:
+            logger.info("Карты отсутствуют")
             return await message.answer("❌ Нет карт")
         await message.answer_media_group(media)
         if message.text == MoveKBText.HAND:
@@ -166,7 +164,7 @@ async def handle_cards_in_play(message: types.Message):
             card = slot.card
 
             icon_path = media_dir / Path(card.icon)
-            logger.info("Путь до карты %s", icon_path)
+            logger.info("--------------- %s", card.name)
             media.append(
                 InputMediaPhoto(
                     media=FSInputFile(icon_path),
@@ -285,6 +283,7 @@ async def attack_enemy_champion(message: types.Message):
                 card = champion.card
 
                 icon_path = media_dir / Path(card.icon)
+                logger.info("--------------- %s", card.name)
                 media.append(
                     InputMediaPhoto(
                         media=FSInputFile(icon_path),
