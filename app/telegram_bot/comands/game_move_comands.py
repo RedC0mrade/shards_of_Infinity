@@ -20,6 +20,7 @@ from app.telegram_bot.keyboards.champios_keyboard import (
     DestroyChampionCallback,
     attack_champion_keyboard,
 )
+from app.telegram_bot.keyboards.dmcc_keyboard import KeyboardFactory
 from app.telegram_bot.keyboards.hand_keyboard import CardCallback
 
 from app.backend.factories.database import db_helper
@@ -51,13 +52,13 @@ async def handle_play_card(
             )
         )
 
-        card: Card = await card_services.get_hand_card(
+        instace: Card = await card_services.get_hand_card(
             player_state_id=player_state.id,
             card_id=callback_data.id,
             card_zone=CardZone.HAND,
             game_id=player_state.game_id,
         )  # Получаем карту, только если она в руке
-        if not card:
+        if not instace:
 
             logger.warning("Нет карты в руке id - %s", callback_data.id)
             return await callback.answer(
@@ -67,10 +68,10 @@ async def handle_play_card(
                     'с помощью кнопки "Рука"'
                 )
             )
-        logger.info("Получили карту %s c id - %s", card.name, card.id)
+        logger.info("Получили карту %s c id - %s", instace.name, instace.id)
 
         result: list[PlayerCardInstance] = await move_services.make_move(
-            card=card,
+            card=instace,
             player_state=player_state,
             game=player_state.game,
             player_id=callback.from_user.id,
@@ -78,12 +79,12 @@ async def handle_play_card(
 
         if result:
             logger.debug("result - %s", result)
-            logger.debug("Обработка действиякоторое вернулось из effects_exector")
+            logger.debug("Обработка действия которое вернулось из effects_exector")
             media = []
-            for champion in result:
-                card = champion.card
+            for instace in result:
+                card = instace.card
                 logger.info("--------------------------Карта действия - %s", card.name)
-                icon_path = media_dir / Path(card.icon)
+                icon_path = media_dir / Path(instace.icon)
                 media.append(
                     InputMediaPhoto(
                         media=FSInputFile(icon_path),
@@ -105,24 +106,22 @@ async def handle_play_card(
                 )
             logger.info("отработал колбэк с медиа- %s", media)
             await callback.message.answer(
-                text="Выберите Чемпиона для Атаки",
-                reply_markup=attack_champion_keyboard(
-                    instance_data=result,
-                    callback_cls=DestroyChampionCallback,
+                text="",
+                reply_markup=KeyboardFactory(
                 ),
             )
             logger.info("Отработала клавиатура")
             return 
             
 
-        photo = FSInputFile(media_dir / Path(card.icon))
+        photo = FSInputFile(media_dir / Path(instace.icon))
 
         await callback.message.answer_photo(
             photo=photo,
-            caption=f"Вы сыграли карту {card.name}",
+            caption=f"Вы сыграли карту {instace.name}",
         )
         await callback.bot.send_photo(
             photo=photo,
-            caption=f"Ваш противник разыграл карту: {card.name}",
+            caption=f"Ваш противник разыграл карту: {instace.name}",
             chat_id=player_state.game.non_active_player_id,
         )
