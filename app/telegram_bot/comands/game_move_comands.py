@@ -2,11 +2,11 @@ from __future__ import annotations
 
 from pathlib import Path
 from aiogram import Router, F, Bot
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Callable
 
 from aiogram.types import CallbackQuery, FSInputFile, InputMediaPhoto
 
-from app.backend.core.models.card import Card
+from app.backend.core.models.card import Card, CardAction
 from app.backend.core.models.play_card_instance import (
     CardZone,
     PlayerCardInstance,
@@ -31,6 +31,15 @@ router = Router(name=__name__)
 logger = get_logger(__name__)
 media_dir = Path(__file__).parent.parent.parent.parent / "media"
 
+
+KEYBOARD_BY_ACTION: dict[
+    CardAction,
+    Callable[[list[PlayerCardInstance]], InlineKeyboardMarkup],
+] = {
+    CardAction.CHAMPION_DESTROY: KeyboardFactory.destroy_champion,
+    CardAction.CARD_DESTROY: KeyboardFactory.destroy_card,
+    CardAction.TAKE_CARD_FROM_MARKET: KeyboardFactory.market,
+}
 
 @router.callback_query(CardCallback.filter())
 async def handle_play_card(

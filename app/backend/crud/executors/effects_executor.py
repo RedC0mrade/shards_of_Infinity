@@ -220,7 +220,7 @@ class EffectExecutor:
                 return champions
 
             self.logger.info("Чемпионов нет - %s", champions)
-
+        self.logger.info("Недостаточно карт wilds для зффекта")
     # ------------------------------- card_destroy ----------------------------
 
     async def do_card_destroy_base_none(
