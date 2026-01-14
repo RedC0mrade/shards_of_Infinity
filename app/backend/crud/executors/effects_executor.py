@@ -1,9 +1,10 @@
 from __future__ import annotations
+from dataclasses import dataclass
 from typing import TYPE_CHECKING
 from sqlalchemy.ext.asyncio import AsyncSession
 from aiogram.types import InlineKeyboardMarkup
 
-from app.backend.core.models.card import CardEffect
+from app.backend.core.models.card import CardAction, CardEffect
 from app.backend.core.models.game import Game
 from app.backend.core.models.player_state import PlayerState
 from app.backend.crud.actions.champion_move import ChampionService
@@ -16,6 +17,12 @@ from app.utils.logger import get_logger
 
 if TYPE_CHECKING:
     from app.backend.core.models.play_card_instance import PlayerCardInstance
+
+
+@dataclass
+class EffectResult:
+    action: CardAction
+    instance: list[PlayerCardInstance]
 
 
 class EffectExecutor:
@@ -38,7 +45,9 @@ class EffectExecutor:
         )
 
         method_name = (
-            f"do_{effect.action}_" f"{effect.effect_type}_" f"{effect.condition_type}"
+            f"do_{effect.action}_"
+            f"{effect.effect_type}_"
+            f"{effect.condition_type}"
         )
         self.logger.info("method_name - %s", method_name)
         method = getattr(self, method_name, None)
@@ -211,16 +220,21 @@ class EffectExecutor:
 
         if self.player_state.wilds_count >= condition_value:
             champion_service = ChampionService(session=self.session)
-            champions: list[PlayerCardInstance] = await champion_service.get_champions(
-                player_id=self.player_state.player_id
+            champions: list[PlayerCardInstance] = (
+                await champion_service.get_champions(
+                    player_id=self.player_state.player_id
+                )
             )
 
             if champions:
                 self.logger.info("Получаем чемпионов - %s", champions)
-                return champions
+                return EffectResult(
+                    action=CardAction.CHAMPION_DESTROY, instance=champions
+                )
 
             self.logger.info("Чемпионов нет - %s", champions)
         self.logger.info("Недостаточно карт wilds для зффекта")
+
     # ------------------------------- card_destroy ----------------------------
 
     async def do_card_destroy_base_none(
@@ -238,6 +252,9 @@ class EffectExecutor:
 
         if cards:
             self.logger.info("Получаем карты - %s", cards)
-            return cards
+            return EffectResult(
+                action=CardAction.CARD_DESTROY,
+                instance=cards,
+            )
 
         self.logger.info("Карт нет - %s", cards)

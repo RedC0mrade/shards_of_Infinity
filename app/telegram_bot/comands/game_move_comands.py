@@ -4,7 +4,12 @@ from pathlib import Path
 from aiogram import Router, F, Bot
 from typing import TYPE_CHECKING, Callable
 
-from aiogram.types import CallbackQuery, FSInputFile, InputMediaPhoto
+from aiogram.types import (
+    CallbackQuery,
+    FSInputFile,
+    InputMediaPhoto,
+    InlineKeyboardMarkup,
+)
 
 from app.backend.core.models.card import Card, CardAction
 from app.backend.core.models.play_card_instance import (
@@ -16,10 +21,7 @@ from app.backend.crud.card_crud import CardServices
 from app.backend.crud.card_instance_crud import CardInstanceServices
 from app.backend.crud.actions.game_move import MoveServices
 from app.backend.crud.player_state_crud import PlayerStateServices
-from app.telegram_bot.keyboards.champios_keyboard import (
-    DestroyChampionCallback,
-    attack_champion_keyboard,
-)
+
 from app.telegram_bot.keyboards.dmcc_keyboard import KeyboardFactory
 from app.telegram_bot.keyboards.hand_keyboard import CardCallback
 
@@ -40,6 +42,7 @@ KEYBOARD_BY_ACTION: dict[
     CardAction.CARD_DESTROY: KeyboardFactory.destroy_card,
     CardAction.TAKE_CARD_FROM_MARKET: KeyboardFactory.market,
 }
+
 
 @router.callback_query(CardCallback.filter())
 async def handle_play_card(
@@ -88,19 +91,25 @@ async def handle_play_card(
 
         if result:
             logger.debug("result - %s", result)
-            logger.debug("Обработка действия которое вернулось из effects_exector")
+            logger.debug(
+                "Обработка действия которое вернулось из effects_exector"
+            )
             media = []
             for instace in result:
                 card = instace.card
-                logger.info("--------------------------Карта действия - %s", card.name)
+                logger.info(
+                    "--------------------------Карта действия - %s", card.name
+                )
                 icon_path = media_dir / Path(instace.icon)
                 media.append(
                     InputMediaPhoto(
                         media=FSInputFile(icon_path),
                     )
                 )
-            logger.info("icon_path = %s exists=%s", icon_path, icon_path.exists())
-            
+            logger.info(
+                "icon_path = %s exists=%s", icon_path, icon_path.exists()
+            )
+
             if len(media) == 1:
                 logger.info("Карта только 1")
                 await callback.bot.send_photo(
@@ -116,12 +125,10 @@ async def handle_play_card(
             logger.info("отработал колбэк с медиа- %s", media)
             await callback.message.answer(
                 text="",
-                reply_markup=KeyboardFactory(
-                ),
+                reply_markup=KeyboardFactory(),
             )
             logger.info("Отработала клавиатура")
-            return 
-            
+            return
 
         photo = FSInputFile(media_dir / Path(instace.icon))
 
