@@ -24,8 +24,6 @@ router = Router(name=__name__)
 logger = get_logger(__name__)
 media_dir = Path(__file__).parent.parent.parent.parent / "media"
 
-#     id: int
-#     play_now: bool
 
 
 @router.callback_query(MercenaryCallback.filter())

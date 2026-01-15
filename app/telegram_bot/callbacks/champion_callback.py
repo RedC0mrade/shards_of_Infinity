@@ -2,28 +2,20 @@ from pathlib import Path
 from aiogram import Router, F
 from aiogram.types import CallbackQuery, FSInputFile
 
-from app.backend.core.models.card import Card, CardType
 from app.backend.core.models.play_card_instance import (
     CardZone,
     PlayerCardInstance,
 )
 from app.backend.core.models.player_state import PlayerState
-from app.backend.crud.actions.buy_move import BuyServices
 from app.backend.crud.actions.champion_move import ChampionService
-from app.backend.crud.card_crud import CardServices
 from app.backend.crud.card_instance_crud import CardInstanceServices
-from app.backend.crud.actions.game_move import MoveServices
-from app.backend.crud.executors.ps_count_executor import PlayStateExecutor
 from app.backend.crud.player_state_crud import PlayerStateServices
-from app.telegram_bot.keyboards.champios_keyboard import (
-    AtackChampionCallback,
+from app.telegram_bot.keyboards.dmcc_keyboard import (
+    AttackChampionCallback,
     DestroyChampionCallback,
 )
-from app.telegram_bot.keyboards.hand_keyboard import MarketCallback
 
 from app.backend.factories.database import db_helper
-from app.telegram_bot.keyboards.mersery_keyboard import play_mercenary
-from app.utils.exceptions.exceptions import ChampionError
 from app.utils.logger import get_logger
 
 
@@ -32,14 +24,10 @@ logger = get_logger(__name__)
 media_dir = Path(__file__).parent.parent.parent.parent / "media"
 
 
-# id: int
-# champion_health: int
-
-
-@router.callback_query(AtackChampionCallback.filter())
+@router.callback_query(AttackChampionCallback.filter())
 async def handle_attack_champion(
     callback: CallbackQuery,
-    callback_data: AtackChampionCallback,
+    callback_data: AttackChampionCallback,
 ):
     async with db_helper.session_context() as session:
 
@@ -96,9 +84,7 @@ async def handle_destroy_champion(
         )
         logger.info("Получили player_state - %s", player_state)
         card_instance: PlayerCardInstance = (
-            await card_instance_service.get_card_instance_for_id(
-                callback_data.id
-            )
+            await card_instance_service.get_card_instance_for_id(callback_data.id)
         )
 
         card_instance.zone = CardZone.DISCARD

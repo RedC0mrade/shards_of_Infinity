@@ -3,10 +3,10 @@ from aiogram import Router
 
 from app.telegram_bot.comands.start_comands import router as comands_router
 from app.telegram_bot.comands.game_comands import router as game_router
-from app.telegram_bot.comands.game_move_comands import router as move_router
-from app.telegram_bot.comands.market_callback_comand import router as market_router
-from app.telegram_bot.comands.mercenary_comands import router as mercenary_router
-from app.telegram_bot.comands.champion_callback import router as champion_router
+from app.telegram_bot.callbacks.game_move_callback import router as move_router
+from app.telegram_bot.callbacks.market_callback import router as market_router
+from app.telegram_bot.callbacks.mercenary_callback import router as mercenary_router
+from app.telegram_bot.callbacks.champion_callback import router as champion_router
 router = Router()
 
 router.include_routers(

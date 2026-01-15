@@ -12,10 +12,9 @@ from app.backend.crud.actions.buy_move import BuyServices
 from app.backend.crud.card_instance_crud import CardInstanceServices
 from app.backend.crud.player_state_crud import PlayerStateServices
 from app.telegram_bot.keyboards.dmcc_keyboard import KeyboardFactory
-from app.telegram_bot.keyboards.hand_keyboard import MarketCallback
+from app.telegram_bot.keyboards.dmcc_keyboard import MarketCallback
 
 from app.backend.factories.database import db_helper
-from app.telegram_bot.keyboards.mersery_keyboard import play_mercenary
 from app.utils.exceptions.exceptions import MarketError, NotYourTurn
 from app.utils.logger import get_logger
 
