@@ -21,10 +21,7 @@ from app.backend.crud.player_state_crud import PlayerStateServices
 from app.backend.crud.users_crud import UserServices
 from app.backend.factories.database import db_helper
 
-from app.telegram_bot.keyboards.champios_keyboard import (
-    AtackChampionCallback,
-    attack_champion_keyboard,
-)
+
 from app.telegram_bot.keyboards.dmcc_keyboard import KeyboardFactory
 from app.telegram_bot.keyboards.game_move_keyboard import (
     MoveKBText,

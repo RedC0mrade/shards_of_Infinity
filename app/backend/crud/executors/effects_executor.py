@@ -10,9 +10,7 @@ from app.backend.core.models.player_state import PlayerState
 from app.backend.crud.actions.champion_move import ChampionService
 from app.backend.crud.actions.destroy_card_move import DestroyCardService
 from app.backend.crud.card_instance_crud import CardInstanceServices
-from app.telegram_bot.keyboards.champios_keyboard import (
-    attack_champion_keyboard,
-)
+
 from app.utils.logger import get_logger
 
 if TYPE_CHECKING:

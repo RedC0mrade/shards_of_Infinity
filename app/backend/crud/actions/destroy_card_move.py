@@ -2,6 +2,7 @@ from sqlalchemy import Result, or_, select
 from app.backend.core.models.game import Game
 from app.backend.core.models.play_card_instance import CardZone, PlayerCardInstance
 from app.backend.crud.base_service import BaseService
+from app.utils.exceptions.exceptions import DoNotHaveCardInZone
 
 
 class DestroyCardService(BaseService):
@@ -34,6 +35,8 @@ class DestroyCardService(BaseService):
         stmt = select(PlayerCardInstance).where(PlayerCardInstance.id == card_instance_id)
 
         result: Result = await self.session.execute(stmt)
-        card_instance = result.unique().scalar_one_or_none()
+        card_instance: PlayerCardInstance = result.unique().scalar_one_or_none()
         if not card_instance:
-            raise
+            raise DoNotHaveCardInZone(message="Нет карт для выбора.")
+        card_instance.zone = CardZone.EXILED
+        return card_instance

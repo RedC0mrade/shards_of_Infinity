@@ -15,7 +15,7 @@ from app.backend.crud.actions.game_move import MoveServices
 from app.backend.crud.player_state_crud import PlayerStateServices
 
 from app.backend.factories.database import db_helper
-from app.telegram_bot.keyboards.mersery_keyboard import MercenaryCallback
+from app.telegram_bot.keyboards.dmcc_keyboard import MercenaryCallback
 from app.utils.exceptions.exceptions import NotYourTurn, GameError
 from app.utils.logger import get_logger
 

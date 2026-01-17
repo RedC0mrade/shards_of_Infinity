@@ -24,7 +24,7 @@ async def handle_card_destroy(
 ):
     async with db_helper.session_context as session:
 
-        card_instance_service = CardInstanceServices(session=session)
+        # card_instance_service = CardInstanceServices(session=session)
         player_state_service = PlayerStateServices(session=session)
         destroy_card_service = DestroyCardService(session=session)
         player_state: PlayerState = (
@@ -34,9 +34,19 @@ async def handle_card_destroy(
             )
         )
         logger.info("Получили player_state - %s", player_state)
-        card_instance: PlayerCardInstance = (
-            await card_instance_service.get_card_instance_for_id(
-                card_instanse_id=callback_data.id
-            )
+
+        result: PlayerCardInstance = await destroy_card_service.destroy_card(card_instance_id=callback.id) # Рассмотреть вариант без destroy_card
+        
+        photo = FSInputFile(media_dir / Path(result.card.icon))
+
+        await callback.message.answer_photo(
+            photo=photo,
+            caption=f"Вы уничтожили свою карту карту: {result.card.name}",
         )
-        logger.info("Получили card_instance - %s", card_instance)
+        await callback.bot.send_photo(
+            photo=photo,
+            caption=f"Ваш противник уничтожил карту: {result.card.name}",
+            chat_id=player_state.game.non_active_player_id,
+        )
+
+        await session.commit()
