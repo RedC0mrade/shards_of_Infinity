@@ -166,11 +166,11 @@ class MoveServices(BaseService):
                     "прерываем выполнение хода",
                     effect.action,
                 )
-                await play_state_executor.faction_count(card=card)
-                self.logger.info(
-                    "faction_count выполнен для карты '%s'", card.name
-                )
-                return result
+                # await play_state_executor.faction_count(card=card) # Проверить можно ли корректно отработать эффекты, которые требуют действия
+                # self.logger.info(
+                #     "faction_count выполнен для карты '%s'", card.name
+                # )
+                # return result
 
         self.logger.info("Все эффекты карты '%s' обработаны", card.name)
 
