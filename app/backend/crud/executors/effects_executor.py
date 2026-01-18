@@ -124,6 +124,20 @@ class EffectExecutor:
                 self.player_state.power,
             )
 
+    async def do_attack_conditional_demirealm_in_reset(
+        self,
+        value: int,
+        condition_value: int,
+    ):
+        card_instance_service = CardInstanceServices(session=self.session)
+        instance = card_instance_service.get_faction_in_zone()
+        if  len(instance) >= condition_value:
+            self.player_state.power += value
+            self.logger.info(
+                " функция - do_attack_conditional_demirealm_in_reset, значение - %s",
+                self.player_state.power,
+            )
+
     async def do_attack_conditional_player_health(
         self,
         value: int,

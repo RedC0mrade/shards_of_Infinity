@@ -363,3 +363,6 @@ class CardInstanceServices(BaseService):
 
                 self.logger.info("      id - %s", card.id)
         await self.session.commit()
+
+    async def get_faction_in_zone(self, game_id: int, player_state_id: int, zone: CardZone,):
+        """Получаем """
