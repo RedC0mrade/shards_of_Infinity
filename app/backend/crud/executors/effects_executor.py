@@ -6,6 +6,7 @@ from aiogram.types import InlineKeyboardMarkup
 
 from app.backend.core.models.card import CardAction, CardEffect
 from app.backend.core.models.game import Game
+from app.backend.core.models.play_card_instance import CardZone
 from app.backend.core.models.player_state import PlayerState
 from app.backend.crud.actions.champion_move import ChampionService
 from app.backend.crud.actions.destroy_card_move import DestroyCardService
@@ -43,9 +44,7 @@ class EffectExecutor:
         )
 
         method_name = (
-            f"do_{effect.action}_"
-            f"{effect.effect_type}_"
-            f"{effect.condition_type}"
+            f"do_{effect.action}_" f"{effect.effect_type}_" f"{effect.condition_type}"
         )
         self.logger.info("method_name - %s", method_name)
         method = getattr(self, method_name, None)
@@ -130,8 +129,13 @@ class EffectExecutor:
         condition_value: int,
     ):
         card_instance_service = CardInstanceServices(session=self.session)
-        instance = card_instance_service.get_faction_in_zone()
-        if  len(instance) >= condition_value:
+        instance = card_instance_service.get_faction_in_zone(
+            game_id=self.game.id,
+            player_state_id=self.player_state.id,
+            zone=[CardZone.DISCARD],
+            faction=CardFaction.
+        )
+        if len(instance) >= condition_value:
             self.player_state.power += value
             self.logger.info(
                 " функция - do_attack_conditional_demirealm_in_reset, значение - %s",
@@ -232,10 +236,8 @@ class EffectExecutor:
 
         if self.player_state.wilds_count >= condition_value:
             champion_service = ChampionService(session=self.session)
-            champions: list[PlayerCardInstance] = (
-                await champion_service.get_champions(
-                    player_id=self.player_state.player_id
-                )
+            champions: list[PlayerCardInstance] = await champion_service.get_champions(
+                player_id=self.player_state.player_id
             )
 
             if champions:
