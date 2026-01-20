@@ -376,3 +376,7 @@ class CardInstanceServices(BaseService):
                 Card.faction == faction,
             )
         )
+        result: Result = await self.session.execute(stmt)
+
+        card_instace = result.scalars().all()
+        return card_instace

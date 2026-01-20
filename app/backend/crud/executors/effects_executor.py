@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING
 from sqlalchemy.ext.asyncio import AsyncSession
 from aiogram.types import InlineKeyboardMarkup
 
-from app.backend.core.models.card import CardAction, CardEffect
+from app.backend.core.models.card import CardAction, CardEffect, CardFaction
 from app.backend.core.models.game import Game
 from app.backend.core.models.play_card_instance import CardZone
 from app.backend.core.models.player_state import PlayerState
@@ -133,12 +133,30 @@ class EffectExecutor:
             game_id=self.game.id,
             player_state_id=self.player_state.id,
             zone=[CardZone.DISCARD],
-            faction=CardFaction.
+            faction=CardFaction.DEMIREALM,
         )
         if len(instance) >= condition_value:
             self.player_state.power += value
             self.logger.info(
                 " функция - do_attack_conditional_demirealm_in_reset, значение - %s",
+                self.player_state.power,
+            )
+    
+    async def do_attack_conditional_plus_two_for_each_demirealm_in_reset(
+        self,
+        value: int,
+        condition_value: int,
+    ):
+        card_instance_service = CardInstanceServices(session=self.session)
+        instance = card_instance_service.get_faction_in_zone(
+            game_id=self.game.id,
+            player_state_id=self.player_state.id,
+            zone=[CardZone.DISCARD],
+            faction=CardFaction.DEMIREALM,
+        )
+        self.player_state.power += 2 * len(instance)
+        self.logger.info(
+                " функция - do_attack_conditional_plus_two_for_each_demirealm_in_reset, значение - %s",
                 self.player_state.power,
             )
 
