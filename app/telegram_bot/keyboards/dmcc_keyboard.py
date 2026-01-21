@@ -45,6 +45,10 @@ class DestroyCardCallback(CallbackData, prefix="destroy_card"):
     id: int
 
 
+class TakeMercenaryCallback(CallbackData, prefix="take_mercenary"):
+    id: int
+
+
 class MercenaryCallback(CallbackData, prefix="mercenary"):
     id: int
     play_now: bool
@@ -131,6 +135,16 @@ class KeyboardFactory:
         )
 
     @classmethod
+    def take_mercenary(
+        cls,
+        instance_data: list[PlayerCardInstance],
+    ) -> InlineKeyboardMarkup:
+        return cls.cards(
+            instance_data=instance_data,
+            callback_factory=lambda c: TakeMercenaryCallback(id=c.id),
+        )
+    
+    @classmethod
     def destroy_card(
         cls,
         instance_data: list[PlayerCardInstance],
@@ -139,7 +153,7 @@ class KeyboardFactory:
             instance_data=instance_data,
             callback_factory=lambda c: DestroyCardCallback(id=c.id),
         )
-
+    
     # ---------- Mercenary (особый кейс) ----------
 
     @staticmethod

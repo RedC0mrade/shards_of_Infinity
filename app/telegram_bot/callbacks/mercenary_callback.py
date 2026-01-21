@@ -15,7 +15,10 @@ from app.backend.crud.actions.game_move import MoveServices
 from app.backend.crud.player_state_crud import PlayerStateServices
 
 from app.backend.factories.database import db_helper
-from app.telegram_bot.keyboards.dmcc_keyboard import MercenaryCallback
+from app.telegram_bot.keyboards.dmcc_keyboard import (
+    MercenaryCallback,
+    TakeMercenaryCallback,
+)
 from app.utils.exceptions.exceptions import NotYourTurn, GameError
 from app.utils.logger import get_logger
 
@@ -23,7 +26,6 @@ from app.utils.logger import get_logger
 router = Router(name=__name__)
 logger = get_logger(__name__)
 media_dir = Path(__file__).parent.parent.parent.parent / "media"
-
 
 
 @router.callback_query(MercenaryCallback.filter())
@@ -47,14 +49,14 @@ async def mercenary_play(
         logger.info("Начинаем обработку меню наемника")
         card_instance: PlayerCardInstance = (
             await card_instance_services.get_card_instance_for_id(
-                card_instanse_id=callback_data.card_instance_id,
+                card_instanse_id=callback_data.id,
             )
         )
         logger.info("Получити card_instance с id - %s", card_instance.id)
         if not card_instance:
             logger.warning(
                 "Нет карты наёмника на рынке - id - %s",
-                callback_data.card_instance_id,
+                callback_data.id,
             )
             raise GameError(
                 "Эта карта уже была разыграна. "
@@ -96,7 +98,7 @@ async def mercenary_play(
             )
             card_instance.delete_mercenary = True
             logger.info("Изменяем delete_mercenary на True")
-            
+
         else:
             logger.info("callback_data.play_now = False")
             await buy_service.buy_card_from_market(
@@ -118,3 +120,45 @@ async def mercenary_play(
             )
         logger.info("Выполняем коммит")
         await session.commit()
+
+
+@router.callback_query(TakeMercenaryCallback.filter())
+async def take_mercenary(
+    callback: CallbackQuery,
+    callback_data: TakeMercenaryCallback,
+):
+    async with db_helper.session_context() as session:
+
+        card_instance_services = CardInstanceServices(session=session)
+        player_state_services = PlayerStateServices(session=session)
+        logger.info("Стартуем обработку take_mercenary")
+        player_state: PlayerState = (
+            await player_state_services.get_player_state_with_game(
+                player_id=callback.from_user.id,
+                active_player=True,
+            )
+        )
+        card_instance: PlayerCardInstance = (
+            await card_instance_services.get_card_instance_for_id(
+                card_instanse_id=callback_data.id,
+            )
+        )
+        logger.info("Получити card_instance с id - %s", card_instance.id)
+        if not card_instance:
+            logger.warning(
+                "ошибка id - %s",
+                callback_data.id,
+            )
+            raise GameError("Эта карта не находится у вас в сбросе 🛒")
+        if card_instance.zone != CardZone.DISCARD:
+            logger.warning("Неверная зона карты - %s", card_instance.zone)
+            raise GameError("Эта карта уже не находится в сбросе. 🃏")
+        await card_instance_services.change_zone_of_cards(
+            card_instances=list(card_instance), card_zone=CardZone.HAND
+        )
+        photo = FSInputFile(media_dir / Path(card_instance.card.icon))
+        await callback.message.answer_photo(
+                photo=photo,
+                caption=f"Вы выбрали карту {card_instance.card.name}",
+            )
+        session.commit()

@@ -4,7 +4,12 @@ from typing import TYPE_CHECKING
 from sqlalchemy.ext.asyncio import AsyncSession
 from aiogram.types import InlineKeyboardMarkup
 
-from app.backend.core.models.card import CardAction, CardEffect, CardFaction
+from app.backend.core.models.card import (
+    CardAction,
+    CardEffect,
+    CardFaction,
+    CardType,
+)
 from app.backend.core.models.game import Game
 from app.backend.core.models.play_card_instance import CardZone
 from app.backend.core.models.player_state import PlayerState
@@ -44,7 +49,9 @@ class EffectExecutor:
         )
 
         method_name = (
-            f"do_{effect.action}_" f"{effect.effect_type}_" f"{effect.condition_type}"
+            f"do_{effect.action}_"
+            f"{effect.effect_type}_"
+            f"{effect.condition_type}"
         )
         self.logger.info("method_name - %s", method_name)
         method = getattr(self, method_name, None)
@@ -141,7 +148,7 @@ class EffectExecutor:
                 " функция - do_attack_conditional_demirealm_in_reset, значение - %s",
                 self.player_state.power,
             )
-    
+
     async def do_attack_conditional_plus_two_for_each_demirealm_in_reset(
         self,
         value: int,
@@ -156,9 +163,9 @@ class EffectExecutor:
         )
         self.player_state.power += 2 * len(instance)
         self.logger.info(
-                " функция - do_attack_conditional_plus_two_for_each_demirealm_in_reset, значение - %s",
-                self.player_state.power,
-            )
+            " функция - do_attack_conditional_plus_two_for_each_demirealm_in_reset, значение - %s",
+            self.player_state.power,
+        )
 
     async def do_attack_conditional_player_health(
         self,
@@ -229,6 +236,28 @@ class EffectExecutor:
             number_cards=value,
         )
 
+    async def do_take_mercenary_from_reset_base_none(
+        self,
+        value: int,
+        condition_value: int,
+    ):
+        """Добираем в руку наемника из сброса."""
+        card_instance_service = CardInstanceServices(session=self.session)
+        instance = card_instance_service.get_card_type_in_zone(
+            game_id=self.game.id,
+            player_state_id=self.player_state.id,
+            zone=[CardZone.DISCARD],
+            card_type=CardType.MERCENARY,
+        )
+        if instance:
+            self.logger.info("Получаем карты - %s", instance)
+            return EffectResult(
+                action=CardAction.TAKE_MERCENARY_FROM_RESET,
+                instance=instance,
+            )
+
+        self.logger.info("Карт нет - %s", instance)
+
     # ---------------------------------- might --------------------------------
 
     async def do_might_base_none(
@@ -254,14 +283,17 @@ class EffectExecutor:
 
         if self.player_state.wilds_count >= condition_value:
             champion_service = ChampionService(session=self.session)
-            champions: list[PlayerCardInstance] = await champion_service.get_champions(
-                player_id=self.player_state.player_id
+            champions: list[PlayerCardInstance] = (
+                await champion_service.get_champions(
+                    player_id=self.player_state.player_id
+                )
             )
 
             if champions:
                 self.logger.info("Получаем чемпионов - %s", champions)
                 return EffectResult(
-                    action=CardAction.CHAMPION_DESTROY, instance=champions
+                    action=CardAction.CHAMPION_DESTROY,
+                    instance=champions,
                 )
 
             self.logger.info("Чемпионов нет - %s", champions)

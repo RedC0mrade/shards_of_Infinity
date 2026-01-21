@@ -4,7 +4,12 @@ from sqlalchemy import Result, or_, select
 from sqlalchemy.orm import joinedload
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.backend.core.models.card import Card, CardFaction, CardType, StartCardPlayer
+from app.backend.core.models.card import (
+    Card,
+    CardFaction,
+    CardType,
+    StartCardPlayer,
+)
 from app.backend.core.models.game import Game, GameStatus
 from app.backend.core.models.play_card_instance import (
     CardZone,
@@ -142,7 +147,9 @@ class CardInstanceServices(BaseService):
         card_instanse = result.unique().scalar_one_or_none()
 
         if not card_instanse:
-            self.logger.warning("Нет состояния карты с id -%s", card_instanse_id)
+            self.logger.warning(
+                "Нет состояния карты с id -%s", card_instanse_id
+            )
 
         return card_instanse
 
@@ -163,7 +170,9 @@ class CardInstanceServices(BaseService):
             )
         )
         result: Result = await self.session.execute(stmt)
-        card_instances: list[PlayerCardInstance] = result.unique().scalars().all()
+        card_instances: list[PlayerCardInstance] = (
+            result.unique().scalars().all()
+        )
         self.logger.debug(
             "карты игрока для подсчета щитов. -%s",
             card_instances,
@@ -227,7 +236,9 @@ class CardInstanceServices(BaseService):
             )
         )
         result: Result = await self.session.execute(stmt)
-        card_instances_hand: list[PlayerCardInstance] = result.unique().scalars().all()
+        card_instances_hand: list[PlayerCardInstance] = (
+            result.unique().scalars().all()
+        )
         self.logger.debug(
             "карты игрока руки. -%s",
             card_instances_hand,
@@ -258,7 +269,7 @@ class CardInstanceServices(BaseService):
                 card_instance.zone,
             )
         self.logger.info("change_zone_of_cards отработала, делаем коммит")
-        await self.session.commit()
+        await self.session.commit()  # Почему тут Коммит?
 
     async def zetta_check(self, player_state: PlayerState):
         """Проверка на неуязвимость."""
@@ -297,7 +308,9 @@ class CardInstanceServices(BaseService):
             PlayerCardInstance.zone == CardZone.PLAYER_DECK,
         )
         result: Result = await self.session.execute(stmt)
-        card_instanses: list[PlayerCardInstance] = result.unique().scalars().all()
+        card_instanses: list[PlayerCardInstance] = (
+            result.unique().scalars().all()
+        )
         self.logger.info("Карты игрока в колоде:")
         for instanse in card_instanses:
             self.logger.info("         Карта %s", instanse.id)
@@ -317,7 +330,9 @@ class CardInstanceServices(BaseService):
             )
             result: Result = await self.session.execute(stmt)
 
-            discard_cards: list[PlayerCardInstance] = result.unique().scalars().all()
+            discard_cards: list[PlayerCardInstance] = (
+                result.unique().scalars().all()
+            )
             self.logger.info(
                 "Количество карт в сбросе у игрока - %s",
                 len(discard_cards),
@@ -361,7 +376,7 @@ class CardInstanceServices(BaseService):
         zone: list[CardZone],
         faction: CardFaction,
     ):
-        """Получаем id состояний карт в определенных зонах."""
+        """Получаем id состояний карт фракции в определенных зонах."""
 
         stmt = (
             select(PlayerCardInstance.id)
@@ -374,6 +389,33 @@ class CardInstanceServices(BaseService):
                 PlayerCardInstance.player_state_id == player_state_id,
                 PlayerCardInstance.zone.in_(zone),
                 Card.faction == faction,
+            )
+        )
+        result: Result = await self.session.execute(stmt)
+
+        card_instace = result.scalars().all()
+        return card_instace
+
+    async def get_card_type_in_zone(
+        self,
+        game_id: int,
+        player_state_id: int,
+        zone: list[CardZone],
+        card_type: CardType,
+    ):
+        """Получаем id состояний карт определенного типа в определенных зонах."""
+
+        stmt = (
+            select(PlayerCardInstance.id)
+            .join(
+                Card,
+                PlayerCardInstance.card_id == Card.id,
+            )
+            .where(
+                PlayerCardInstance.game_id == game_id,
+                PlayerCardInstance.player_state_id == player_state_id,
+                PlayerCardInstance.zone.in_(zone),
+                Card.card_type == card_type,
             )
         )
         result: Result = await self.session.execute(stmt)
