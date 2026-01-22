@@ -15,6 +15,7 @@ from app.backend.core.models.play_card_instance import CardZone
 from app.backend.core.models.player_state import PlayerState
 from app.backend.crud.actions.champion_move import ChampionService
 from app.backend.crud.actions.destroy_card_move import DestroyCardService
+from app.backend.crud.card_crud import CardServices
 from app.backend.crud.card_instance_crud import CardInstanceServices
 
 from app.utils.logger import get_logger
@@ -265,10 +266,34 @@ class EffectExecutor:
         value: int,
         condition_value: int,
     ):
+        self.logger.debug(
+            "Начало do_might_base_none: value - %s, condition_value - %s",
+            value,
+            condition_value,
+        )
         if self.player_state.mastery == 30:
             pass
         else:
             self.player_state.mastery += value
+            if self.player_state.mastery > 30:
+                self.player_state.mastery = 30
+
+    async def do_might_conditional_wilds_homodeus_demirealm_on_table(
+        self,
+        value: int,
+        condition_value: int,
+    ):
+        self.logger.debug(
+            "Начало do_might_conditional_wilds_homodeus_demirealm_on_table: value - %s, condition_value - %s",
+            value,
+            condition_value,
+        )
+        card_service = CardServices(session=self.session)
+        count = await card_service.card_order_check(
+            player_state_id=self.player_state.id
+        )
+        if count and self.player_state.mastery < 30:
+            self.player_state.mastery += 2
             if self.player_state.mastery > 30:
                 self.player_state.mastery = 30
 

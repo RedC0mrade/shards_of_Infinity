@@ -1,8 +1,8 @@
-from sqlalchemy import Result, select, update
+from sqlalchemy import Result, distinct, func, select, update
 from sqlalchemy.orm import joinedload
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.backend.core.models.card import Card, CardEffect
+from app.backend.core.models.card import Card, CardEffect, CardFaction
 from app.backend.core.models.play_card_instance import (
     CardZone,
     PlayerCardInstance,
@@ -114,3 +114,33 @@ class CardServices(BaseService):
             instance.position_on_market,
         )
         await self.session.commit()
+
+    async def card_order_check(
+        self,
+        player_state_id: int,
+    ):
+        """
+        Проверяет, есть ли на столе карты трех фракций:
+        """
+        stmt = (
+            select(func.count(distinct(Card.faction)))
+            .select_from(PlayerCardInstance)
+            .join(Card, PlayerCardInstance.card_id == Card.id)
+            .where(
+                PlayerCardInstance.player_state_id == player_state_id,
+                PlayerCardInstance.zone == CardZone.IN_PLAY,
+                Card.faction.in_(
+                    [
+                        CardFaction.WILDS,
+                        CardFaction.HOMODEUS,
+                        CardFaction.DEMIREALM,
+                    ]
+                ),
+            )
+            .group_by(Card.faction)
+        )
+
+        result = await self.session.execute(stmt)
+        factions_present = result.scalars().all()
+
+        return factions_present == 3
