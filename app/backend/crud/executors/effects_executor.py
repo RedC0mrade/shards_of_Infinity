@@ -50,9 +50,7 @@ class EffectExecutor:
         )
 
         method_name = (
-            f"do_{effect.action}_"
-            f"{effect.effect_type}_"
-            f"{effect.condition_type}"
+            f"do_{effect.action}_" f"{effect.effect_type}_" f"{effect.condition_type}"
         )
         self.logger.info("method_name - %s", method_name)
         method = getattr(self, method_name, None)
@@ -237,6 +235,28 @@ class EffectExecutor:
             number_cards=value,
         )
 
+    async def do_take_card_conditional_mastery(
+        self,
+        value: int,
+        condition_value: int,
+    ):
+
+        self.logger.debug(
+            "Начало do_take_card_conditional_mastery: запрошено %s карт, условие - %s mastery - %s",
+            value,
+            condition_value,
+            self.player_state,
+        )
+
+        if self.player_state.mastery >= condition_value:
+            card_instance_services = CardInstanceServices(session=self.session)
+            await card_instance_services.take_card_to_hand(
+                player_state=self.player_state,
+                number_cards=value,
+            )
+
+    # ------------------------------- take_mercenary ---------------------------
+
     async def do_take_mercenary_from_reset_base_none(
         self,
         value: int,
@@ -308,10 +328,8 @@ class EffectExecutor:
 
         if self.player_state.wilds_count >= condition_value:
             champion_service = ChampionService(session=self.session)
-            champions: list[PlayerCardInstance] = (
-                await champion_service.get_champions(
-                    player_id=self.player_state.player_id
-                )
+            champions: list[PlayerCardInstance] = await champion_service.get_champions(
+                player_id=self.player_state.player_id
             )
 
             if champions:
@@ -347,3 +365,7 @@ class EffectExecutor:
             )
 
         self.logger.info("Карт нет - %s", cards)
+
+    # ------------------------------- choose_card_from_market -----------------
+
+    async def do_choose_card_from_market_base_none():
