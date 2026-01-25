@@ -368,4 +368,9 @@ class EffectExecutor:
 
     # ------------------------------- choose_card_from_market -----------------
 
-    async def do_choose_card_from_market_base_none():
+    async def do_choose_card_from_market_base_none(
+        self,
+        value: int,
+        condition_value: int,      
+    ):
+        """Выбрать карту с рынка, если могущества больше 15, взять в руку."""
