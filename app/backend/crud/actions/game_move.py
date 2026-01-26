@@ -170,7 +170,7 @@ class MoveServices(BaseService):
                 # self.logger.info(
                 #     "faction_count выполнен для карты '%s'", card.name
                 # )
-                # return result
+                return result
 
         self.logger.info("Все эффекты карты '%s' обработаны", card.name)
 

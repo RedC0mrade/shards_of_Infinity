@@ -374,3 +374,4 @@ class EffectExecutor:
         condition_value: int,      
     ):
         """Выбрать карту с рынка, если могущества больше 15, взять в руку."""
+        
