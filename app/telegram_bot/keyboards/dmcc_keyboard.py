@@ -11,16 +11,20 @@ class CardButtonText(Enum):
     CARD_NAME = "card_name"
     PLAY_NOW = "play_now"
     TAKE_TO_DECK = "take_to_deck"
+    # TAKE_TO_HAND = "take_to_hand"
 
     def resolve(self, card_instance: PlayerCardInstance) -> str:
         if self is CardButtonText.CARD_NAME:
             return card_instance.card.name
 
         if self is CardButtonText.PLAY_NOW:
-            return "Разыграть карту сейчас"
+            return "🎲 Разыграть карту сейчас"
 
         if self is CardButtonText.TAKE_TO_DECK:
-            return "Отправить в свою колоду"
+            return "📥 Отправить в колоду"
+
+        # if self is CardButtonText.TAKE_TO_DECK:
+        #     return "✋ Отправить в руку"
 
         raise ValueError(f"Unknown CardButtonText: {self}")
 
@@ -49,6 +53,10 @@ class TakeMercenaryCallback(CallbackData, prefix="take_mercenary"):
     id: int
 
 
+class ChooseCardCallback(CallbackData, prefix="choose_card"):
+    id: int
+
+
 class MercenaryCallback(CallbackData, prefix="mercenary"):
     id: int
     play_now: bool
@@ -64,9 +72,7 @@ class KeyboardFactory:
         buttons: list[InlineKeyboardButton],
         columns: int,
     ) -> list[list[InlineKeyboardButton]]:
-        return [
-            buttons[i : i + columns] for i in range(0, len(buttons), columns)
-        ]
+        return [buttons[i : i + columns] for i in range(0, len(buttons), columns)]
 
     @classmethod
     def cards(
@@ -88,9 +94,7 @@ class KeyboardFactory:
             for card_instance in instance_data
         ]
 
-        return InlineKeyboardMarkup(
-            inline_keyboard=cls._build_grid(buttons, columns)
-        )
+        return InlineKeyboardMarkup(inline_keyboard=cls._build_grid(buttons, columns))
 
     # ---------- Конкретные фабрики ----------
 
@@ -135,6 +139,16 @@ class KeyboardFactory:
         )
 
     @classmethod
+    def choose_card(
+        cls,
+        instance_data: list[PlayerCardInstance],
+    ) -> InlineKeyboardMarkup:
+        return cls.cards(
+            instance_data=instance_data,
+            callback_factory=lambda c: ChooseCardCallback(id=c.id),
+        )
+
+    @classmethod
     def take_mercenary(
         cls,
         instance_data: list[PlayerCardInstance],
@@ -143,7 +157,7 @@ class KeyboardFactory:
             instance_data=instance_data,
             callback_factory=lambda c: TakeMercenaryCallback(id=c.id),
         )
-    
+
     @classmethod
     def destroy_card(
         cls,
@@ -153,8 +167,8 @@ class KeyboardFactory:
             instance_data=instance_data,
             callback_factory=lambda c: DestroyCardCallback(id=c.id),
         )
-    
-    # ---------- Mercenary (особый кейс) ----------
+
+    # ---------- Mercenary ----------
 
     @staticmethod
     def mercenary(
@@ -177,6 +191,4 @@ class KeyboardFactory:
             ).pack(),
         )
 
-        return InlineKeyboardMarkup(
-            inline_keyboard=[[play_button, take_button]]
-        )
+        return InlineKeyboardMarkup(inline_keyboard=[[play_button, take_button]])
