@@ -20,7 +20,8 @@ media_dir = Path(__file__).parent.parent.parent.parent / "media"
 
 @router.callback_query(DestroyCardCallback.filter())
 async def handle_card_destroy(
-    callback: CallbackQuery, callback_data: DestroyCardCallback
+    callback: CallbackQuery,
+    callback_data: DestroyCardCallback,
 ):
     async with db_helper.session_context as session:
 
@@ -35,8 +36,10 @@ async def handle_card_destroy(
         )
         logger.info("Получили player_state - %s", player_state)
 
-        card_instance: PlayerCardInstance = await destroy_card_service.destroy_card(card_instance_id=callback.id) # Рассмотреть вариант без destroy_card
-        
+        card_instance: PlayerCardInstance = await destroy_card_service.destroy_card(
+            card_instance_id=callback_data.id
+        )  # Рассмотреть вариант без destroy_card
+
         photo = FSInputFile(media_dir / Path(card_instance.card.icon))
 
         await callback.message.answer_photo(
