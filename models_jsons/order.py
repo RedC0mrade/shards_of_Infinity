@@ -335,13 +335,6 @@ order_cards = [
                 "effect_type": "base",
                 "condition_type": "none",
                 "condition_value": 0
-            },
-            {
-                "action": "take_card_from_market",
-                "value": 1,
-                "effect_type": "conditional",
-                "condition_type": "mastery",
-                "condition_value": 15
             }
         ]
     },
@@ -361,13 +354,6 @@ order_cards = [
                 "effect_type": "base",
                 "condition_type": "none",
                 "condition_value": 0
-            },
-            {
-                "action": "take_card_from_market",
-                "value": 1,
-                "effect_type": "conditional",
-                "condition_type": "mastery",
-                "condition_value": 15
             }
         ]
     },
