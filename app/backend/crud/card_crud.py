@@ -143,4 +143,4 @@ class CardServices(BaseService):
         result = await self.session.execute(stmt)
         factions_present = result.scalars().all()
 
-        return factions_present == 3
+        return len(factions_present) == 3

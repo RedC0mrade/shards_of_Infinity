@@ -88,6 +88,11 @@ class EffectExecutor:
             self.player_state.crystals,
         )
 
+    async def do_crystal_conditional_champion_on_table(
+        self,
+        value: int,
+        condition_value: int,
+    ):
     # ----------------------------- attack ---------------------------------
 
     async def do_attack_base_none(
