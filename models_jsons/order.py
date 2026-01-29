@@ -383,14 +383,7 @@ order_cards = [
         "effects": [
             {
                 "action": "take_card",
-                "value": 1,
-                "effect_type": "base",
-                "condition_type": "none",
-                "condition_value": 0
-            },
-            {
-                "action": "take_card",
-                "value": 1,
+                "value": 2,
                 "effect_type": "base",
                 "condition_type": "none",
                 "condition_value": 0
