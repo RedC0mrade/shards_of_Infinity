@@ -313,7 +313,7 @@ class EffectExecutor:
             player_state_id=self.player_state.id
         )
         if count and self.player_state.mastery < 30:
-            self.player_state.mastery += 2
+            self.player_state.mastery += value
             if self.player_state.mastery > 30:
                 self.player_state.mastery = 30
 
