@@ -93,6 +93,7 @@ class EffectExecutor:
         value: int,
         condition_value: int,
     ):
+        
     # ----------------------------- attack ---------------------------------
 
     async def do_attack_base_none(
@@ -380,3 +381,6 @@ class EffectExecutor:
     ):
         """Выбрать карту с рынка, если могущества больше 15, взять в руку."""
         
+        card_instance_service = CardInstanceServices(session = self.session)
+
+        card_instance = card_instance_service.

@@ -116,7 +116,7 @@ async def handle_play_card(
                     photo=media[0].media,
                 )
             else:
-                logger.info("чемпионов больше 1")
+                logger.info("Карт больше 1")
                 await callback.bot.send_media_group(
                     chat_id=callback.message.chat.id,
                     media=media,

@@ -1,6 +1,6 @@
 from pathlib import Path
 from aiogram import Router
-from aiogram.types import CallbackQuery
+from aiogram.types import CallbackQuery, FSInputFile
 
 from app.backend.core.models.play_card_instance import CardZone, PlayerCardInstance
 from app.backend.core.models.player_state import PlayerState
@@ -27,21 +27,39 @@ async def handle_choose_card(
         card_instance_services = CardInstanceServices(session=session)
         player_state_services = PlayerStateServices(session=session)
 
-        player_state: PlayerState = await (
-            player_state_services.get_player_state_with_game(
+        player_state: PlayerState = (
+            await player_state_services.get_player_state_with_game(
                 player_id=callback.from_user.id,
                 active_player=True,
             )
         )
-        card_instance: PlayerCardInstance = await (
-            card_instance_services.get_card_instance_for_id(
+        card_instance: PlayerCardInstance = (
+            await card_instance_services.get_card_instance_for_id(
                 card_instanse_id=callback_data.id
             )
         )
+        photo = FSInputFile(media_dir / Path(card_instance.card.icon))
 
         if player_state.mastery >= 15:
             card_instance.zone = CardZone.HAND
+            await callback.message.answer_photo(
+                photo=photo,
+                caption=f"Вы получили в руку карту: {card_instance.card.name}",
+            )
+            await callback.bot.send_photo(
+                photo=photo,
+                caption=f"Ваш противник получили в руку карту: {card_instance.card.name}",
+                chat_id=player_state.game.non_active_player_id,
+            )
         else:
             card_instance.zone = CardZone.DISCARD
+            await callback.message.answer_photo(
+                photo=photo,
+                caption=f"Вы выбрали карту: {card_instance.card.name}",
+            )
+            await callback.bot.send_photo(
+                photo=photo,
+                caption=f"Ваш противник выбрал карту: {card_instance.card.name}",
+                chat_id=player_state.game.non_active_player_id,
+            )
         await session.commit()
-        

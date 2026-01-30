@@ -40,7 +40,12 @@ class MarketServices(BaseService):
             )
             raise MarketError(message="❌ Нет карт на рынке.")
         return market_cards
-
+    
+    async def get_market_cards_less_six_cristals(
+            self,
+            game_id: int,
+    ):
+        stmt = select(PlayerCardInstance).
     # async def buy_market_card(
     #     self,
     #     card_instance_id: int,
