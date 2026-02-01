@@ -60,10 +60,12 @@ class BuyServices(BaseService):
         card_instance.player_state_id = player_state.id
         position_on_market = card_instance.position_on_market
         card_instance.position_on_market = None
+        
         await self.replacement_cards_from_the_market(
             game_id=game.id,
             position_on_market=position_on_market,
         )
+
         await self.session.commit()
         self.logger.info(
             "Игрок %s успешно купил карту '%s' (новое состояние рынка обновлено)",
@@ -71,7 +73,7 @@ class BuyServices(BaseService):
             card.name,
         )
 
-    async def replacement_cards_from_the_market(
+    async def replacement_cards_from_the_market( # Может стоит здесь передавать id карты которую хотим поменять и менять ее на None и присваивать id игорька?
         self,
         game_id: int,
         position_on_market: int,
@@ -111,4 +113,4 @@ class BuyServices(BaseService):
         replacement_card_instance.position_on_market = position_on_market
         
         self.logger.info("Выполняем коммит")
-        await self.session.commit()
+        await self.session.commit() # Нужен ли здесь комит???

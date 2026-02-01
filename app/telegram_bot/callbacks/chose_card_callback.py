@@ -2,12 +2,17 @@ from pathlib import Path
 from aiogram import Router
 from aiogram.types import CallbackQuery, FSInputFile
 
-from app.backend.core.models.play_card_instance import CardZone, PlayerCardInstance
+from app.backend.core.models.play_card_instance import (
+    CardZone,
+    PlayerCardInstance,
+)
 from app.backend.core.models.player_state import PlayerState
+from app.backend.crud.actions.buy_move import BuyServices
 from app.backend.crud.card_instance_crud import CardInstanceServices
 from app.backend.crud.player_state_crud import PlayerStateServices
 from app.backend.factories.database import db_helper
 from app.telegram_bot.keyboards.dmcc_keyboard import ChooseCardCallback
+from app.utils.exceptions.exceptions import GameError
 from app.utils.logger import get_logger
 
 
@@ -26,6 +31,7 @@ async def handle_choose_card(
 
         card_instance_services = CardInstanceServices(session=session)
         player_state_services = PlayerStateServices(session=session)
+        buy_service = BuyServices(session=session)
 
         player_state: PlayerState = (
             await player_state_services.get_player_state_with_game(
@@ -40,6 +46,20 @@ async def handle_choose_card(
         )
         photo = FSInputFile(media_dir / Path(card_instance.card.icon))
 
+        if not card_instance.position_on_market:
+            raise GameError(
+                "Эта карта уже была разыграна. "
+                "Сделайте новый запрос рынка через кнопку «Рынок». 🛒"
+            )
+        position_on_market = card_instance.position_on_market
+        card_instance.position_on_market = None
+        card_instance.player_state_id = callback.from_user.id
+        
+        await buy_service.replacement_cards_from_the_market(
+            game_id=player_state.game_id,
+            position_on_market=position_on_market,
+        )
+        
         if player_state.mastery >= 15:
             card_instance.zone = CardZone.HAND
             await callback.message.answer_photo(
