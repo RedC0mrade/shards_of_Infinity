@@ -158,7 +158,7 @@ async def take_mercenary(
         )
         photo = FSInputFile(media_dir / Path(card_instance.card.icon))
         await callback.message.answer_photo(
-                photo=photo,
-                caption=f"Вы выбрали карту {card_instance.card.name}",
-            )
+            photo=photo,
+            caption=f"Вы выбрали карту {card_instance.card.name}",
+        )
         session.commit()

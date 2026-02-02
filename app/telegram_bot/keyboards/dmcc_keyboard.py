@@ -72,7 +72,9 @@ class KeyboardFactory:
         buttons: list[InlineKeyboardButton],
         columns: int,
     ) -> list[list[InlineKeyboardButton]]:
-        return [buttons[i : i + columns] for i in range(0, len(buttons), columns)]
+        return [
+            buttons[i : i + columns] for i in range(0, len(buttons), columns)
+        ]
 
     @classmethod
     def cards(
@@ -94,7 +96,9 @@ class KeyboardFactory:
             for card_instance in instance_data
         ]
 
-        return InlineKeyboardMarkup(inline_keyboard=cls._build_grid(buttons, columns))
+        return InlineKeyboardMarkup(
+            inline_keyboard=cls._build_grid(buttons, columns)
+        )
 
     # ---------- Конкретные фабрики ----------
 
@@ -191,4 +195,6 @@ class KeyboardFactory:
             ).pack(),
         )
 
-        return InlineKeyboardMarkup(inline_keyboard=[[play_button, take_button]])
+        return InlineKeyboardMarkup(
+            inline_keyboard=[[play_button, take_button]]
+        )

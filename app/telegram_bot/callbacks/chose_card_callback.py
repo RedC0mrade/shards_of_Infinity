@@ -54,12 +54,12 @@ async def handle_choose_card(
         position_on_market = card_instance.position_on_market
         card_instance.position_on_market = None
         card_instance.player_state_id = callback.from_user.id
-        
+
         await buy_service.replacement_cards_from_the_market(
             game_id=player_state.game_id,
             position_on_market=position_on_market,
         )
-        
+
         if player_state.mastery >= 15:
             card_instance.zone = CardZone.HAND
             await callback.message.answer_photo(
