@@ -37,6 +37,7 @@ KEYBOARD_BY_ACTION: dict[
     CardAction,
     Callable[[list[PlayerCardInstance]], InlineKeyboardMarkup],
 ] = {
+    CardAction.CHOOSE_CARD_FROM_MARKET: KeyboardFactory.choose_card,
     CardAction.CHAMPION_DESTROY: KeyboardFactory.destroy_champion,
     CardAction.CARD_DESTROY: KeyboardFactory.destroy_card,
     CardAction.TAKE_CARD_FROM_MARKET: KeyboardFactory.market,
@@ -84,7 +85,7 @@ async def handle_play_card(
         result: EffectResult = await move_services.make_move(
             card=card,
             player_state=player_state,
-            game=player_state.game,
+            game=player_state.game, # нужно ли? Есть в PlayerState
             player_id=callback.from_user.id,
         )
 
@@ -108,7 +109,7 @@ async def handle_play_card(
             logger.info(
                 "icon_path = %s exists=%s", icon_path, icon_path.exists()
             )
-
+            keyboard_factory = KEYBOARD_BY_ACTION.get(result.action)
             if len(media) == 1:
                 logger.info("Карта только 1")
                 await callback.bot.send_photo(
@@ -124,7 +125,7 @@ async def handle_play_card(
             logger.info("отработал колбэк с медиа- %s", media)
             await callback.message.answer(
                 text="",
-                reply_markup=KeyboardFactory(result.instance),
+                reply_markup=keyboard_factory(result.instance), 
             )
             logger.info("Отработала клавиатура")
             return

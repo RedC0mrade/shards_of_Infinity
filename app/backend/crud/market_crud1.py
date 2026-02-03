@@ -3,6 +3,7 @@ from sqlalchemy import Result, select
 from sqlalchemy.orm import selectinload
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.backend.core.models.card import Card
 from app.backend.core.models.play_card_instance import (
     CardZone,
     PlayerCardInstance,
@@ -40,23 +41,30 @@ class MarketServices(BaseService):
             )
             raise MarketError(message="❌ Нет карт на рынке.")
         return market_cards
-    
-    async def get_market_cards_less_six_cristals(
-            self,
-            game_id: int,
-    ):
-        stmt = select(PlayerCardInstance).
-    # async def buy_market_card(
-    #     self,
-    #     card_instance_id: int,
-    #     player_state: PlayerState,
-    # ):
-    #     """Покупка карты с рынка"""
 
-    #     self.logger.info(
-    #         "Покупка карты с id %s рынка",
-    #         card_instance_id,
-    #     )
+    async def get_market_cards_less_six_cristals(
+        self,
+        game_id: int,
+    ):
+        stmt = (
+            select(PlayerCardInstance)
+            .join(Card, PlayerCardInstance.card_id == Card.id)
+            .where(
+                PlayerCardInstance.game_id == game_id,
+                PlayerCardInstance.zone == CardZone.MARKET,
+                Card.crystals_cost <= 6,
+                PlayerCardInstance.position_on_market.is_not(None),
+                PlayerCardInstance.player_state_id.is_(None)
+            )
+            .order_by(PlayerCardInstance.position_on_market)
+        )
+
+        result: Result = await self.session.execute(stmt)
+
+        card_instances = result.unique().scalars().all()
+        if not card_instances:
+            raise MarketError(message="❌ Нет подходящих карт на рынке.")
+        return card_instances
 
 
 # Покупка карты

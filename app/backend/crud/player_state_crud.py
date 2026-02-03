@@ -1,8 +1,6 @@
-import random
 from typing import TYPE_CHECKING
 from sqlalchemy import Result, select
 from sqlalchemy.orm import joinedload
-from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.backend.core.models.card import Card, StartCardPlayer
 from app.backend.core.models.game import Game, GameStatus
@@ -14,7 +12,6 @@ from app.backend.core.models.player_state import PlayerState
 from app.backend.crud.base_service import BaseService
 from app.backend.schemas.play_state import CreatePlayStateSchema
 from app.utils.exceptions.exceptions import ActiveGameError, NotYourTurn
-from app.utils.logger import get_logger
 
 if TYPE_CHECKING:
     from app.backend.core.models.game import Game

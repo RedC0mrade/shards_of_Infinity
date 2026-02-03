@@ -18,6 +18,7 @@ from app.backend.crud.actions.destroy_card_move import DestroyCardService
 from app.backend.crud.card_crud import CardServices
 from app.backend.crud.card_instance_crud import CardInstanceServices
 
+from app.backend.crud.market_crud1 import MarketServices
 from app.utils.logger import get_logger
 
 if TYPE_CHECKING:
@@ -50,7 +51,9 @@ class EffectExecutor:
         )
 
         method_name = (
-            f"do_{effect.action}_" f"{effect.effect_type}_" f"{effect.condition_type}"
+            f"do_{effect.action}_"
+            f"{effect.effect_type}_"
+            f"{effect.condition_type}"
         )
         self.logger.info("method_name - %s", method_name)
         method = getattr(self, method_name, None)
@@ -88,12 +91,12 @@ class EffectExecutor:
             self.player_state.crystals,
         )
 
-    async def do_crystal_conditional_champion_on_table(
-        self,
-        value: int,
-        condition_value: int,
-    ):
-        
+    # async def do_crystal_conditional_champion_on_table(
+    #     self,
+    #     value: int,
+    #     condition_value: int,
+    # ):
+
     # ----------------------------- attack ---------------------------------
 
     async def do_attack_base_none(
@@ -269,6 +272,7 @@ class EffectExecutor:
         condition_value: int,
     ):
         """Добираем в руку наемника из сброса."""
+        self.logger.info(" функция - do_take_mercenary_from_reset_base_none")
         card_instance_service = CardInstanceServices(session=self.session)
         instance = card_instance_service.get_card_type_in_zone(
             game_id=self.game.id,
@@ -334,8 +338,10 @@ class EffectExecutor:
 
         if self.player_state.wilds_count >= condition_value:
             champion_service = ChampionService(session=self.session)
-            champions: list[PlayerCardInstance] = await champion_service.get_champions(
-                player_id=self.player_state.player_id
+            champions: list[PlayerCardInstance] = (
+                await champion_service.get_champions(
+                    player_id=self.player_state.player_id
+                )
             )
 
             if champions:
@@ -377,10 +383,18 @@ class EffectExecutor:
     async def do_choose_card_from_market_base_none(
         self,
         value: int,
-        condition_value: int,      
+        condition_value: int,
     ):
         """Выбрать карту с рынка, если могущества больше 15, взять в руку."""
-        
-        card_instance_service = CardInstanceServices(session = self.session)
 
-        card_instance = card_instance_service.
+        market_service = MarketServices(session=self.session)
+
+        card_instance = market_service.get_market_cards_less_six_cristals(
+            game_id=Game.id
+        )
+        if card_instance:
+            self.logger.info("Получаем состояния карт - %s", card_instance)
+            return EffectResult(
+                action=CardAction.CHOOSE_CARD_FROM_MARKET,
+                instance=card_instance,
+            )

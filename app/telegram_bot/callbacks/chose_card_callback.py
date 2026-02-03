@@ -71,15 +71,14 @@ async def handle_choose_card(
                 caption=f"Ваш противник получили в руку карту: {card_instance.card.name}",
                 chat_id=player_state.game.non_active_player_id,
             )
-        else:
-            card_instance.zone = CardZone.DISCARD
-            await callback.message.answer_photo(
-                photo=photo,
-                caption=f"Вы выбрали карту: {card_instance.card.name}",
-            )
-            await callback.bot.send_photo(
-                photo=photo,
-                caption=f"Ваш противник выбрал карту: {card_instance.card.name}",
-                chat_id=player_state.game.non_active_player_id,
-            )
+        card_instance.zone = CardZone.DISCARD
+        await callback.message.answer_photo(
+            photo=photo,
+            caption=f"Вы выбрали карту: {card_instance.card.name}",
+        )
+        await callback.bot.send_photo(
+            photo=photo,
+            caption=f"Ваш противник выбрал карту: {card_instance.card.name}",
+            chat_id=player_state.game.non_active_player_id,
+        )
         await session.commit()
