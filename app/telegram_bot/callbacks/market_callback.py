@@ -31,14 +31,23 @@ async def handle_buy_card(
 ):
 
     async with db_helper.session_context() as session:
-        card_instanse_service = CardInstanceServices(session=session)
+        card_instance_service = CardInstanceServices(session=session)
         player_state_services = PlayerStateServices(session=session)
         buy_service = BuyServices(session=session)
-
+        card_instance: PlayerCardInstance = (
+            await card_instance_service.get_card_instance_for_id(
+                card_instanse_id=callback_data.id
+            )
+        )
         player_state: PlayerState = (
             await player_state_services.get_player_state_with_game(
                 player_id=callback.from_user.id
             )
+        )
+        logger.info(
+            "Зона - %s, Название карты - %s",
+            card_instance.zone,
+            card_instance.card.name,
         )
         if player_state.game.active_player_id != callback.from_user.id:
             logger.warning(
@@ -48,15 +57,8 @@ async def handle_buy_card(
             )
             raise NotYourTurn(message="Пожалуйста, дождитесь своего хода")
 
-        card_instance: PlayerCardInstance = (
-            await card_instanse_service.get_card_instance_in_some_card_zone(
-                game_id=player_state.game_id,
-                card_id=callback_data.id,
-                card_zone=CardZone.MARKET,
-            )
-        )  # Получаем id карты, проверем находится ли она на рынке
 
-        if not card_instance:
+        if card_instance.zone != CardZone.MARKET:
             logger.warning("Нет карты на рынке с id - %s", callback_data.id)
             raise MarketError(
                 message=(

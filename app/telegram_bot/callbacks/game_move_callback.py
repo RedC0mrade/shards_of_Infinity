@@ -19,10 +19,14 @@ from app.backend.core.models.play_card_instance import (
 from app.backend.core.models.player_state import PlayerState
 from app.backend.crud.card_crud import CardServices
 from app.backend.crud.actions.game_move import MoveServices
+from app.backend.crud.card_instance_crud import CardInstanceServices
 from app.backend.crud.executors.effects_executor import EffectResult
 from app.backend.crud.player_state_crud import PlayerStateServices
 
-from app.telegram_bot.keyboards.dmcc_keyboard import CardCallback, KeyboardFactory
+from app.telegram_bot.keyboards.dmcc_keyboard import (
+    CardCallback,
+    KeyboardFactory,
+)
 
 from app.backend.factories.database import db_helper
 from app.utils.logger import get_logger
@@ -56,17 +60,27 @@ async def handle_play_card(
         card_services = CardServices(session=session)
         player_state_services = PlayerStateServices(session=session)
         move_services = MoveServices(session=session)
-
+        card_instance_service = CardInstanceServices(session=session)
         player_state: PlayerState = (
             await player_state_services.get_player_state_with_game(
                 player_id=callback.from_user.id,
                 active_player=True,
             )
         )
-
+        card_instance_service
+        logger.info(
+            "\n------player_state_id - %s\n------card_id - %s\n------card_zone - %s\n------game_id - %s",
+            player_state.id,
+            callback_data.id,
+            CardZone.HAND,
+            player_state.game_id,
+        )
+        card_instance: PlayerCardInstance = await card_instance_service.get_card_instance_for_id(
+            card_instanse_id=callback_data.id
+        )
         card: Card = await card_services.get_hand_card(
             player_state_id=player_state.id,
-            card_id=callback_data.id,
+            card_id=card_instance.card_id,
             card_zone=CardZone.HAND,
             game_id=player_state.game_id,
         )  # Получаем карту, только если она в руке
@@ -85,7 +99,7 @@ async def handle_play_card(
         result: EffectResult = await move_services.make_move(
             card=card,
             player_state=player_state,
-            game=player_state.game, # нужно ли? Есть в PlayerState
+            game=player_state.game,  # нужно ли? Есть в PlayerState
             player_id=callback.from_user.id,
         )
 
@@ -125,7 +139,7 @@ async def handle_play_card(
             logger.info("отработал колбэк с медиа- %s", media)
             await callback.message.answer(
                 text="",
-                reply_markup=keyboard_factory(result.instance), 
+                reply_markup=keyboard_factory(result.instance),
             )
             logger.info("Отработала клавиатура")
             return

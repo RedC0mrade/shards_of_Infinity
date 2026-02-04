@@ -63,7 +63,7 @@ class PlayerCardInstance(Base):
         ),
         nullable=False,
     )
-    card_id: Mapped[int] = mapped_column(ForeignKey("cards.id"))
+    card_id: Mapped[int] = mapped_column(ForeignKey("cards.id"), unique=True)
 
     zone: Mapped[CardZone] = mapped_column(
         CustomEnum(CardZone, name="cardzone")

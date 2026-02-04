@@ -96,42 +96,42 @@ class CardInstanceServices(BaseService):
         self.session.add_all(market_cards_instance)
         # await self.session.commit()
 
-    async def get_card_instance_in_some_card_zone(
-        self,
-        card_id: int,
-        game_id: int,
-        card_zone: CardZone,
-    ) -> PlayerCardInstance:
-        """Получаем информацию о состоянии карты в определенной зоне."""
+    # async def get_card_instance_in_some_card_zone(
+    #     self,
+    #     card_id: int,
+    #     game_id: int,
+    #     card_zone: CardZone,
+    # ) -> PlayerCardInstance:
+    #     """Получаем информацию о состоянии карты в определенной зоне."""
 
-        self.logger.info(
-            "card_id - %s, game_id - %s, card_zone - %s",
-            card_id,
-            game_id,
-            card_zone,
-        )
-        stmt = select(PlayerCardInstance).where(
-            PlayerCardInstance.card_id == card_id,
-            PlayerCardInstance.game_id == game_id,
-            PlayerCardInstance.zone == card_zone,
-        )
-        result: Result = await self.session.execute(stmt)
-        card_instance: PlayerCardInstance = result.unique().scalar_one_or_none()
+    #     self.logger.info(
+    #         "card_id - %s, game_id - %s, card_zone - %s",
+    #         card_id,
+    #         game_id,
+    #         card_zone,
+    #     )
+    #     stmt = select(PlayerCardInstance).where(
+    #         PlayerCardInstance.card_id == card_id,
+    #         PlayerCardInstance.game_id == game_id,
+    #         PlayerCardInstance.zone == card_zone,
+    #     )
+    #     result: Result = await self.session.execute(stmt)
+    #     card_instance: PlayerCardInstance = result.unique().scalar_one_or_none()
 
-        if not card_instance:
-            self.logger.warning(
-                "card_instance c card_id -%s, game_id - %s и card_zone - %s  не найден",
-                card_id,
-                game_id,
-                card_zone,
-            )
-            return None
-        self.logger.info(
-            "Получен card_instance с картой - %s",
-            card_instance.card.name,
-        )
+        # if not card_instance:
+        #     self.logger.warning(
+        #         "card_instance c card_id -%s, game_id - %s и card_zone - %s  не найден",
+        #         card_id,
+        #         game_id,
+        #         card_zone,
+        #     )
+        #     return None
+        # self.logger.info(
+        #     "Получен card_instance с картой - %s",
+        #     card_instance.card.name,
+        # )
 
-        return card_instance
+        # return card_instance
 
     async def get_card_instance_for_id(
         self,
@@ -150,7 +150,7 @@ class CardInstanceServices(BaseService):
             self.logger.warning(
                 "Нет состояния карты с id -%s", card_instanse_id
             )
-
+        self.logger.info("Возвращаем состояние карты")
         return card_instanse
 
     async def get_player_cards_in_hand_in_play(
