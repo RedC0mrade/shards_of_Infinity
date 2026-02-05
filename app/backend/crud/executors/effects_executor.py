@@ -389,7 +389,7 @@ class EffectExecutor:
 
         market_service = MarketServices(session=self.session)
 
-        card_instance = market_service.get_market_cards_less_six_cristals(
+        card_instance = await market_service.get_market_cards_less_six_cristals(
             game_id=Game.id
         )
         if card_instance:

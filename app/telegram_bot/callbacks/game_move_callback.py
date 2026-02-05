@@ -109,12 +109,11 @@ async def handle_play_card(
                 "Обработка действия которое вернулось из effects_exector"
             )
             media = []
-            for instace in result:
-                card = instace.card
+            for instace in result.instance:
                 logger.info(
-                    "--------------------------Карта действия - %s", card.name
+                    "--------------------------Карта действия - %s", instace.card.name
                 )
-                icon_path = media_dir / Path(instace.icon)
+                icon_path = media_dir / Path(instace.card.icon)
                 media.append(
                     InputMediaPhoto(
                         media=FSInputFile(icon_path),
@@ -138,7 +137,7 @@ async def handle_play_card(
                 )
             logger.info("отработал колбэк с медиа- %s", media)
             await callback.message.answer(
-                text="",
+                text="Выберите карту",
                 reply_markup=keyboard_factory(result.instance),
             )
             logger.info("Отработала клавиатура")

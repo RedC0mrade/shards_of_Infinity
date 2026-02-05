@@ -109,8 +109,9 @@ class BuyServices(BaseService):
             position_on_market,
         )
 
-        replacement_card_instance.zone = CardZone.MARKET
         replacement_card_instance.position_on_market = position_on_market
+        replacement_card_instance.zone = CardZone.MARKET
         
+        self.logger.info("replacement_card_instance.position_on_market - %s, position_on_market - %s", replacement_card_instance.position_on_market, position_on_market,)
         self.logger.info("Выполняем коммит")
-        await self.session.commit() # Нужен ли здесь комит???
+        # await self.session.commit() # Нужен ли здесь комит???
