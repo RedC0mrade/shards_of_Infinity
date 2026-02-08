@@ -33,6 +33,7 @@ async def mercenary_play(
     callback: CallbackQuery,
     callback_data: MercenaryCallback,
 ):
+    await callback.message.edit_reply_markup(reply_markup=None)
     async with db_helper.session_context() as session:
 
         card_instance_services = CardInstanceServices(session=session)
