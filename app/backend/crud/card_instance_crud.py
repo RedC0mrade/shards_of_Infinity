@@ -118,20 +118,20 @@ class CardInstanceServices(BaseService):
     #     result: Result = await self.session.execute(stmt)
     #     card_instance: PlayerCardInstance = result.unique().scalar_one_or_none()
 
-        # if not card_instance:
-        #     self.logger.warning(
-        #         "card_instance c card_id -%s, game_id - %s и card_zone - %s  не найден",
-        #         card_id,
-        #         game_id,
-        #         card_zone,
-        #     )
-        #     return None
-        # self.logger.info(
-        #     "Получен card_instance с картой - %s",
-        #     card_instance.card.name,
-        # )
+    # if not card_instance:
+    #     self.logger.warning(
+    #         "card_instance c card_id -%s, game_id - %s и card_zone - %s  не найден",
+    #         card_id,
+    #         game_id,
+    #         card_zone,
+    #     )
+    #     return None
+    # self.logger.info(
+    #     "Получен card_instance с картой - %s",
+    #     card_instance.card.name,
+    # )
 
-        # return card_instance
+    # return card_instance
 
     async def get_card_instance_for_id(
         self,

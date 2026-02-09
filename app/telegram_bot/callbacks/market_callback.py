@@ -57,7 +57,6 @@ async def handle_buy_card(
             )
             raise NotYourTurn(message="Пожалуйста, дождитесь своего хода")
 
-
         if card_instance.zone != CardZone.MARKET:
             logger.warning("Нет карты на рынке с id - %s", callback_data.id)
             raise MarketError(

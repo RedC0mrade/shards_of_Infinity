@@ -75,8 +75,10 @@ async def handle_play_card(
             CardZone.HAND,
             player_state.game_id,
         )
-        card_instance: PlayerCardInstance = await card_instance_service.get_card_instance_for_id(
-            card_instanse_id=callback_data.id
+        card_instance: PlayerCardInstance = (
+            await card_instance_service.get_card_instance_for_id(
+                card_instanse_id=callback_data.id
+            )
         )
         card: Card = await card_services.get_hand_card(
             player_state_id=player_state.id,
@@ -111,7 +113,8 @@ async def handle_play_card(
             media = []
             for instace in result.instance:
                 logger.info(
-                    "--------------------------Карта действия - %s", instace.card.name
+                    "--------------------------Карта действия - %s",
+                    instace.card.name,
                 )
                 icon_path = media_dir / Path(instace.card.icon)
                 media.append(
