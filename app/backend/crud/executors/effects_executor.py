@@ -91,11 +91,23 @@ class EffectExecutor:
             self.player_state.crystals,
         )
 
-    # async def do_crystal_conditional_champion_on_table(
-    #     self,
-    #     value: int,
-    #     condition_value: int,
-    # ):
+    async def do_crystal_conditional_champion_on_table(
+        self,
+        value: int,
+        condition_value: int,
+    ):
+        self.logger.info(
+            "Начало работы функции do_crystal_conditional_champion_on_table"
+        )
+        card_instance_service = CardInstanceServices(session=self.session)
+        card_instance = card_instance_service.get_card_type_in_zone(
+            game_id=self.game.id,
+            player_state_id=self.player_state.id,
+            zone=[CardZone.IN_PLAY],
+            card_type=CardType.CHAMPION,
+        )
+        if len(card_instance) >= condition_value:
+            self.player_state.crystals += value
 
     # ----------------------------- attack ---------------------------------
 
@@ -104,6 +116,7 @@ class EffectExecutor:
         value: int,
         condition_value: int,
     ):
+        self.logger.info("Начало работы функции do_attack_base_none")
         self.player_state.power += value
 
     async def do_attack_conditional_player_health(
@@ -111,6 +124,9 @@ class EffectExecutor:
         value: int,
         condition_value: int,
     ):
+        self.logger.info(
+            "Начало работы функции do_attack_conditional_player_health"
+        )
         if self.player_state.health == condition_value:
             self.player_state.power += value
 
