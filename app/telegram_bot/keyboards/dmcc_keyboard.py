@@ -53,6 +53,10 @@ class TakeMercenaryCallback(CallbackData, prefix="take_mercenary"):
     id: int
 
 
+class TakeChampionyCallback(CallbackData, prefix="take_champion"):
+    id: int
+
+
 class ChooseCardCallback(CallbackData, prefix="choose_card"):
     id: int
 
@@ -140,6 +144,16 @@ class KeyboardFactory:
         return cls.cards(
             instance_data=instance_data,
             callback_factory=lambda c: DestroyChampionCallback(id=c.id),
+        )
+
+    @classmethod
+    def take_champion(
+        cls,
+        instance_data: list[PlayerCardInstance],
+    ) -> InlineKeyboardMarkup:
+        return cls.cards(
+            instance_data=instance_data,
+            callback_factory=lambda c: TakeChampionyCallback(id=c),
         )
 
     @classmethod

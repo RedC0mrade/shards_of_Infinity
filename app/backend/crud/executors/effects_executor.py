@@ -343,7 +343,7 @@ class EffectExecutor:
             if self.player_state.mastery > 30:
                 self.player_state.mastery = 30
 
-    # ------------------------------- champion destroy ------------------------
+    # ------------------------------- champion --------------------------------
 
     async def do_champion_destroy_conditional_wilds_on_table(
         self,
@@ -352,6 +352,9 @@ class EffectExecutor:
     ):
         """Уничтожаем чемпиона врага."""
 
+        self.logger.info(
+            "Начало работы do_champion_destroy_conditional_wilds_on_table"
+        )
         if self.player_state.wilds_count >= condition_value:
             champion_service = ChampionService(session=self.session)
             champions: list[PlayerCardInstance] = (
@@ -361,7 +364,7 @@ class EffectExecutor:
             )
 
             if champions:
-                self.logger.info("Получаем чемпионов - %s", champions)
+                self.logger.info("Получаем id чемпионов - %s", champions)
                 return EffectResult(
                     action=CardAction.CHAMPION_DESTROY,
                     instance=champions,
@@ -370,6 +373,33 @@ class EffectExecutor:
             self.logger.info("Чемпионов нет - %s", champions)
         self.logger.info("Недостаточно карт wilds для зффекта")
 
+    async def do_take_champion_from_reset_base_none(
+        self,
+        value: int,
+        condition_value: int,
+    ):
+        """Берем чемпиона из сброса"""
+
+        self.logger.info(
+            "Начало работы do_champion_destroy_conditional_wilds_on_table"
+        )
+        card_instance_service = CardInstanceServices(session=self.session)
+        champions: list[int] = (
+            card_instance_service.get_card_type_in_zone(
+                game_id=self.game.id,
+                player_state_id=self.player_state.id,
+                zone=[CardZone.DISCARD],
+                card_type=CardType.CHAMPION,
+            )
+        )
+        if champions:
+            self.logger.info("Получаем id чемпионов - %s", champions)
+            return EffectResult(
+                action=CardAction.TAKE_CHAMPION_FROM_RESET,
+                instance=champions,
+            )
+
+        self.logger.info("Чемпионов нет - %s", champions)
     # ------------------------------- card_destroy ----------------------------
 
     async def do_card_destroy_base_none(

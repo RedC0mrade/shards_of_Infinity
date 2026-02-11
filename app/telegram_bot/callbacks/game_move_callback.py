@@ -45,6 +45,7 @@ KEYBOARD_BY_ACTION: dict[
     CardAction.CHAMPION_DESTROY: KeyboardFactory.destroy_champion,
     CardAction.CARD_DESTROY: KeyboardFactory.destroy_card,
     CardAction.TAKE_CARD_FROM_MARKET: KeyboardFactory.market,
+    CardAction.TAKE_CHAMPION_FROM_RESET: KeyboardFactory.take_champion,
 }
 
 
