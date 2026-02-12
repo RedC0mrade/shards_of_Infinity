@@ -384,13 +384,11 @@ class EffectExecutor:
             "Начало работы do_champion_destroy_conditional_wilds_on_table"
         )
         card_instance_service = CardInstanceServices(session=self.session)
-        champions: list[int] = (
-            card_instance_service.get_card_type_in_zone(
-                game_id=self.game.id,
-                player_state_id=self.player_state.id,
-                zone=[CardZone.DISCARD],
-                card_type=CardType.CHAMPION,
-            )
+        champions: list[int] = card_instance_service.get_card_type_in_zone(
+            game_id=self.game.id,
+            player_state_id=self.player_state.id,
+            zone=[CardZone.DISCARD],
+            card_type=CardType.CHAMPION,
         )
         if champions:
             self.logger.info("Получаем id чемпионов - %s", champions)
@@ -400,6 +398,7 @@ class EffectExecutor:
             )
 
         self.logger.info("Чемпионов нет - %s", champions)
+
     # ------------------------------- card_destroy ----------------------------
 
     async def do_card_destroy_base_none(
