@@ -85,7 +85,9 @@ async def handle_destroy_champion(
         )
         logger.info("Получили player_state - %s", player_state)
         card_instance: PlayerCardInstance = (
-            await card_instance_service.get_card_instance_for_id(callback_data.id)
+            await card_instance_service.get_card_instance_for_id(
+                callback_data.id
+            )
         )
 
         card_instance.zone = CardZone.DISCARD
