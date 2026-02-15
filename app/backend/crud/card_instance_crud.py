@@ -403,10 +403,10 @@ class CardInstanceServices(BaseService):
         zone: list[CardZone],
         card_type: CardType,
     ):
-        """Получаем id состояний карт определенного типа в определенных зонах."""
+        """Получаем состояний карт определенного типа в определенных зонах."""
 
         stmt = (
-            select(PlayerCardInstance.id)
+            select(PlayerCardInstance)
             .join(
                 Card,
                 PlayerCardInstance.card_id == Card.id,

@@ -153,7 +153,7 @@ class KeyboardFactory:
     ) -> InlineKeyboardMarkup:
         return cls.cards(
             instance_data=instance_data,
-            callback_factory=lambda c: TakeChampionyCallback(id=c),
+            callback_factory=lambda c: TakeChampionyCallback(id=c.id),
         )
 
     @classmethod

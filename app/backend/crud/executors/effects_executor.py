@@ -384,7 +384,7 @@ class EffectExecutor:
             "Начало работы do_champion_destroy_conditional_wilds_on_table"
         )
         card_instance_service = CardInstanceServices(session=self.session)
-        champions: list[int] = card_instance_service.get_card_type_in_zone(
+        champions: list[PlayerCardInstance] = card_instance_service.get_card_type_in_zone(
             game_id=self.game.id,
             player_state_id=self.player_state.id,
             zone=[CardZone.DISCARD],
