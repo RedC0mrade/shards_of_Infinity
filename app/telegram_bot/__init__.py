@@ -9,6 +9,7 @@ from app.telegram_bot.callbacks.mercenary_callback import router as mercenary_ro
 from app.telegram_bot.callbacks.champion_callback import router as champion_router
 from app.telegram_bot.callbacks.chose_card_callback import router as choose_router
 from app.telegram_bot.callbacks.destroy_card_callback import router as destroy_router
+from app.telegram_bot.callbacks.take_champion_callback import router as take_champion_router
 router = Router()
 
 router.include_routers(
@@ -20,5 +21,5 @@ router.include_routers(
     champion_router,
     destroy_router,
     choose_router,
-    
+    take_champion_router,
 )

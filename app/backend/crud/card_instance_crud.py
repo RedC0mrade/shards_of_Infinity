@@ -402,7 +402,7 @@ class CardInstanceServices(BaseService):
         player_state_id: int,
         zone: list[CardZone],
         card_type: CardType,
-    ):
+    ) -> list[PlayerCardInstance]:
         """Получаем состояний карт определенного типа в определенных зонах."""
 
         stmt = (
