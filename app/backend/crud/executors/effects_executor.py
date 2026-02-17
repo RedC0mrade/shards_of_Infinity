@@ -200,6 +200,26 @@ class EffectExecutor:
         if self.player_state.health == condition_value:
             self.player_state.power += value
 
+    async def do_attack_conditional_plus_value_for_each_homodeus_champion_in_game(
+        self,
+        value: int,
+        condition_value: int,
+    ):
+        """Обработка карты Эвокатус"""
+
+        self.logger.info(
+            "Начало работы функции do_attack_conditional_plus_value_for_each_homodeus_champion_in_game"
+        )
+        card_instance_service = CardInstanceServices(session=self.session)
+        instance = await card_instance_service.get_card_type_in_zone(
+            game_id=self.game.id,
+            player_state_id=self.player_state.id,
+            zone=list(CardZone.IN_PLAY),
+            card_type=CardType.CHAMPION,
+        )
+        if not instance:
+            self.logger.info("нет чемпионов в игре")
+        self.player_state.power = value * list(instance)
     # ----------------------------- healing ----------------------------------
 
     async def do_healing_base_none(
@@ -384,11 +404,13 @@ class EffectExecutor:
             "Начало работы do_champion_destroy_conditional_wilds_on_table"
         )
         card_instance_service = CardInstanceServices(session=self.session)
-        champions: list[PlayerCardInstance] = card_instance_service.get_card_type_in_zone(
-            game_id=self.game.id,
-            player_state_id=self.player_state.id,
-            zone=[CardZone.DISCARD],
-            card_type=CardType.CHAMPION,
+        champions: list[PlayerCardInstance] = (
+            card_instance_service.get_card_type_in_zone(
+                game_id=self.game.id,
+                player_state_id=self.player_state.id,
+                zone=[CardZone.DISCARD],
+                card_type=CardType.CHAMPION,
+            )
         )
         if champions:
             self.logger.info("Получаем id чемпионов - %s", champions)
