@@ -1,13 +1,11 @@
 from sqlalchemy import Result, distinct, func, select, update
 from sqlalchemy.orm import joinedload
-from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.backend.core.models.card import Card, CardEffect, CardFaction
 from app.backend.core.models.play_card_instance import (
     CardZone,
     PlayerCardInstance,
 )
-from app.backend.core.models.player_state import PlayerState
 from app.backend.crud.base_service import BaseService
 from app.backend.schemas.card import CreateCardSchema
 from app.utils.exceptions.exceptions import CardInstanceError

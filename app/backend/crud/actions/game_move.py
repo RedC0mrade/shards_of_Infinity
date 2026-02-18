@@ -2,10 +2,8 @@ from sqlalchemy import Result, delete, func, or_, select
 
 from app.backend.core.models.card import (
     Card,
-    CardAction,
     CardFaction,
     CardType,
-    EffectType,
 )
 from app.backend.core.models.game import Game
 from app.backend.core.models.play_card_instance import (
