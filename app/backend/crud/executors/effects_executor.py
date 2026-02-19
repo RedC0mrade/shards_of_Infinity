@@ -300,6 +300,12 @@ class EffectExecutor:
                 number_cards=value,
             )
 
+    async def do_take_card_conditional_card_from_hand(
+        self,
+        value: int,
+        condition_value: int,
+    ):
+        self.logger.critical("Необходимо понять на данный момент в какой зоне находиться карта")
     # ------------------------------- take_mercenary ---------------------------
 
     async def do_take_mercenary_from_reset_base_none(

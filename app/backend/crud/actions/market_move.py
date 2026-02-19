@@ -1,6 +1,5 @@
 from sqlalchemy import Result, select
 from app.backend.core.models.card import Card
-from app.backend.core.models.game import Game
 from app.backend.core.models.play_card_instance import CardZone, PlayerCardInstance
 from app.backend.crud.base_service import BaseService
 
