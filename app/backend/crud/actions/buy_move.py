@@ -1,8 +1,7 @@
 from random import choice
-from sqlalchemy import Result, delete, or_, select
-from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import Result, select
 
-from app.backend.core.models.card import Card, CardAction, EffectType
+from app.backend.core.models.card import Card
 from app.backend.core.models.game import Game
 from app.backend.core.models.play_card_instance import (
     CardZone,
