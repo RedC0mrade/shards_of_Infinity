@@ -1,4 +1,4 @@
-from sqlalchemy import Result, delete, func, or_, select
+from sqlalchemy import Result, func, select
 
 from app.backend.core.models.card import (
     Card,

@@ -1,5 +1,4 @@
 from sqlalchemy import Result, or_, select
-from app.backend.core.models.game import Game
 from app.backend.core.models.play_card_instance import CardZone, PlayerCardInstance
 from app.backend.crud.base_service import BaseService
 from app.utils.exceptions.exceptions import DoNotHaveCardInZone
