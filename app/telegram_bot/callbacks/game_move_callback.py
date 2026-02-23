@@ -81,13 +81,15 @@ async def handle_play_card(
                 card_instanse_id=callback_data.id
             )
         )
-        card: Card = await card_services.get_hand_card(
-            player_state_id=player_state.id,
-            card_id=card_instance.card_id,
-            card_zone=CardZone.HAND,
-            game_id=player_state.game_id,
-        )  # Получаем карту, только если она в руке
-        if not card:
+        # card: Card = await card_services.get_hand_card( # Проверить на лишний запрос, Card уже есть в card_instance.card            player_state_id=player_state.id,
+        #     card_id=card_instance.card_id,
+        #     card_zone=CardZone.HAND,
+        #     game_id=player_state.game_id,
+        # )  # Получаем карту, только если она в руке
+        if (
+            card_instance.zone == CardZone.HAND
+            and card_instance.game_id == player_state.game_id
+        ):
 
             logger.warning("Нет карты в руке id - %s", callback_data.id)
             return await callback.answer(
@@ -97,10 +99,14 @@ async def handle_play_card(
                     'с помощью кнопки "Рука"'
                 )
             )
-        logger.info("Получили карту %s c id - %s", card.name, card.id)
+        logger.info(
+            "Получили карту %s c id - %s",
+            card_instance.card.name,
+            card_instance.card.id,
+        )
 
         result: EffectResult = await move_services.make_move(
-            card=card,
+            card=card_instance.card,
             player_state=player_state,
             game=player_state.game,  # нужно ли? Есть в PlayerState
             player_id=callback.from_user.id,
@@ -108,9 +114,7 @@ async def handle_play_card(
 
         if result:
             logger.debug("result - %s", result)
-            logger.debug(
-                "Обработка действия которое вернулось из effects_exector"
-            )
+            logger.debug("Обработка действия которое вернулось из effects_exector")
             media = []
             for instace in result.instance:
                 logger.info(
@@ -123,9 +127,7 @@ async def handle_play_card(
                         media=FSInputFile(icon_path),
                     )
                 )
-            logger.info(
-                "icon_path = %s exists=%s", icon_path, icon_path.exists()
-            )
+            logger.info("icon_path = %s exists=%s", icon_path, icon_path.exists())
             keyboard_factory = KEYBOARD_BY_ACTION.get(result.action)
             if len(media) == 1:
                 logger.info("Карта только 1")
@@ -147,14 +149,14 @@ async def handle_play_card(
             logger.info("Отработала клавиатура")
             return
 
-        photo = FSInputFile(media_dir / Path(card.icon))
+        photo = FSInputFile(media_dir / Path(card_instance.card.icon))
 
         await callback.message.answer_photo(
             photo=photo,
-            caption=f"Вы сыграли карту {card.name}",
+            caption=f"Вы сыграли карту {card_instance.card.name}",
         )
         await callback.bot.send_photo(
             photo=photo,
-            caption=f"Ваш противник разыграл карту: {card.name}",
+            caption=f"Ваш противник разыграл карту: {card_instance.card.name}",
             chat_id=player_state.game.non_active_player_id,
         )

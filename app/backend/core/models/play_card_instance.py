@@ -28,8 +28,9 @@ class CardZone(str, enum.Enum):
     DISCARD = "discard"  # Карты в СБРОСЕ у игрока
     EXILED = "exiled"  # УДАЛЕННЫЕ карты из игры, наемники или уничтоженные
     HAND = "hand"  # Карты в РУКЕ игрока
-    IN_PLAY = "in_play"  # Карты которые на СТОЛЕ
+    IN_PLAY = "in_play"  # Разыгранная карты 
     MARKET = "market"  # Карты на РЫНКЕ
+    ON_BOARD = "on_board" # Карты на столе
     PLAYER_DECK = "player_deck"  # Активные карты В КОЛОДЕ игрока
 
 

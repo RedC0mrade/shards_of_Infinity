@@ -48,28 +48,28 @@ class CardServices(BaseService):
         card = result.unique().scalar_one_or_none()
         return card
 
-    async def get_hand_card(
-        self,
-        card_id: int,
-        game_id: int,
-        card_zone: str,
-        player_state_id: int,
-    ) -> Card | None:
-        stmt = (
-            select(Card)
-            .join(PlayerCardInstance, PlayerCardInstance.card_id == Card.id)
-            .options(joinedload(Card.effects))
-            .where(
-                Card.id == card_id,
-                PlayerCardInstance.player_state_id == player_state_id,
-                PlayerCardInstance.zone == card_zone,
-                PlayerCardInstance.game_id == game_id,
-            )
-        )
-        result: Result = await self.session.execute(stmt)
-        card = result.unique().scalar_one_or_none()
+    # async def get_hand_card(
+    #     self,
+    #     card_id: int,
+    #     game_id: int,
+    #     card_zone: str,
+    #     player_state_id: int,
+    # ) -> Card | None:
+    #     stmt = (
+    #         select(Card)
+    #         .join(PlayerCardInstance, PlayerCardInstance.card_id == Card.id)
+    #         .options(joinedload(Card.effects))
+    #         .where(
+    #             Card.id == card_id,
+    #             PlayerCardInstance.player_state_id == player_state_id,
+    #             PlayerCardInstance.zone == card_zone,
+    #             PlayerCardInstance.game_id == game_id,
+    #         )
+    #     )
+    #     result: Result = await self.session.execute(stmt)
+    #     card = result.unique().scalar_one_or_none()
 
-        return card
+    #     return card
 
     async def change_card_zone(  # Переместить в PlayerCardInstance
         self,
