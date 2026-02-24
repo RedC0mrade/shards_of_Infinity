@@ -220,6 +220,7 @@ class EffectExecutor:
         if not instance:
             self.logger.info("нет чемпионов в игре")
         self.player_state.power = value * list(instance)
+
     # ----------------------------- healing ----------------------------------
 
     async def do_healing_base_none(
@@ -305,7 +306,10 @@ class EffectExecutor:
         value: int,
         condition_value: int,
     ):
-        self.logger.critical("Необходимо понять на данный момент в какой зоне находиться карта")
+        self.logger.critical(
+            "Необходимо понять на данный момент в какой зоне находиться карта"
+        )
+
     # ------------------------------- take_mercenary ---------------------------
 
     async def do_take_mercenary_from_reset_base_none(
