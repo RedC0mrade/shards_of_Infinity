@@ -56,6 +56,8 @@ async def handle_play_card(
 ):
     """Обрабатываем команду розыгрыша карт"""
 
+    await callback.message.edit_reply_markup(reply_markup=None)
+
     logger.info("Обрабатываем команду розыгрыша карт")
     async with db_helper.session_context() as session:
         card_services = CardServices(session=session)
@@ -81,14 +83,10 @@ async def handle_play_card(
                 card_instanse_id=callback_data.id
             )
         )
-        # card: Card = await card_services.get_hand_card( # Проверить на лишний запрос, Card уже есть в card_instance.card            player_state_id=player_state.id,
-        #     card_id=card_instance.card_id,
-        #     card_zone=CardZone.HAND,
-        #     game_id=player_state.game_id,
-        # )  # Получаем карту, только если она в руке
+
         if (
-            card_instance.zone == CardZone.HAND
-            and card_instance.game_id == player_state.game_id
+            card_instance.zone != CardZone.HAND
+            or card_instance.game_id != player_state.game_id
         ):
 
             logger.warning("Нет карты в руке id - %s", callback_data.id)
