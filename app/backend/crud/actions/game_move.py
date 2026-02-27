@@ -172,7 +172,7 @@ class MoveServices(BaseService):
 
         self.logger.info("Все эффекты карты '%s' обработаны", card.name)
 
-        self.logger.info("Функция change_card_zone отработала. делаем commit")
+        self.logger.info("Функция change_card_zone отработала")
         await play_state_executor.faction_count(
             card=card
         )  # Считаем разыранные карты

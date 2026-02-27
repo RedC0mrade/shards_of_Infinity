@@ -102,7 +102,8 @@ async def handle_play_card(
             card_instance.card.name,
             card_instance.card.id,
         )
-
+        card_instance.zone = CardZone.IN_ACTION
+        session.flush(card_instance)
         result: EffectResult = await move_services.make_move(
             card=card_instance.card,
             player_state=player_state,
