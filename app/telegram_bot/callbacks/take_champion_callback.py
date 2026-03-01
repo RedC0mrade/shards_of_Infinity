@@ -1,6 +1,6 @@
 from pathlib import Path
 from aiogram import Router
-from aiogram.types import CallbackQuery, FSInputFile
+from aiogram.types import CallbackQuery
 
 from app.backend.core.models.play_card_instance import (
     CardZone,
