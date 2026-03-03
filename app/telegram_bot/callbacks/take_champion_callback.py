@@ -11,7 +11,6 @@ from app.backend.factories.database import db_helper
 from app.telegram_bot.keyboards.dmcc_keyboard import (
     TakeChampionyCallback,
 )
-from app.utils.exceptions.exceptions import GameError
 from app.utils.logger import get_logger
 
 
