@@ -19,7 +19,7 @@ from app.telegram_bot.keyboards.dmcc_keyboard import (
     MercenaryCallback,
     TakeMercenaryCallback,
 )
-from app.utils.exceptions.exceptions import NotYourTurn, GameError
+from app.utils.exceptions.exceptions import GameError
 from app.utils.logger import get_logger
 
 
