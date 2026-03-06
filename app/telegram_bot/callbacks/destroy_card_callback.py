@@ -6,7 +6,6 @@ from app.backend.core.models.play_card_instance import PlayerCardInstance
 from app.backend.core.models.player_state import PlayerState
 from app.backend.crud.actions.champion_move import ChampionService
 from app.backend.crud.actions.destroy_card_move import DestroyCardService
-from app.backend.crud.card_instance_crud import CardInstanceServices
 from app.backend.crud.player_state_crud import PlayerStateServices
 from app.backend.factories.database import db_helper
 from app.telegram_bot.keyboards.dmcc_keyboard import DestroyCardCallback
