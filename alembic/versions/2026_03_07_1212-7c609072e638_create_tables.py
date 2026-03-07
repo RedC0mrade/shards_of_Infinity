@@ -1,8 +1,8 @@
 """Create tables
 
-Revision ID: 183882830b4c
+Revision ID: 7c609072e638
 Revises:
-Create Date: 2025-12-10 22:45:40.911417
+Create Date: 2026-03-07 12:12:00.592301
 
 """
 
@@ -13,7 +13,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = "183882830b4c"
+revision: str = "7c609072e638"
 down_revision: Union[str, Sequence[str], None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -298,8 +298,9 @@ def upgrade() -> None:
                 "discard",
                 "exiled",
                 "hand",
-                "in_play",
+                "in_action",
                 "market",
+                "on_board",
                 "player_deck",
                 name="cardzone",
                 native_enum=False,
@@ -353,6 +354,9 @@ def upgrade() -> None:
             ondelete="CASCADE",
         ),
         sa.PrimaryKeyConstraint("id", name=op.f("pk_player_card_instances")),
+        sa.UniqueConstraint(
+            "card_id", name=op.f("uq_player_card_instances_card_id")
+        ),
         sa.UniqueConstraint("game_id", "card_id", name="uq_game_card"),
     )
     # ### end Alembic commands ###

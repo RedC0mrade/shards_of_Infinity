@@ -22,6 +22,7 @@ from app.backend.crud.users_crud import UserServices
 from app.backend.factories.database import db_helper
 
 
+from app.telegram_bot.dependencies.dependencies import Services
 from app.telegram_bot.keyboards.dmcc_keyboard import KeyboardFactory
 from app.telegram_bot.keyboards.game_move_keyboard import (
     MoveKBText,
@@ -39,36 +40,34 @@ logger = get_logger(__name__)
 
 
 @router.message(F.text == MoveKBText.MARKET)
-async def handle_market(message: types.Message):
+async def handle_market(message: types.Message, services: Services,):
     """Выводим рынок в порядке позиции"""
-    async with db_helper.session_context() as session:
-        game_service = GameServices(session=session)
-        market_servise = MarketServices(session=session)
-        game: Game = await game_service.get_active_game(
-            player_id=message.from_user.id
-        )
 
-        market_cards: list[PlayerCardInstance] = (
-            await market_servise.get_market_cards(game_id=game.id)
-        )
+    game: Game = await services.game.get_active_game(
+        player_id=message.from_user.id
+    )
 
-        media = []  # переделать дублирующийся код
-        for slot in market_cards:
-            card = slot.card
-            icon_path = media_dir / Path(card.icon)
-            logger.info("Путь до карты %s", icon_path)
-            media.append(
-                InputMediaPhoto(
-                    media=FSInputFile(icon_path),
-                )
+    market_cards: list[PlayerCardInstance] = (
+        await services.market.get_market_cards(game_id=game.id)
+    )
+
+    media = []  # переделать дублирующийся код
+    for slot in market_cards:
+        card = slot.card
+        icon_path = media_dir / Path(card.icon)
+        logger.info("Путь до карты %s", icon_path)
+        media.append(
+            InputMediaPhoto(
+                media=FSInputFile(icon_path),
             )
-        await message.answer_media_group(media)
+        )
+    await message.answer_media_group(media)
 
-        if message.from_user.id == game.active_player_id:
-            await message.answer(
-                text="Выберите карту для покупки",
-                reply_markup=KeyboardFactory.market(instance_data=market_cards),
-            )
+    if message.from_user.id == game.active_player_id:
+        await message.answer(
+            text="Выберите карту для покупки",
+            reply_markup=KeyboardFactory.market(instance_data=market_cards),
+        )
 
 
 @router.message(
@@ -79,57 +78,57 @@ async def handle_market(message: types.Message):
         ]
     )
 )
-async def handle_hand(message: types.Message):
+async def handle_hand(message: types.Message, services: Services,):
     """Выводим карты в сбросе, на столе"""
-    async with db_helper.session_context() as session:
-        game_service = GameServices(session=session)
-        hand_services = HandServices(session=session)
-        game: Game = await game_service.get_active_game(
-            player_id=message.from_user.id
+    # async with db_helper.session_context() as session:
+        # game_service = GameServices(session=session)
+        # hand_services = HandServices(session=session)
+    game: Game = await services.game.get_active_game(
+        player_id=message.from_user.id
+    )
+
+    if message.text == MoveKBText.HAND:
+        hand_cards: list[PlayerCardInstance] = (
+            await services.hand.get_cards_in_zone(
+                game_id=game.id,
+                card_zone=CardZone.HAND,
+                player_id=message.from_user.id,
+            )
         )
 
-        if message.text == MoveKBText.HAND:
-            hand_cards: list[PlayerCardInstance] = (
-                await hand_services.get_cards_in_zone(
-                    game_id=game.id,
-                    card_zone=CardZone.HAND,
-                    player_id=message.from_user.id,
-                )
+    else:
+        hand_cards: list[PlayerCardInstance] = (
+            await services.hand.get_cards_in_zone(
+                game_id=game.id,
+                card_zone=CardZone.DISCARD,
+                player_id=message.from_user.id,
             )
+        )
 
-        else:
-            hand_cards: list[PlayerCardInstance] = (
-                await hand_services.get_cards_in_zone(
-                    game_id=game.id,
-                    card_zone=CardZone.DISCARD,
-                    player_id=message.from_user.id,
-                )
+    media = []  # переделать дублирующийся код
+    logger.info("Карты для вывода ироку:")
+    for slot in hand_cards:
+        card = slot.card
+
+        icon_path = media_dir / Path(card.icon)
+        logger.info("--------------- %s", card.name)
+        media.append(
+            InputMediaPhoto(
+                media=FSInputFile(icon_path),
             )
+        )
+    if not media:
+        logger.info("Карты отсутствуют")
+        return await message.answer("❌ Нет карт")
+    await message.answer_media_group(media)
+    if message.text == MoveKBText.HAND:
 
-        media = []  # переделать дублирующийся код
-        logger.info("Карты для вывода ироку:")
-        for slot in hand_cards:
-            card = slot.card
-
-            icon_path = media_dir / Path(card.icon)
-            logger.info("--------------- %s", card.name)
-            media.append(
-                InputMediaPhoto(
-                    media=FSInputFile(icon_path),
-                )
-            )
-        if not media:
-            logger.info("Карты отсутствуют")
-            return await message.answer("❌ Нет карт")
-        await message.answer_media_group(media)
-        if message.text == MoveKBText.HAND:
-
-            await message.answer(
-                "Выберите карту:",
-                reply_markup=KeyboardFactory.play_card(
-                    instance_data=hand_cards,
-                ),
-            )
+        await message.answer(
+            "Выберите карту:",
+            reply_markup=KeyboardFactory.play_card(
+                instance_data=hand_cards,
+            ),
+        )
 
 
 @router.message(F.text == MoveKBText.CARDS_IN_PLAY)

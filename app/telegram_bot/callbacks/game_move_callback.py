@@ -1,8 +1,8 @@
 from __future__ import annotations
 
 from pathlib import Path
-from aiogram import Router, F, Bot
-from typing import TYPE_CHECKING, Callable
+from aiogram import Router
+from typing import Callable
 
 from aiogram.types import (
     CallbackQuery,
@@ -11,7 +11,7 @@ from aiogram.types import (
     InlineKeyboardMarkup,
 )
 
-from app.backend.core.models.card import Card, CardAction
+from app.backend.core.models.card import CardAction
 from app.backend.core.models.play_card_instance import (
     CardZone,
     PlayerCardInstance,
@@ -60,7 +60,6 @@ async def handle_play_card(
 
     logger.info("Обрабатываем команду розыгрыша карт")
     async with db_helper.session_context() as session:
-        card_services = CardServices(session=session)
         player_state_services = PlayerStateServices(session=session)
         move_services = MoveServices(session=session)
         card_instance_service = CardInstanceServices(session=session)

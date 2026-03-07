@@ -4,7 +4,6 @@ from aiogram.types import CallbackQuery, FSInputFile
 
 from app.backend.core.models.play_card_instance import PlayerCardInstance
 from app.backend.core.models.player_state import PlayerState
-from app.backend.crud.actions.champion_move import ChampionService
 from app.backend.crud.actions.destroy_card_move import DestroyCardService
 from app.backend.crud.player_state_crud import PlayerStateServices
 from app.backend.factories.database import db_helper
@@ -25,7 +24,7 @@ async def handle_card_destroy(
     await callback.message.edit_reply_markup(reply_markup=None)
     async with db_helper.session_context as session:
 
-        # card_instance_service = CardInstanceServices(session=session)
+        card_instance_service = CardInstanceServices(session=session)
         player_state_service = PlayerStateServices(session=session)
         destroy_card_service = DestroyCardService(session=session)
         player_state: PlayerState = (

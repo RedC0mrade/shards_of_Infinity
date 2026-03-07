@@ -9,6 +9,7 @@ from aiogram import Bot, Dispatcher
 from aiogram.enums import ParseMode
 from fastapi.concurrency import asynccontextmanager
 
+from app.telegram_bot.dependencies.dependencies import DatabaseMiddleware
 from app.utils.middlewares.error_handler import ErrorHandlerMiddleware
 from config import settings
 from app.telegram_bot import router as bot_router
@@ -24,6 +25,7 @@ async def lifespan(app: FastAPI):
         default=DefaultBotProperties(parse_mode=ParseMode.HTML),
     )
     dp = Dispatcher()
+    dp.update.middleware(DatabaseMiddleware())
     dp.message.middleware(ErrorHandlerMiddleware())
     dp.callback_query.middleware(ErrorHandlerMiddleware())
     dp.include_router(bot_router)
