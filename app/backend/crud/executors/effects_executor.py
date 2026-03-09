@@ -13,7 +13,7 @@ from app.backend.core.models.card import (
 from app.backend.core.models.game import Game
 from app.backend.core.models.play_card_instance import CardZone
 from app.backend.core.models.player_state import PlayerState
-from app.backend.crud.actions.champion_move import ChampionService
+from app.backend.crud.actions.champion_move import ChampionServices
 from app.backend.crud.actions.destroy_card_move import DestroyCardService
 from app.backend.crud.card_crud import CardServices
 from app.backend.crud.card_instance_crud import CardInstanceServices
@@ -51,9 +51,7 @@ class EffectExecutor:
         )
 
         method_name = (
-            f"do_{effect.action}_"
-            f"{effect.effect_type}_"
-            f"{effect.condition_type}"
+            f"do_{effect.action}_" f"{effect.effect_type}_" f"{effect.condition_type}"
         )
         self.logger.info("method_name - %s", method_name)
         method = getattr(self, method_name, None)
@@ -124,9 +122,7 @@ class EffectExecutor:
         value: int,
         condition_value: int,
     ):
-        self.logger.info(
-            "Начало работы функции do_attack_conditional_player_health"
-        )
+        self.logger.info("Начало работы функции do_attack_conditional_player_health")
         if self.player_state.health == condition_value:
             self.player_state.power += value
 
@@ -382,15 +378,11 @@ class EffectExecutor:
     ):
         """Уничтожаем чемпиона врага."""
 
-        self.logger.info(
-            "Начало работы do_champion_destroy_conditional_wilds_on_table"
-        )
+        self.logger.info("Начало работы do_champion_destroy_conditional_wilds_on_table")
         if self.player_state.wilds_count >= condition_value:
-            champion_service = ChampionService(session=self.session)
-            champions: list[PlayerCardInstance] = (
-                await champion_service.get_champions(
-                    player_id=self.player_state.player_id
-                )
+            champion_service = ChampionServices(session=self.session)
+            champions: list[PlayerCardInstance] = await champion_service.get_champions(
+                player_id=self.player_state.player_id
             )
 
             if champions:
@@ -410,9 +402,7 @@ class EffectExecutor:
     ):
         """Берем чемпиона из сброса"""
 
-        self.logger.info(
-            "Начало работы do_champion_destroy_conditional_wilds_on_table"
-        )
+        self.logger.info("Начало работы do_champion_destroy_conditional_wilds_on_table")
         card_instance_service = CardInstanceServices(session=self.session)
         champions: list[PlayerCardInstance] = (
             card_instance_service.get_card_type_in_zone(

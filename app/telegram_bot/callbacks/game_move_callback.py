@@ -17,7 +17,6 @@ from app.backend.core.models.play_card_instance import (
     PlayerCardInstance,
 )
 from app.backend.core.models.player_state import PlayerState
-from app.backend.crud.card_crud import CardServices
 from app.backend.crud.actions.game_move import MoveServices
 from app.backend.crud.card_instance_crud import CardInstanceServices
 from app.backend.crud.executors.effects_executor import EffectResult

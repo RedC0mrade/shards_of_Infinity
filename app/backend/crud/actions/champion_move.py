@@ -10,7 +10,7 @@ from app.backend.crud.base_service import BaseService
 from app.utils.exceptions.exceptions import ChampionError
 
 
-class ChampionService(BaseService):
+class ChampionServices(BaseService):
 
     async def attack_the_champion(
         self,

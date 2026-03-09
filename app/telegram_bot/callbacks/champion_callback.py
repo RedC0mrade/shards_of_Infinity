@@ -7,7 +7,7 @@ from app.backend.core.models.play_card_instance import (
     PlayerCardInstance,
 )
 from app.backend.core.models.player_state import PlayerState
-from app.backend.crud.actions.champion_move import ChampionService
+from app.backend.crud.actions.champion_move import ChampionServices
 from app.backend.crud.card_instance_crud import CardInstanceServices
 from app.backend.crud.player_state_crud import PlayerStateServices
 from app.telegram_bot.keyboards.dmcc_keyboard import (
@@ -34,7 +34,7 @@ async def handle_attack_champion(
 
         card_instance_service = CardInstanceServices(session=session)
         player_state_service = PlayerStateServices(session=session)
-        champion_service = ChampionService(session=session)
+        champion_service = ChampionServices(session=session)
 
         player_state: PlayerState = (
             await player_state_service.get_player_state_with_game(
@@ -73,7 +73,7 @@ async def handle_destroy_champion(
     callback: CallbackQuery,
     callback_data: DestroyChampionCallback,
 ):
-    
+
     await callback.message.edit_reply_markup(reply_markup=None)
 
     async with db_helper.session_context() as session:
@@ -88,9 +88,7 @@ async def handle_destroy_champion(
         )
         logger.info("Получили player_state - %s", player_state)
         card_instance: PlayerCardInstance = (
-            await card_instance_service.get_card_instance_for_id(
-                callback_data.id
-            )
+            await card_instance_service.get_card_instance_for_id(callback_data.id)
         )
 
         card_instance.zone = CardZone.DISCARD

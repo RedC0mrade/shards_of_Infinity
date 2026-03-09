@@ -4,7 +4,7 @@ from app.backend.crud.card_instance_crud import CardInstanceServices
 from app.utils.exceptions.exceptions import ShieldError
 
 
-class AttackService(BaseService):
+class AttackServices(BaseService):
 
     async def attack(
         self,
@@ -31,13 +31,10 @@ class AttackService(BaseService):
         if player_state.power <= 0:
             self.logger.info("Атака меньше или равна щиту выводим ошибку")
             raise ShieldError(message="Щит игрока больше или равен наносимому урону")
-        
+
         enemy_state.health -= player_state.power
 
-        self.logger.info(
-            "Осташиеся здоровье - %s",
-            enemy_state.health
-        )
+        self.logger.info("Осташиеся здоровье - %s", enemy_state.health)
         # if enemy_state.health < 0:
         # self.logger.info("Здоровье меньше нуля, запускаем функцию 'поражение'")
         # await defeat_service.defeat(
