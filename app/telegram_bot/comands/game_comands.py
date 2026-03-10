@@ -329,13 +329,13 @@ async def end_move(message: types.Message, services: Services,):
     """Конец хода."""
 
     player_state: PlayerState = (
-        await player_state_service.get_player_state_with_game(
+        await services.player_state.get_player_state_with_game(
             player_id=message.from_user.id,
             active_player=True,
         )
     )
     emeny_state: PlayerState = (
-        await player_state_service.get_enemy_player_state_with_game(
+        await services.player_state.get_enemy_player_state_with_game(
             player_id=player_state.player_id
         )
     )
@@ -344,7 +344,7 @@ async def end_move(message: types.Message, services: Services,):
         player_state.id,
         player_state.game.id,
     )
-    await move_service.pre_make_move(
+    await services.move.pre_make_move(
         player_state=emeny_state,
         game=player_state.game,
     )
@@ -373,22 +373,19 @@ async def end_move(message: types.Message, services: Services,):
 
 
 @router.message(F.text == MoveKBText.MASTERY)
-async def get_concentration(message: types.Message):
+async def get_concentration(message: types.Message, services: Services,):
     """Добавление +1 к мастерству."""
-    async with db_helper.session_context() as session:
-        player_state_service = PlayerStateServices(session=session)
-        move_service = MoveServices(session=session)
 
-        player_state: PlayerState = (
-            await player_state_service.get_player_state_with_game(
-                player_id=message.from_user.id,
-                active_player=True,
-            )
+    player_state: PlayerState = (
+        await services.p.get_player_state_with_game(
+            player_id=message.from_user.id,
+            active_player=True,
         )
+    )
 
-        change_player_state: PlayerState = await move_service.get_mastery(
-            player_state=player_state
-        )
-        await message.answer(
-            text=(f"Мастерство ⚡ теперь равно = {change_player_state.mastery}")
-        )
+    change_player_state: PlayerState = await services.move.get_mastery(
+        player_state=player_state
+    )
+    await message.answer(
+        text=(f"Мастерство ⚡ теперь равно = {change_player_state.mastery}")
+    )
