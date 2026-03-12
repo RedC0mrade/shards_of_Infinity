@@ -68,7 +68,8 @@ async def handle_attack_champion(
 @router.callback_query(DestroyChampionCallback.filter())
 async def handle_destroy_champion(
     callback: CallbackQuery,
-    callback_data: DestroyChampionCallback, services: Services,
+    callback_data: DestroyChampionCallback,
+    services: Services,
 ):
 
     await callback.message.edit_reply_markup(reply_markup=None)
