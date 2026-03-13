@@ -325,14 +325,15 @@ async def attack_enemy_player(
 
 
 @router.message(F.text == MoveKBText.END)
-async def end_move(message: types.Message, services: Services,):
+async def end_move(
+    message: types.Message,
+    services: Services,
+):
     """Конец хода."""
 
-    player_state: PlayerState = (
-        await services.player_state.get_player_state_with_game(
-            player_id=message.from_user.id,
-            active_player=True,
-        )
+    player_state: PlayerState = await services.player_state.get_player_state_with_game(
+        player_id=message.from_user.id,
+        active_player=True,
     )
     emeny_state: PlayerState = (
         await services.player_state.get_enemy_player_state_with_game(
@@ -373,14 +374,15 @@ async def end_move(message: types.Message, services: Services,):
 
 
 @router.message(F.text == MoveKBText.MASTERY)
-async def get_concentration(message: types.Message, services: Services,):
+async def get_concentration(
+    message: types.Message,
+    services: Services,
+):
     """Добавление +1 к мастерству."""
 
-    player_state: PlayerState = (
-        await services.p.get_player_state_with_game(
-            player_id=message.from_user.id,
-            active_player=True,
-        )
+    player_state: PlayerState = await services.player_state.get_player_state_with_game(
+        player_id=message.from_user.id,
+        active_player=True,
     )
 
     change_player_state: PlayerState = await services.move.get_mastery(

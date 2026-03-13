@@ -134,7 +134,7 @@ class MoveServices(BaseService):
             card_id=card.id,
             game_id=game.id,
             start_zone=start_zone,
-            end_zone=CardZone.IN_PLAY,
+            end_zone=CardZone.IN_ACTION,
         )
 
         effect_executor = EffectExecutor(
@@ -146,7 +146,7 @@ class MoveServices(BaseService):
             session=self.session,
             player_state=player_state,
         )
-
+        
         for effect in card.effects:
             self.logger.info(
                 "Обрабатываем эффект: action=%s type=%s condition=%s",
