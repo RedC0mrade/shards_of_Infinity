@@ -2,7 +2,7 @@ from pathlib import Path
 from aiogram import Router, F
 from aiogram.types import CallbackQuery, FSInputFile
 
-from app.backend.core.models.card import Card, CardType
+from app.backend.core.models.card import CardType
 from app.backend.core.models.play_card_instance import (
     CardZone,
     PlayerCardInstance,

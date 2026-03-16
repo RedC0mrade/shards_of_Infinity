@@ -8,7 +8,6 @@ from app.backend.core.models.play_card_instance import (
 )
 from app.backend.core.models.player_state import PlayerState
 
-from app.backend.factories.database import db_helper
 from app.telegram_bot.dependencies.dependencies import Services
 from app.telegram_bot.keyboards.dmcc_keyboard import ChooseCardCallback
 from app.utils.exceptions.exceptions import GameError
