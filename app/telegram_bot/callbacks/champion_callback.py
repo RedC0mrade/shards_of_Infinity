@@ -7,16 +7,12 @@ from app.backend.core.models.play_card_instance import (
     PlayerCardInstance,
 )
 from app.backend.core.models.player_state import PlayerState
-from app.backend.crud.actions.champion_move import ChampionServices
-from app.backend.crud.card_instance_crud import CardInstanceServices
-from app.backend.crud.player_state_crud import PlayerStateServices
 from app.telegram_bot.dependencies.dependencies import Services
 from app.telegram_bot.keyboards.dmcc_keyboard import (
     AttackChampionCallback,
     DestroyChampionCallback,
 )
 
-from app.backend.factories.database import db_helper
 from app.utils.logger import get_logger
 
 

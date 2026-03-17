@@ -1,15 +1,7 @@
 from sqlalchemy import Result, func, select
+from typing import TYPE_CHECKING
 
-from app.backend.core.models.card import (
-    Card,
-    CardFaction,
-    CardType,
-)
-from app.backend.core.models.game import Game
-from app.backend.core.models.play_card_instance import (
-    CardZone,
-    PlayerCardInstance,
-)
+
 from app.backend.core.models.player_state import PlayerState
 from app.backend.crud.base_service import BaseService
 from app.backend.crud.card_crud import CardServices
@@ -17,10 +9,23 @@ from app.backend.crud.card_instance_crud import CardInstanceServices
 from app.backend.crud.executors.effects_executor import EffectExecutor
 from app.backend.crud.executors.ps_count_executor import PlayStateExecutor
 from app.backend.crud.hand_crud import HandServices
+from app.telegram_bot.dependencies.dependencies import Services
 from app.utils.exceptions.exceptions import (
     ConcentrationError,
     NotEnoughCrystals,
 )
+
+if TYPE_CHECKING:
+    from app.backend.core.models.game import Game
+    from app.backend.core.models.play_card_instance import (
+        CardZone,
+        PlayerCardInstance,
+    )
+    from app.backend.core.models.card import (
+        Card,
+        CardFaction,
+        CardType,
+    )
 
 
 class MoveServices(BaseService):
@@ -29,11 +34,11 @@ class MoveServices(BaseService):
         self,
         player_state: PlayerState,
         game: Game,
+        services: Services,
     ):
         # Что необходимо сделать перед ходом
         # 1) Обнулить все показатели. Атаки, защиты, щита
         # 2) Обновить обновить счетчик фракций
-        card_inctance_service = CardInstanceServices(session=self.session)
 
         self.logger.info(
             "Состояние player_state на начало функции,\n ---power - %s,\n ---shild - %s,\n ---crystals - %s,\n ---wilds - %s,\n ---homodeus - %s,\n ---order - %s,\n ---demirealm - %s,\n ---nconcentration -%s",
@@ -100,7 +105,7 @@ class MoveServices(BaseService):
         )
 
         cards_in_action: list[PlayerCardInstance] = (
-            await card_inctance_service.get_player_cards_in_hand_in_play(
+            await services.card_instance.get_player_cards_in_hand_in_play(
                 player_state=player_state
             )
         )
@@ -116,6 +121,7 @@ class MoveServices(BaseService):
         game: Game,
         player_id: int,
         player_state: PlayerState,
+        services: Services,
         mercenary: bool = False,
     ) -> str:
         """Игрок разыгрывает карту."""
@@ -127,10 +133,8 @@ class MoveServices(BaseService):
             game.id,
         )
 
-        card_service = CardServices(session=self.session)
-
         start_zone = CardZone.MARKET if mercenary else CardZone.HAND
-        await card_service.change_card_zone(
+        await services.card.change_card_zone(
             card_id=card.id,
             game_id=game.id,
             start_zone=start_zone,
@@ -146,7 +150,7 @@ class MoveServices(BaseService):
             session=self.session,
             player_state=player_state,
         )
-        
+
         for effect in card.effects:
             self.logger.info(
                 "Обрабатываем эффект: action=%s type=%s condition=%s",
@@ -154,9 +158,7 @@ class MoveServices(BaseService):
                 effect.effect_type,
                 effect.condition_type,
             )
-            result = await effect_executor.execute(
-                effect
-            )  # Отрабатываем эффекты
+            result = await effect_executor.execute(effect)  # Отрабатываем эффекты
             # ⛔ Эффект требует выбора игрока
             if result:
                 self.logger.info(
@@ -164,18 +166,16 @@ class MoveServices(BaseService):
                     "прерываем выполнение хода",
                     effect.action,
                 )
-                await play_state_executor.faction_count(card=card) # Проверить можно ли корректно отработать эффекты, которые требуют действия
-                self.logger.info(
-                    "faction_count выполнен для карты '%s'", card.name
-                )
+                await play_state_executor.faction_count(
+                    card=card
+                )  # Проверить можно ли корректно отработать эффекты, которые требуют действия
+                self.logger.info("faction_count выполнен для карты '%s'", card.name)
                 return result
 
         self.logger.info("Все эффекты карты '%s' обработаны", card.name)
 
         self.logger.info("Функция change_card_zone отработала")
-        await play_state_executor.faction_count(
-            card=card
-        )  # Считаем разыранные карты
+        await play_state_executor.faction_count(card=card)  # Считаем разыранные карты
         self.logger.info("faction_count выполнен для карты '%s'", card.name)
 
         await self.session.commit()
@@ -270,14 +270,10 @@ class MoveServices(BaseService):
         if player_state.crystals == 0:
             raise NotEnoughCrystals("Нет достаточно кристалов для концентрации")
         if player_state.concentration == True:
-            raise ConcentrationError(
-                "Вы уже использовали концентрацию в этот ход"
-            )
+            raise ConcentrationError("Вы уже использовали концентрацию в этот ход")
         if player_state.mastery >= 30:
             player_state.concentration = 30
-            raise ConcentrationError(
-                "Достигнуто максимальное количество могущества"
-            )
+            raise ConcentrationError("Достигнуто максимальное количество могущества")
         player_state.concentration = True
         player_state.mastery += 1
         player_state.crystals -= 1

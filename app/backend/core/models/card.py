@@ -3,12 +3,10 @@ import enum
 
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import (
-    Boolean,
     CheckConstraint,
     ForeignKey,
     Integer,
     String,
-    Enum,
 )
 
 from .base_model import Base, CustomEnum

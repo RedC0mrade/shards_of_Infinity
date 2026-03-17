@@ -1,8 +1,11 @@
-from app.backend.core.models.game import Game, GameStatus
-from app.backend.core.models.user import TelegramUser
+from typing import TYPE_CHECKING
+
 from app.backend.crud.base_service import BaseService
 from app.backend.crud.users_crud import UserServices
 
+if TYPE_CHECKING:
+    from app.backend.core.models.game import Game, GameStatus
+    from app.backend.core.models.user import TelegramUser
 
 class DefeatService(BaseService):
 

@@ -6,8 +6,7 @@ from app.backend.core.models.play_card_instance import (
     CardZone,
     PlayerCardInstance,
 )
-from app.backend.crud.card_instance_crud import CardInstanceServices
-from app.backend.factories.database import db_helper
+from app.telegram_bot.dependencies.dependencies import Services
 from app.telegram_bot.keyboards.dmcc_keyboard import (
     TakeChampionyCallback,
 )
@@ -23,20 +22,20 @@ media_dir = Path(__file__).parent.parent.parent.parent / "media"
 async def handle_choose_card(
     callback: CallbackQuery,
     callback_data: TakeChampionyCallback,
+    services: Services,
 ):
     """Обработка карты Легинер Корвус"""
+    
     logger.info("Обрабатываем коллбэк Легинер Корвус")
 
     await callback.message.edit_reply_markup(reply_markup=None)
-    async with db_helper.session_context() as session:
 
-        card_instance_service = CardInstanceServices(session=session)
-        champion: PlayerCardInstance = (
-            await card_instance_service.get_card_instance_for_id(
-                card_instanse_id=callback_data.id
-            )
+    champion: PlayerCardInstance = (
+        await services.card_instance.get_card_instance_for_id(
+            card_instanse_id=callback_data.id
         )
+    )
 
-        champion.zone = CardZone.HAND
+    champion.zone = CardZone.HAND
 
-        await session.commit()
+    await services.session.commit()

@@ -8,6 +8,7 @@ from app.backend.crud.actions.buy_move import BuyServices
 from app.backend.crud.actions.champion_move import ChampionServices
 from app.backend.crud.actions.destroy_card_move import DestroyCardService
 from app.backend.crud.actions.game_move import MoveServices
+from app.backend.crud.card_crud import CardServices
 from app.backend.crud.card_instance_crud import CardInstanceServices
 from app.backend.crud.games_crud import GameServices
 from app.backend.crud.hand_crud import HandServices
@@ -22,6 +23,7 @@ class Services:
     def __init__(self, session):
         self.session: AsyncSession = session
         self.attack = AttackServices(session)
+        self.card = CardServices(session)
         self.hand = HandServices(session)
         self.game = GameServices(session)
         self.champion = ChampionServices(session)

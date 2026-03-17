@@ -1,5 +1,6 @@
 from random import choice
 from sqlalchemy import Result, select
+from typing import TYPE_CHECKING
 
 from app.backend.core.models.card import Card
 from app.backend.core.models.game import Game
@@ -7,10 +8,12 @@ from app.backend.core.models.play_card_instance import (
     CardZone,
     PlayerCardInstance,
 )
-from app.backend.core.models.player_state import PlayerState
 from app.backend.crud.base_service import BaseService
 from app.utils.exceptions.exceptions import InvalidCardZone, NotEnoughCrystals
-from app.utils.logger import get_logger
+
+
+if TYPE_CHECKING:
+    from app.backend.core.models.player_state import PlayerState
 
 
 class BuyServices(BaseService):

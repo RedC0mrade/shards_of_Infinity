@@ -1,6 +1,7 @@
 from app.backend.core.models.player_state import PlayerState
 from app.backend.crud.base_service import BaseService
 from app.backend.crud.card_instance_crud import CardInstanceServices
+from app.telegram_bot.dependencies.dependencies import Services
 from app.utils.exceptions.exceptions import ShieldError
 
 
@@ -10,14 +11,14 @@ class AttackServices(BaseService):
         self,
         player_state: PlayerState,
         enemy_state: PlayerState,
+        services: Services,
     ):
-        card_instance_service = CardInstanceServices(session=self.session)
         if enemy_state.invulnerability:
             self.logger.info(
                 "Неуязвимость у игрока с id %s, начинаем проверку zetta_check",
                 enemy_state.player_id,
             )
-            card_instance_service.zetta_check(player_state=enemy_state)
+            services.card_instance.zetta_check(player_state=enemy_state)
 
         self.logger.info(
             "Здоровье противника - %s, щит противника - %s, атака игрока - %s",
