@@ -12,7 +12,6 @@ from app.telegram_bot.dependencies.dependencies import Services
 from app.telegram_bot.keyboards.dmcc_keyboard import KeyboardFactory
 from app.telegram_bot.keyboards.dmcc_keyboard import MarketCallback
 
-from app.backend.factories.database import db_helper
 from app.utils.exceptions.exceptions import MarketError, NotYourTurn
 from app.utils.logger import get_logger
 
