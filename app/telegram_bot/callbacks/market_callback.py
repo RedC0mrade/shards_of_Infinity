@@ -1,5 +1,5 @@
 from pathlib import Path
-from aiogram import Router, F
+from aiogram import Router
 from aiogram.types import CallbackQuery, FSInputFile
 
 from app.backend.core.models.card import CardType
