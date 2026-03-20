@@ -3,23 +3,11 @@ from aiogram import Router, types, F
 from aiogram.types import FSInputFile, InputMediaPhoto
 
 from app.backend.core.models.game import Game
-from app.backend.core.models.market import MarketSlot
 from app.backend.core.models.play_card_instance import (
     CardZone,
     PlayerCardInstance,
 )
 from app.backend.core.models.player_state import PlayerState
-from app.backend.crud.actions.champion_move import ChampionServices
-from app.backend.crud.actions.attack_move import AttackServices
-from app.backend.crud.actions.defeat_move import DefeatService
-from app.backend.crud.actions.game_move import MoveServices
-from app.backend.crud.card_instance_crud import CardInstanceServices
-from app.backend.crud.games_crud import GameServices
-from app.backend.crud.hand_crud import HandServices
-from app.backend.crud.market_crud1 import MarketServices
-from app.backend.crud.player_state_crud import PlayerStateServices
-from app.backend.crud.users_crud import UserServices
-from app.backend.factories.database import db_helper
 
 
 from app.telegram_bot.dependencies.dependencies import Services
@@ -46,10 +34,12 @@ async def handle_market(
 ):
     """Выводим рынок в порядке позиции"""
 
-    game: Game = await services.game.get_active_game(player_id=message.from_user.id)
+    game: Game = await services.game.get_active_game(
+        player_id=message.from_user.id
+    )
 
-    market_cards: list[PlayerCardInstance] = await services.market.get_market_cards(
-        game_id=game.id
+    market_cards: list[PlayerCardInstance] = (
+        await services.market.get_market_cards(game_id=game.id)
     )
 
     media = []  # переделать дублирующийся код
@@ -87,20 +77,26 @@ async def handle_hand(
     # async with db_helper.session_context() as session:
     # game_service = GameServices(session=session)
     # hand_services = HandServices(session=session)
-    game: Game = await services.game.get_active_game(player_id=message.from_user.id)
+    game: Game = await services.game.get_active_game(
+        player_id=message.from_user.id
+    )
 
     if message.text == MoveKBText.HAND:
-        hand_cards: list[PlayerCardInstance] = await services.hand.get_cards_in_zone(
-            game_id=game.id,
-            card_zone=CardZone.HAND,
-            player_id=message.from_user.id,
+        hand_cards: list[PlayerCardInstance] = (
+            await services.hand.get_cards_in_zone(
+                game_id=game.id,
+                card_zone=CardZone.HAND,
+                player_id=message.from_user.id,
+            )
         )
 
     else:
-        hand_cards: list[PlayerCardInstance] = await services.hand.get_cards_in_zone(
-            game_id=game.id,
-            card_zone=CardZone.DISCARD,
-            player_id=message.from_user.id,
+        hand_cards: list[PlayerCardInstance] = (
+            await services.hand.get_cards_in_zone(
+                game_id=game.id,
+                card_zone=CardZone.DISCARD,
+                player_id=message.from_user.id,
+            )
         )
 
     media = []  # переделать дублирующийся код
@@ -136,17 +132,21 @@ async def handle_cards_in_play(
 ):
     """Выводим карты на столе"""
 
-    game: Game = await services.game.get_active_game(player_id=message.from_user.id)
+    game: Game = await services.game.get_active_game(
+        player_id=message.from_user.id
+    )
     match message.from_user.id:
         case game.active_player_id:
             enemy_id = game.non_active_player_id
         case game.non_active_player_id:
             enemy_id = game.active_player_id
 
-    hand_cards: list[PlayerCardInstance] = await services.hand.get_cards_in_play(
-        card_zone=CardZone.IN_PLAY,
-        game_id=game.id,
-        player_id=message.from_user.id,
+    hand_cards: list[PlayerCardInstance] = (
+        await services.hand.get_cards_in_play(
+            card_zone=CardZone.IN_PLAY,
+            game_id=game.id,
+            player_id=message.from_user.id,
+        )
     )
 
     media = []  # переделать дублирующийся код
@@ -166,10 +166,12 @@ async def handle_cards_in_play(
         await message.answer(text="Карты разыгранные вами")
         await message.answer_media_group(media)
 
-    hand_cards: list[PlayerCardInstance] = await services.hand.get_cards_in_play(
-        card_zone=CardZone.IN_PLAY,
-        game_id=game.id,
-        player_id=enemy_id,
+    hand_cards: list[PlayerCardInstance] = (
+        await services.hand.get_cards_in_play(
+            card_zone=CardZone.IN_PLAY,
+            game_id=game.id,
+            player_id=enemy_id,
+        )
     )
 
     media = []  # переделать дублирующийся код
@@ -197,8 +199,10 @@ async def handle_game_parametrs(
 ):
     """Выводим информацию о состояния игрока"""
 
-    play_state: PlayerState = await services.player_state.get_player_state_with_game(
-        player_id=message.from_user.id
+    play_state: PlayerState = (
+        await services.player_state.get_player_state_with_game(
+            player_id=message.from_user.id
+        )
     )
 
     if play_state.game.active_player_id == message.from_user.id:
@@ -261,8 +265,8 @@ async def attack_enemy_champion(
     # 1) Получить всех чемпионов противника
     # 2) Выдать список для атаки
 
-    champions_card: list[PlayerCardInstance] = await services.champion.get_champions(
-        player_id=message.from_user.id
+    champions_card: list[PlayerCardInstance] = (
+        await services.champion.get_champions(player_id=message.from_user.id)
     )
     if champions_card:
         media = []  # переделать дублирующийся код
@@ -297,12 +301,16 @@ async def attack_enemy_player(
         active_player=True,
     )
 
-    enemy_state: PlayerState = await services.player_state.get_player_state_with_game(
-        player_id=game.non_active_player_id,
+    enemy_state: PlayerState = (
+        await services.player_state.get_player_state_with_game(
+            player_id=game.non_active_player_id,
+        )
     )
-    player_state: PlayerState = await services.player_state.get_player_state_with_game(
-        player_id=message.from_user.id,
-        active_player=True,
+    player_state: PlayerState = (
+        await services.player_state.get_player_state_with_game(
+            player_id=message.from_user.id,
+            active_player=True,
+        )
     )
     attack = player_state.power
     attack_service = await services.attack.attack(
@@ -331,9 +339,11 @@ async def end_move(
 ):
     """Конец хода."""
 
-    player_state: PlayerState = await services.player_state.get_player_state_with_game(
-        player_id=message.from_user.id,
-        active_player=True,
+    player_state: PlayerState = (
+        await services.player_state.get_player_state_with_game(
+            player_id=message.from_user.id,
+            active_player=True,
+        )
     )
     emeny_state: PlayerState = (
         await services.player_state.get_enemy_player_state_with_game(
@@ -380,9 +390,11 @@ async def get_concentration(
 ):
     """Добавление +1 к мастерству."""
 
-    player_state: PlayerState = await services.player_state.get_player_state_with_game(
-        player_id=message.from_user.id,
-        active_player=True,
+    player_state: PlayerState = (
+        await services.player_state.get_player_state_with_game(
+            player_id=message.from_user.id,
+            active_player=True,
+        )
     )
 
     change_player_state: PlayerState = await services.move.get_mastery(
