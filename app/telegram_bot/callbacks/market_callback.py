@@ -17,6 +17,7 @@ if TYPE_CHECKING:
         PlayerCardInstance,
     )
 from app.backend.core.models.player_state import PlayerState
+
 router = Router(name=__name__)
 logger = get_logger(__name__)
 media_dir = Path(__file__).parent.parent.parent.parent / "media"

@@ -13,8 +13,8 @@ from app.utils.logger import get_logger
 
 if TYPE_CHECKING:
     from app.backend.core.models.play_card_instance import (
-    CardZone,
-    PlayerCardInstance,
+        CardZone,
+        PlayerCardInstance,
     )
     from app.backend.core.models.player_state import PlayerState
 
