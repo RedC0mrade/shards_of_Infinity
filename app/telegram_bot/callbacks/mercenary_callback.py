@@ -1,12 +1,7 @@
 from pathlib import Path
 from aiogram import Router
 from aiogram.types import CallbackQuery, FSInputFile
-
-from app.backend.core.models.play_card_instance import (
-    CardZone,
-    PlayerCardInstance,
-)
-from app.backend.core.models.player_state import PlayerState
+from typing import TYPE_CHECKING
 
 from app.telegram_bot.dependencies.dependencies import Services
 from app.telegram_bot.keyboards.dmcc_keyboard import (
@@ -16,6 +11,12 @@ from app.telegram_bot.keyboards.dmcc_keyboard import (
 from app.utils.exceptions.exceptions import GameError
 from app.utils.logger import get_logger
 
+if TYPE_CHECKING:
+    from app.backend.core.models.play_card_instance import (
+    CardZone,
+    PlayerCardInstance,
+    )
+    from app.backend.core.models.player_state import PlayerState
 
 router = Router(name=__name__)
 logger = get_logger(__name__)

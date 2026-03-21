@@ -1,9 +1,11 @@
-from app.backend.core.models.player_state import PlayerState
+from typing import TYPE_CHECKING
+
 from app.backend.crud.base_service import BaseService
-from app.backend.crud.card_instance_crud import CardInstanceServices
 from app.telegram_bot.dependencies.dependencies import Services
 from app.utils.exceptions.exceptions import ShieldError
 
+if TYPE_CHECKING:
+    from app.backend.core.models.player_state import PlayerState
 
 class AttackServices(BaseService):
 
@@ -27,11 +29,15 @@ class AttackServices(BaseService):
             player_state.power,
         )
         player_state.power -= enemy_state.shield
-        self.logger.info("Атака игрока после снятия щитов ровна", player_state.power)
+        self.logger.info(
+            "Атака игрока после снятия щитов ровна", player_state.power
+        )
 
         if player_state.power <= 0:
             self.logger.info("Атака меньше или равна щиту выводим ошибку")
-            raise ShieldError(message="Щит игрока больше или равен наносимому урону")
+            raise ShieldError(
+                message="Щит игрока больше или равен наносимому урону"
+            )
 
         enemy_state.health -= player_state.power
 
