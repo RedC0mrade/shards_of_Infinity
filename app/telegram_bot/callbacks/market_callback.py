@@ -16,7 +16,7 @@ if TYPE_CHECKING:
         CardZone,
         PlayerCardInstance,
     )
-from app.backend.core.models.player_state import PlayerState
+    from app.backend.core.models.player_state import PlayerState
 
 router = Router(name=__name__)
 logger = get_logger(__name__)

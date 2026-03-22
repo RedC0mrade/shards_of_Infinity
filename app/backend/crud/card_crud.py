@@ -1,5 +1,4 @@
-from sqlalchemy import Result, distinct, func, select, update
-from sqlalchemy.orm import joinedload
+from sqlalchemy import Result, distinct, func, select
 
 from app.backend.core.models.card import Card, CardEffect, CardFaction
 from app.backend.core.models.play_card_instance import (
