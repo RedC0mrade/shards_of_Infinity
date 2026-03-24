@@ -1,14 +1,17 @@
 from sqlalchemy import Result, distinct, func, select
+from typing import TYPE_CHECKING
 
-from app.backend.core.models.card import Card, CardEffect, CardFaction
-from app.backend.core.models.play_card_instance import (
-    CardZone,
-    PlayerCardInstance,
-)
+
 from app.backend.crud.base_service import BaseService
 from app.backend.schemas.card import CreateCardSchema
 from app.utils.exceptions.exceptions import CardInstanceError
 
+if TYPE_CHECKING:
+    from app.backend.core.models.card import Card, CardEffect, CardFaction
+    from app.backend.core.models.play_card_instance import (
+        CardZone,
+        PlayerCardInstance,
+    )
 
 class CardServices(BaseService):
 
