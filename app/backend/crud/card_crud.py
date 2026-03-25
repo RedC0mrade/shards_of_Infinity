@@ -15,12 +15,6 @@ if TYPE_CHECKING:
 
 class CardServices(BaseService):
 
-    # async def get_all_cards_in_the_deck(self) -> list[Card]:
-    #     stmt = select(Card)
-    #     result: Result = await self.session.execute(stmt)
-    #     cards = result.scalars().unique().all()
-    #     return list(cards)
-
     async def create_card(self, card_data: CreateCardSchema) -> Card:
         effects = [
             CardEffect(**effect.model_dump()) for effect in card_data.effects
