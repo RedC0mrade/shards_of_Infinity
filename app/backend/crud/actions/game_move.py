@@ -4,7 +4,6 @@ from typing import TYPE_CHECKING
 
 from app.backend.core.models.player_state import PlayerState
 from app.backend.crud.base_service import BaseService
-from app.backend.crud.card_crud import CardServices
 from app.backend.crud.card_instance_crud import CardInstanceServices
 from app.backend.crud.executors.effects_executor import EffectExecutor
 from app.backend.crud.executors.ps_count_executor import PlayStateExecutor
