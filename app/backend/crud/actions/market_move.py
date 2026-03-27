@@ -1,7 +1,15 @@
 from sqlalchemy import Result, select
-from app.backend.core.models.card import Card
-from app.backend.core.models.play_card_instance import CardZone, PlayerCardInstance
+from typing import TYPE_CHECKING
+
+
 from app.backend.crud.base_service import BaseService
+
+if TYPE_CHECKING:
+    from app.backend.core.models.card import Card
+from app.backend.core.models.play_card_instance import (
+    CardZone,
+    PlayerCardInstance,
+)
 
 
 class MarketService(BaseService):
@@ -9,7 +17,7 @@ class MarketService(BaseService):
     async def get_cards_for_less_than_six_crystals(self, game_id: int):
 
         stmt = (
-            select(PlayerCardInstance)
+            select(PlayerCardInstance.id)
             .join(Card, Card.id == PlayerCardInstance.card_id)
             .where(
                 PlayerCardInstance.game_id == game_id,
@@ -19,4 +27,6 @@ class MarketService(BaseService):
         )
 
         result: Result = await self.session.execute(stmt)
-        cards: list[int]
+        cards: list[int] = result.scalars().all()
+        self.logger.info("list ids of cards less 6 crystals - %s", cards)
+        return cards
