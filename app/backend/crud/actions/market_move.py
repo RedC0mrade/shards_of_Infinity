@@ -6,10 +6,10 @@ from app.backend.crud.base_service import BaseService
 
 if TYPE_CHECKING:
     from app.backend.core.models.card import Card
-from app.backend.core.models.play_card_instance import (
-    CardZone,
-    PlayerCardInstance,
-)
+    from app.backend.core.models.play_card_instance import (
+        CardZone,
+        PlayerCardInstance,
+    )
 
 
 class MarketService(BaseService):

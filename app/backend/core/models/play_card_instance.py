@@ -6,8 +6,6 @@ from sqlalchemy import (
     CheckConstraint,
     ForeignKey,
     Integer,
-    String,
-    Enum,
     Boolean,
     UniqueConstraint,
     text,
