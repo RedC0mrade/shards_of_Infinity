@@ -14,6 +14,7 @@ from sqlalchemy import (
 from .base_model import Base, CustomEnum
 import enum
 
+
 if TYPE_CHECKING:
     from app.backend.core.models.card import Card
     from app.backend.core.models.game import Game
