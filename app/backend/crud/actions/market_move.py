@@ -30,3 +30,4 @@ class MarketService(BaseService):
         cards: list[int] = result.scalars().all()
         self.logger.info("list ids of cards less 6 crystals - %s", cards)
         return cards
+
