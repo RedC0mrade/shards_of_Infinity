@@ -31,26 +31,26 @@ class PlayerState(Base):
         server_default="0",
     )
 
-    wilds_count: Mapped[int] = mapped_column(
-        Integer,
-        default=0,
-        server_default="0",
-    )
-    order_count: Mapped[int] = mapped_column(
-        Integer,
-        default=0,
-        server_default="0",
-    )
-    homodeus_count: Mapped[int] = mapped_column(
-        Integer,
-        default=0,
-        server_default="0",
-    )
-    demirealm_count: Mapped[int] = mapped_column(
-        Integer,
-        default=0,
-        server_default="0",
-    )
+    # wilds_count: Mapped[int] = mapped_column(
+    #     Integer,
+    #     default=0,
+    #     server_default="0",
+    # )
+    # order_count: Mapped[int] = mapped_column(
+    #     Integer,
+    #     default=0,
+    #     server_default="0",
+    # )
+    # homodeus_count: Mapped[int] = mapped_column(
+    #     Integer,
+    #     default=0,
+    #     server_default="0",
+    # )
+    # demirealm_count: Mapped[int] = mapped_column(
+    #     Integer,
+    #     default=0,
+    #     server_default="0",
+    # )
     invulnerability: Mapped[bool] = mapped_column(
         Boolean,
         default=False,

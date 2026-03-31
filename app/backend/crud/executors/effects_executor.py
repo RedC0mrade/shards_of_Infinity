@@ -19,6 +19,7 @@ from app.backend.crud.card_crud import CardServices
 from app.backend.crud.card_instance_crud import CardInstanceServices
 
 from app.backend.crud.market_crud1 import MarketServices
+from app.telegram_bot.dependencies.dependencies import Services
 from app.utils.logger import get_logger
 
 if TYPE_CHECKING:
@@ -101,7 +102,7 @@ class EffectExecutor:
         card_instance = card_instance_service.get_card_type_in_zone(
             game_id=self.game.id,
             player_state_id=self.player_state.id,
-            zone=[CardZone.IN_PLAY],
+            zone=[CardZone.ON_BOARD],
             card_type=CardType.CHAMPION,
         )
         if len(card_instance) >= condition_value:
@@ -142,8 +143,16 @@ class EffectExecutor:
         self,
         value: int,
         condition_value: int,
+        services: Services,
+
     ):
-        if self.player_state.wilds_count >= condition_value:
+        wilds = services.card_instance.get_faction_in_zone(
+            game_id=self.game.id,
+            player_state_id=self.player_state.id,
+            zone=[CardZone.ON_BOARD],
+            faction=CardFaction.WILDS,
+            )
+        if wilds:
             self.player_state.power += value
             self.logger.info(
                 " функция - do_attack_conditional_card_on_table, значение - %s",

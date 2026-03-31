@@ -212,10 +212,6 @@ async def handle_game_parametrs(
                 f"Мастерство ⚡ = {play_state.mastery}\n"
                 f"Кристалы = 💎 {play_state.crystals}\n"
                 f"Атака ⚔️ = {play_state.power}\n"
-                f"Разыграно карт фракции Ветвь 🌿 = {play_state.wilds_count}\n"
-                f"Разыграно карт фракции Порядок  ⚖️ = {play_state.order_count}\n"
-                f"Разыграно карт фракции Хомодеус 🤖 = {play_state.homodeus_count}\n"
-                f"Разыграно карт фракции Демириалм 👾= {play_state.demirealm_count}\n"
             )
         )
         # return
@@ -248,10 +244,6 @@ async def enemy_game_parametrs(
             f"Мастерство ⚡ = {enemy_player_state.mastery}\n"
             f"Щит 🛡️ = {enemy_player_state.shield}\n"
             f"Атака ⚔️ = {enemy_player_state.power}\n"
-            f"Разыграно карт фракции Ветвь 🌿 = {enemy_player_state.wilds_count}\n"
-            f"Разыграно карт фракции Порядок  ⚖️ = {enemy_player_state.order_count}\n"
-            f"Разыграно карт фракции Хомодеус 🤖 = {enemy_player_state.homodeus_count}\n"
-            f"Разыграно карт фракции Демириалм 👾= {enemy_player_state.demirealm_count}\n"
         )
     )
 
