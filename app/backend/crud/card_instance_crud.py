@@ -108,9 +108,7 @@ class CardInstanceServices(BaseService):
         card_instanse = result.unique().scalar_one_or_none()
 
         if not card_instanse:
-            self.logger.warning(
-                "Нет состояния карты с id -%s", card_instanse_id
-            )
+            self.logger.warning("Нет состояния карты с id -%s", card_instanse_id)
         self.logger.info("Возвращаем состояние карты")
         return card_instanse
 
@@ -131,9 +129,7 @@ class CardInstanceServices(BaseService):
             )
         )
         result: Result = await self.session.execute(stmt)
-        card_instances: list[PlayerCardInstance] = (
-            result.unique().scalars().all()
-        )
+        card_instances: list[PlayerCardInstance] = result.unique().scalars().all()
         self.logger.debug(
             "карты игрока для подсчета щитов. -%s",
             card_instances,
@@ -197,9 +193,7 @@ class CardInstanceServices(BaseService):
             )
         )
         result: Result = await self.session.execute(stmt)
-        card_instances_hand: list[PlayerCardInstance] = (
-            result.unique().scalars().all()
-        )
+        card_instances_hand: list[PlayerCardInstance] = result.unique().scalars().all()
         self.logger.debug(
             "карты игрока руки. -%s",
             card_instances_hand,
@@ -277,9 +271,7 @@ class CardInstanceServices(BaseService):
             PlayerCardInstance.zone == CardZone.PLAYER_DECK,
         )
         result: Result = await self.session.execute(stmt)
-        card_instanses: list[PlayerCardInstance] = (
-            result.unique().scalars().all()
-        )
+        card_instanses: list[PlayerCardInstance] = result.unique().scalars().all()
         self.logger.info("Карты игрока в колоде:")
         for instanse in card_instanses:
             self.logger.info("         Карта %s", instanse.id)
@@ -299,9 +291,7 @@ class CardInstanceServices(BaseService):
             )
             result: Result = await self.session.execute(stmt)
 
-            discard_cards: list[PlayerCardInstance] = (
-                result.unique().scalars().all()
-            )
+            discard_cards: list[PlayerCardInstance] = result.unique().scalars().all()
             self.logger.info(
                 "Количество карт в сбросе у игрока - %s",
                 len(discard_cards),
@@ -391,3 +381,32 @@ class CardInstanceServices(BaseService):
 
         card_instace = result.scalars().all()
         return card_instace
+
+    async def get_card_type_and_faction_in_zone(
+        self,
+        game_id: int,
+        player_state_id: int,
+        zone: list[CardZone],
+        card_type: list[CardType],
+        faction: CardFaction,
+    ) -> list[int]:
+        """Получаем карты находящиеся в опреленной зоне,определенной фракции, опреденного типа"""
+
+        stmt = (
+            select(PlayerCardInstance)
+            .join(
+                Card,
+                PlayerCardInstance.card_id == Card.id,
+            )
+            .where(
+                PlayerCardInstance.game_id == game_id,
+                PlayerCardInstance.player_state_id == player_state_id,
+                PlayerCardInstance.zone.in_(zone),
+                Card.card_type.in_(card_type),
+                Card.faction == faction,
+            )
+        )
+        result: Result = await self.session.execute(stmt)
+
+        cards_ids = result.scalars().all()
+        return cards_ids

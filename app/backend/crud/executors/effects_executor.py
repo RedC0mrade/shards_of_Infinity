@@ -146,13 +146,14 @@ class EffectExecutor:
         services: Services,
 
     ):
-        wilds = services.card_instance.get_faction_in_zone(
+        wilds = services.card_instance.get_card_type_and_faction_in_zone(
             game_id=self.game.id,
             player_state_id=self.player_state.id,
             zone=[CardZone.ON_BOARD],
+            card_type=[CardType.ALLY, CardType.MERCENARY],
             faction=CardFaction.WILDS,
             )
-        if wilds:
+        if wilds >= condition_value:
             self.player_state.power += value
             self.logger.info(
                 " функция - do_attack_conditional_card_on_table, значение - %s",
@@ -246,8 +247,16 @@ class EffectExecutor:
         self,
         value: int,
         condition_value: int,
+        services: Services,
     ):
-        if self.player_state.wilds_count >= condition_value:
+        wilds = services.card_instance.get_card_type_and_faction_in_zone(
+            game_id=self.game.id,
+            player_state_id=self.player_state.id,
+            zone=[CardZone.ON_BOARD],
+            card_type=[CardType.ALLY, CardType.MERCENARY],
+            faction=CardFaction.WILDS,
+            )
+        if wilds >= condition_value:
             if self.player_state.health + value > 50:
                 self.player_state.health = 50
             else:

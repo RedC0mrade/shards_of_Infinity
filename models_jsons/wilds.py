@@ -106,7 +106,7 @@ wilds_data = [
                 "value": 6,
                 "effect_type": "conditional",
                 "condition_type": "wilds_on_table",
-                "condition_value": 0
+                "condition_value": 1
             }
         ]
     },
@@ -139,7 +139,7 @@ wilds_data = [
                 "value": 6,
                 "effect_type": "conditional",
                 "condition_type": "wilds_on_table",
-                "condition_value": 0
+                "condition_value": 1
             }
         ]
     },
@@ -172,7 +172,7 @@ wilds_data = [
                 "value": 6,
                 "effect_type": "conditional",
                 "condition_type": "wilds_on_table",
-                "condition_value": 0
+                "condition_value": 1
             }
         ]
     },
