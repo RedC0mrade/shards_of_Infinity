@@ -1,10 +1,12 @@
+# # docker-compose up --build -d
+
 # # alembic init -t async alembic
 # # alembic downgrade -1
 # # alembic upgrade head
 # # alembic revision --autogenerate -m "Create tables"
 
 
-# # docker-compose up --build -d
+
 
 # # python scripts/seed_cards.py
 

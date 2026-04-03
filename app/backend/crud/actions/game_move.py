@@ -13,18 +13,17 @@ from app.utils.exceptions.exceptions import (
     ConcentrationError,
     NotEnoughCrystals,
 )
+from app.backend.core.models.game import Game
+from app.backend.core.models.play_card_instance import (
+    CardZone,
+    PlayerCardInstance,
+)
+from app.backend.core.models.card import (
+    Card,
+    CardFaction,
+    CardType,
+)
 
-if TYPE_CHECKING:
-    from app.backend.core.models.game import Game
-    from app.backend.core.models.play_card_instance import (
-        CardZone,
-        PlayerCardInstance,
-    )
-    from app.backend.core.models.card import (
-        Card,
-        CardFaction,
-        CardType,
-    )
 
 
 class MoveServices(BaseService):
@@ -40,14 +39,10 @@ class MoveServices(BaseService):
         # 2) Обновить обновить счетчик фракций
 
         self.logger.info(
-            "Состояние player_state на начало функции,\n ---power - %s,\n ---shild - %s,\n ---crystals - %s,\n ---wilds - %s,\n ---homodeus - %s,\n ---order - %s,\n ---demirealm - %s,\n ---nconcentration -%s",
+            "Состояние player_state на начало функции,\n ---power - %s,\n ---shild - %s,\n ---crystals - %s,\n ---nconcentration -%s",
             player_state.power,
             player_state.shield,
             player_state.crystals,
-            player_state.wilds_count,
-            player_state.homodeus_count,
-            player_state.order_count,
-            player_state.demirealm_count,
             player_state.concentration,
         )
         self.logger.warning(
@@ -71,40 +66,17 @@ class MoveServices(BaseService):
             .group_by(Card.faction)
         )
         result: Result = await self.session.execute(stmt)
-        faction_counts = dict(
-            result.all()
-        )  # счетчик фракций чемпионы которых остались на столе
 
-        player_state.wilds_count = faction_counts.get(
-            CardFaction.WILDS,
-            0,
-        )
-        player_state.order_count = faction_counts.get(
-            CardFaction.ORDER,
-            0,
-        )
-        player_state.homodeus_count = faction_counts.get(
-            CardFaction.HOMODEUS,
-            0,
-        )
-        player_state.demirealm_count = faction_counts.get(
-            CardFaction.DEMIREALM,
-            0,
-        )
         self.logger.info(
-            "Состояние player_state на конец функции,\n +++power - %s,\n +++shild - %s,\n +++crystals - %s,\n +++wilds - %s,\n +++homodeus - %s,\n +++order - %s,\n +++demirealm - %s,\n +++nconcentration -%s",
+            "Состояние player_state на конец функции,\n +++power - %s,\n +++shild - %s,\n +++crystals - %s,\n +++nconcentration -%s",
             player_state.power,
             player_state.shield,
             player_state.crystals,
-            player_state.wilds_count,
-            player_state.homodeus_count,
-            player_state.order_count,
-            player_state.demirealm_count,
             player_state.concentration,
         )
 
         cards_in_action: list[PlayerCardInstance] = (
-            await services.card_instance.get_player_cards_in_hand_in_play(
+            await self.card_instance.get_player_cards_in_hand_in_play(
                 player_state=player_state
             )
         )
@@ -120,7 +92,6 @@ class MoveServices(BaseService):
         game: Game,
         player_id: int,
         player_state: PlayerState,
-        services: Services,
         mercenary: bool = False,
     ) -> str:
         """Игрок разыгрывает карту."""
@@ -133,7 +104,7 @@ class MoveServices(BaseService):
         )
 
         start_zone = CardZone.MARKET if mercenary else CardZone.HAND
-        await services.card.change_card_zone(
+        await self.card.change_card_zone(
             card_id=card.id,
             game_id=game.id,
             start_zone=start_zone,
@@ -144,6 +115,7 @@ class MoveServices(BaseService):
             session=self.session,
             player_state=player_state,
             game=game,
+            services=Services,
         )
         play_state_executor = PlayStateExecutor(
             session=self.session,
@@ -157,7 +129,9 @@ class MoveServices(BaseService):
                 effect.effect_type,
                 effect.condition_type,
             )
-            result = await effect_executor.execute(effect)  # Отрабатываем эффекты
+            result = await effect_executor.execute(
+                effect
+            )  # Отрабатываем эффекты
             # ⛔ Эффект требует выбора игрока
             if result:
                 self.logger.info(
@@ -165,16 +139,15 @@ class MoveServices(BaseService):
                     "прерываем выполнение хода",
                     effect.action,
                 )
-                await play_state_executor.faction_count(
-                    card=card
-                )  # Проверить можно ли корректно отработать эффекты, которые требуют действия
-                self.logger.info("faction_count выполнен для карты '%s'", card.name)
+
                 return result
 
         self.logger.info("Все эффекты карты '%s' обработаны", card.name)
 
         self.logger.info("Функция change_card_zone отработала")
-        await play_state_executor.faction_count(card=card)  # Считаем разыранные карты
+        await play_state_executor.faction_count(
+            card=card
+        )  # Считаем разыранные карты
         self.logger.info("faction_count выполнен для карты '%s'", card.name)
 
         await self.session.commit()
@@ -269,10 +242,14 @@ class MoveServices(BaseService):
         if player_state.crystals == 0:
             raise NotEnoughCrystals("Нет достаточно кристалов для концентрации")
         if player_state.concentration == True:
-            raise ConcentrationError("Вы уже использовали концентрацию в этот ход")
+            raise ConcentrationError(
+                "Вы уже использовали концентрацию в этот ход"
+            )
         if player_state.mastery >= 30:
             player_state.concentration = 30
-            raise ConcentrationError("Достигнуто максимальное количество могущества")
+            raise ConcentrationError(
+                "Достигнуто максимальное количество могущества"
+            )
         player_state.concentration = True
         player_state.mastery += 1
         player_state.crystals -= 1

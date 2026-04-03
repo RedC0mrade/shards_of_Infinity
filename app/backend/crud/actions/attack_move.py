@@ -1,26 +1,26 @@
-from typing import TYPE_CHECKING
-
 from app.backend.crud.base_service import BaseService
-from app.telegram_bot.dependencies.dependencies import Services
+from app.backend.core.models.player_state import PlayerState
+
 from app.utils.exceptions.exceptions import ShieldError
 
-if TYPE_CHECKING:
-    from app.backend.core.models.player_state import PlayerState
 
 class AttackServices(BaseService):
+
+    def __init__(self, session, card_instance_service):
+        super().__init__(session)
+        self.card_instance = card_instance_service
 
     async def attack(
         self,
         player_state: PlayerState,
         enemy_state: PlayerState,
-        services: Services,
     ):
         if enemy_state.invulnerability:
             self.logger.info(
                 "Неуязвимость у игрока с id %s, начинаем проверку zetta_check",
                 enemy_state.player_id,
             )
-            services.card_instance.zetta_check(player_state=enemy_state)
+            await self.card_instance.zetta_check(player_state=enemy_state)
 
         self.logger.info(
             "Здоровье противника - %s, щит противника - %s, атака игрока - %s",

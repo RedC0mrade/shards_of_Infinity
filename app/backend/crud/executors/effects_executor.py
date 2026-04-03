@@ -1,8 +1,7 @@
 from __future__ import annotations
-from dataclasses import dataclass
 from typing import TYPE_CHECKING
+from dataclasses import dataclass
 from sqlalchemy.ext.asyncio import AsyncSession
-from aiogram.types import InlineKeyboardMarkup
 
 from app.backend.core.models.card import (
     CardAction,
@@ -13,18 +12,12 @@ from app.backend.core.models.card import (
 from app.backend.core.models.game import Game
 from app.backend.core.models.play_card_instance import CardZone
 from app.backend.core.models.player_state import PlayerState
-from app.backend.crud.actions.champion_move import ChampionServices
-from app.backend.crud.actions.destroy_card_move import DestroyCardService
-from app.backend.crud.card_crud import CardServices
-from app.backend.crud.card_instance_crud import CardInstanceServices
 
-from app.backend.crud.market_crud1 import MarketServices
-from app.telegram_bot.dependencies.dependencies import Services
+from app.backend.core.models.play_card_instance import PlayerCardInstance
 from app.utils.logger import get_logger
 
 if TYPE_CHECKING:
-    from app.backend.core.models.play_card_instance import PlayerCardInstance
-
+    from app.telegram_bot.dependencies.dependencies import Services
 
 @dataclass
 class EffectResult:
@@ -38,10 +31,12 @@ class EffectExecutor:
         session: AsyncSession,
         player_state: PlayerState,
         game: Game,
+        services: Services,
     ):
         self.session = session
         self.player_state = player_state
         self.game = game
+        self.services = services
         self.logger = get_logger(self.__class__.__name__)
 
     async def execute(self, effect: CardEffect):
@@ -98,8 +93,7 @@ class EffectExecutor:
         self.logger.info(
             "Начало работы функции do_crystal_conditional_champion_on_table"
         )
-        card_instance_service = CardInstanceServices(session=self.session)
-        card_instance = card_instance_service.get_card_type_in_zone(
+        card_instance = self.services.card_instance.get_card_type_in_zone(
             game_id=self.game.id,
             player_state_id=self.player_state.id,
             zone=[CardZone.ON_BOARD],
@@ -143,10 +137,9 @@ class EffectExecutor:
         self,
         value: int,
         condition_value: int,
-        services: Services,
 
     ):
-        wilds = services.card_instance.get_card_type_and_faction_in_zone(
+        wilds = self.services.card_instance.get_card_type_and_faction_in_zone(
             game_id=self.game.id,
             player_state_id=self.player_state.id,
             zone=[CardZone.ON_BOARD],
@@ -165,8 +158,7 @@ class EffectExecutor:
         value: int,
         condition_value: int,
     ):
-        card_instance_service = CardInstanceServices(session=self.session)
-        instance = card_instance_service.get_faction_in_zone(
+        instance = self.services.card_instance.get_faction_in_zone(
             game_id=self.game.id,
             player_state_id=self.player_state.id,
             zone=[CardZone.DISCARD],
@@ -184,8 +176,7 @@ class EffectExecutor:
         value: int,
         condition_value: int,
     ):
-        card_instance_service = CardInstanceServices(session=self.session)
-        instance = card_instance_service.get_faction_in_zone(
+        instance = self.services.card_instance.get_faction_in_zone(
             game_id=self.game.id,
             player_state_id=self.player_state.id,
             zone=[CardZone.DISCARD],
@@ -216,8 +207,7 @@ class EffectExecutor:
         self.logger.info(
             "Начало работы функции do_attack_conditional_plus_value_for_each_homodeus_champion_in_game"
         )
-        card_instance_service = CardInstanceServices(session=self.session)
-        instance = await card_instance_service.get_card_type_in_zone(
+        instance = await self.services.card_instance.get_card_type_in_zone(
             game_id=self.game.id,
             player_state_id=self.player_state.id,
             zone=list(CardZone.IN_PLAY),
@@ -247,9 +237,8 @@ class EffectExecutor:
         self,
         value: int,
         condition_value: int,
-        services: Services,
     ):
-        wilds = services.card_instance.get_card_type_and_faction_in_zone(
+        wilds = self.services.card_instance.get_card_type_and_faction_in_zone(
             game_id=self.game.id,
             player_state_id=self.player_state.id,
             zone=[CardZone.ON_BOARD],
@@ -289,8 +278,7 @@ class EffectExecutor:
             value,
             condition_value,
         )
-        card_instance_services = CardInstanceServices(session=self.session)
-        await card_instance_services.take_card_to_hand(
+        await self.services.card_instance.take_card_to_hand(
             player_state=self.player_state,
             number_cards=value,
         )
@@ -309,8 +297,7 @@ class EffectExecutor:
         )
 
         if self.player_state.mastery >= condition_value:
-            card_instance_services = CardInstanceServices(session=self.session)
-            await card_instance_services.take_card_to_hand(
+            await self.services.card_instance.take_card_to_hand(
                 player_state=self.player_state,
                 number_cards=value,
             )
@@ -333,8 +320,7 @@ class EffectExecutor:
     ):
         """Добираем в руку наемника из сброса."""
         self.logger.info(" функция - do_take_mercenary_from_reset_base_none")
-        card_instance_service = CardInstanceServices(session=self.session)
-        instance = card_instance_service.get_card_type_in_zone(
+        instance = self.services.card_instance.get_card_type_in_zone(
             game_id=self.game.id,
             player_state_id=self.player_state.id,
             zone=[CardZone.DISCARD],
@@ -378,8 +364,7 @@ class EffectExecutor:
             value,
             condition_value,
         )
-        card_service = CardServices(session=self.session)
-        count = await card_service.card_order_check(
+        count = await self.services.card.card_order_check(
             player_state_id=self.player_state.id
         )
         if count and self.player_state.mastery < 30:
@@ -398,8 +383,7 @@ class EffectExecutor:
 
         self.logger.info("Начало работы do_champion_destroy_conditional_wilds_on_table")
         if self.player_state.wilds_count >= condition_value:
-            champion_service = ChampionServices(session=self.session)
-            champions: list[PlayerCardInstance] = await champion_service.get_champions(
+            champions: list[PlayerCardInstance] = await self.services.champion.get_champions(
                 player_id=self.player_state.player_id
             )
 
@@ -421,9 +405,8 @@ class EffectExecutor:
         """Берем чемпиона из сброса"""
 
         self.logger.info("Начало работы do_champion_destroy_conditional_wilds_on_table")
-        card_instance_service = CardInstanceServices(session=self.session)
         champions: list[PlayerCardInstance] = (
-            card_instance_service.get_card_type_in_zone(
+            await self.services.card_instance.get_card_type_in_zone(
                 game_id=self.game.id,
                 player_state_id=self.player_state.id,
                 zone=[CardZone.DISCARD],
@@ -448,8 +431,7 @@ class EffectExecutor:
     ):
         """Удалить свою карту из руки или колоды."""
 
-        destroy_service = DestroyCardService(session=self.session)
-        cards: list[PlayerCardInstance] = destroy_service.get_card_for_destroy(
+        cards: list[PlayerCardInstance] = self.services.destroy.get_card_for_destroy(
             game_id=self.game.id,
             player_state_id=self.player_state.id,
         )
@@ -472,9 +454,8 @@ class EffectExecutor:
     ):
         """Выбрать карту с рынка, если могущества больше 15, взять в руку."""
 
-        market_service = MarketServices(session=self.session)
 
-        card_instance = await market_service.get_market_cards_less_six_cristals(
+        card_instance = await self.services.market.get_market_cards_less_six_cristals(
             game_id=Game.id
         )
         if card_instance:

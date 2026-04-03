@@ -1,8 +1,8 @@
 """Create tables
 
-Revision ID: 7c609072e638
+Revision ID: 62a4e0e4dce4
 Revises:
-Create Date: 2026-03-07 12:12:00.592301
+Create Date: 2026-04-03 12:22:42.630787
 
 """
 
@@ -13,7 +13,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = "7c609072e638"
+revision: str = "62a4e0e4dce4"
 down_revision: Union[str, Sequence[str], None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -247,18 +247,6 @@ def upgrade() -> None:
         sa.Column("crystals", sa.Integer(), nullable=False),
         sa.Column("power", sa.Integer(), nullable=False),
         sa.Column("shield", sa.Integer(), server_default="0", nullable=False),
-        sa.Column(
-            "wilds_count", sa.Integer(), server_default="0", nullable=False
-        ),
-        sa.Column(
-            "order_count", sa.Integer(), server_default="0", nullable=False
-        ),
-        sa.Column(
-            "homodeus_count", sa.Integer(), server_default="0", nullable=False
-        ),
-        sa.Column(
-            "demirealm_count", sa.Integer(), server_default="0", nullable=False
-        ),
         sa.Column(
             "invulnerability",
             sa.Boolean(),
