@@ -1,5 +1,4 @@
 from sqlalchemy import Result, func, select
-from typing import TYPE_CHECKING
 
 
 from app.backend.core.models.player_state import PlayerState
@@ -20,7 +19,6 @@ from app.backend.core.models.play_card_instance import (
 )
 from app.backend.core.models.card import (
     Card,
-    CardFaction,
     CardType,
 )
 
