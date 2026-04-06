@@ -19,6 +19,7 @@ from app.utils.logger import get_logger
 if TYPE_CHECKING:
     from app.telegram_bot.dependencies.dependencies import Services
 
+
 @dataclass
 class EffectResult:
     action: CardAction
@@ -47,7 +48,9 @@ class EffectExecutor:
         )
 
         method_name = (
-            f"do_{effect.action}_" f"{effect.effect_type}_" f"{effect.condition_type}"
+            f"do_{effect.action}_"
+            f"{effect.effect_type}_"
+            f"{effect.condition_type}"
         )
         self.logger.info("method_name - %s", method_name)
         method = getattr(self, method_name, None)
@@ -117,7 +120,9 @@ class EffectExecutor:
         value: int,
         condition_value: int,
     ):
-        self.logger.info("Начало работы функции do_attack_conditional_player_health")
+        self.logger.info(
+            "Начало работы функции do_attack_conditional_player_health"
+        )
         if self.player_state.health == condition_value:
             self.player_state.power += value
 
@@ -137,7 +142,6 @@ class EffectExecutor:
         self,
         value: int,
         condition_value: int,
-
     ):
         wilds = self.services.card_instance.get_card_type_and_faction_in_zone(
             game_id=self.game.id,
@@ -145,7 +149,7 @@ class EffectExecutor:
             zone=[CardZone.ON_BOARD],
             card_type=[CardType.ALLY, CardType.MERCENARY],
             faction=CardFaction.WILDS,
-            )
+        )
         if wilds >= condition_value:
             self.player_state.power += value
             self.logger.info(
@@ -244,7 +248,7 @@ class EffectExecutor:
             zone=[CardZone.ON_BOARD],
             card_type=[CardType.ALLY, CardType.MERCENARY],
             faction=CardFaction.WILDS,
-            )
+        )
         if wilds >= condition_value:
             if self.player_state.health + value > 50:
                 self.player_state.health = 50
@@ -381,10 +385,14 @@ class EffectExecutor:
     ):
         """Уничтожаем чемпиона врага."""
 
-        self.logger.info("Начало работы do_champion_destroy_conditional_wilds_on_table")
+        self.logger.info(
+            "Начало работы do_champion_destroy_conditional_wilds_on_table"
+        )
         if self.player_state.wilds_count >= condition_value:
-            champions: list[PlayerCardInstance] = await self.services.champion.get_champions(
-                player_id=self.player_state.player_id
+            champions: list[PlayerCardInstance] = (
+                await self.services.champion.get_champions(
+                    player_id=self.player_state.player_id
+                )
             )
 
             if champions:
@@ -404,7 +412,9 @@ class EffectExecutor:
     ):
         """Берем чемпиона из сброса"""
 
-        self.logger.info("Начало работы do_champion_destroy_conditional_wilds_on_table")
+        self.logger.info(
+            "Начало работы do_champion_destroy_conditional_wilds_on_table"
+        )
         champions: list[PlayerCardInstance] = (
             await self.services.card_instance.get_card_type_in_zone(
                 game_id=self.game.id,
@@ -431,9 +441,11 @@ class EffectExecutor:
     ):
         """Удалить свою карту из руки или колоды."""
 
-        cards: list[PlayerCardInstance] = self.services.destroy.get_card_for_destroy(
-            game_id=self.game.id,
-            player_state_id=self.player_state.id,
+        cards: list[PlayerCardInstance] = (
+            self.services.destroy.get_card_for_destroy(
+                game_id=self.game.id,
+                player_state_id=self.player_state.id,
+            )
         )
 
         if cards:
@@ -454,9 +466,10 @@ class EffectExecutor:
     ):
         """Выбрать карту с рынка, если могущества больше 15, взять в руку."""
 
-
-        card_instance = await self.services.market.get_market_cards_less_six_cristals(
-            game_id=Game.id
+        card_instance = (
+            await self.services.market.get_market_cards_less_six_cristals(
+                game_id=Game.id
+            )
         )
         if card_instance:
             self.logger.info("Получаем состояния карт - %s", card_instance)
