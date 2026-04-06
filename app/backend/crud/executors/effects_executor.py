@@ -211,11 +211,12 @@ class EffectExecutor:
         self.logger.info(
             "Начало работы функции do_attack_conditional_plus_value_for_each_homodeus_champion_in_game"
         )
-        instance = await self.services.card_instance.get_card_type_in_zone(
+        instance = await self.services.card_instance.get_card_type_and_faction_in_zone(
             game_id=self.game.id,
             player_state_id=self.player_state.id,
             zone=list(CardZone.IN_PLAY),
             card_type=CardType.CHAMPION,
+            faction=CardFaction.HOMODEUS,
         )
         if not instance:
             self.logger.info("нет чемпионов в игре")
