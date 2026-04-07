@@ -315,7 +315,7 @@ class EffectExecutor:
         self.logger.critical(
             "Необходимо понять на данный момент в какой зоне находиться карта"
         )
-
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     # ------------------------------- take_mercenary ---------------------------
 
     async def do_take_mercenary_from_reset_base_none(
@@ -325,7 +325,7 @@ class EffectExecutor:
     ):
         """Добираем в руку наемника из сброса."""
         self.logger.info(" функция - do_take_mercenary_from_reset_base_none")
-        instance = self.services.card_instance.get_card_type_in_zone(
+        instance = self.services.card_instance.get_card_type_and_faction_in_zone(
             game_id=self.game.id,
             player_state_id=self.player_state.id,
             zone=[CardZone.DISCARD],
@@ -389,7 +389,14 @@ class EffectExecutor:
         self.logger.info(
             "Начало работы do_champion_destroy_conditional_wilds_on_table"
         )
-        if self.player_state.wilds_count >= condition_value:
+        instance = self.services.card_instance.get_card_type_and_faction_in_zone(
+            game_id=self.game.id,
+            player_state_id=self.player_state.id,
+            zone=[CardZone.ON_BOARD],
+            card_type=[CardType.MERCENARY, CardType.ALLY],
+            faction=CardFaction.WILDS,
+        )
+        if instance:
             champions: list[PlayerCardInstance] = (
                 await self.services.champion.get_champions(
                     player_id=self.player_state.player_id
