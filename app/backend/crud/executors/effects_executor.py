@@ -31,11 +31,13 @@ class EffectExecutor:
         self,
         session: AsyncSession,
         player_state: PlayerState,
+        card_instance: PlayerCardInstance,
         game: Game,
         services: Services,
     ):
         self.session = session
         self.player_state = player_state
+        self.card_instance = card_instance
         self.game = game
         self.services = services
         self.logger = get_logger(self.__class__.__name__)

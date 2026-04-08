@@ -30,7 +30,6 @@ class MoveServices(BaseService):
         self,
         player_state: PlayerState,
         game: Game,
-        services: Services,
     ):
         # Что необходимо сделать перед ходом
         # 1) Обнулить все показатели. Атаки, защиты, щита
@@ -89,6 +88,7 @@ class MoveServices(BaseService):
         card: Card,
         game: Game,
         player_id: int,
+        card_instance: PlayerCardInstance,
         player_state: PlayerState,
         mercenary: bool = False,
     ) -> str:
@@ -112,13 +112,14 @@ class MoveServices(BaseService):
         effect_executor = EffectExecutor(
             session=self.session,
             player_state=player_state,
+            card_instance=card_instance,
             game=game,
             services=Services,
         )
-        play_state_executor = PlayStateExecutor(
-            session=self.session,
-            player_state=player_state,
-        )
+        # play_state_executor = PlayStateExecutor(
+        #     session=self.session,
+        #     player_state=player_state,
+        # )
 
         for effect in card.effects:
             self.logger.info(
@@ -143,10 +144,10 @@ class MoveServices(BaseService):
         self.logger.info("Все эффекты карты '%s' обработаны", card.name)
 
         self.logger.info("Функция change_card_zone отработала")
-        await play_state_executor.faction_count(
-            card=card
-        )  # Считаем разыранные карты
-        self.logger.info("faction_count выполнен для карты '%s'", card.name)
+        # await play_state_executor.faction_count(
+        #     card=card
+        # )  # Считаем разыранные карты
+        # self.logger.info("faction_count выполнен для карты '%s'", card.name)
 
         await self.session.commit()
 
