@@ -222,7 +222,7 @@ class EffectExecutor:
         )
         if not instance:
             self.logger.info("нет чемпионов в игре")
-        self.player_state.power = value * list(instance)
+        self.player_state.power += value * len(list(instance))
 
     # ----------------------------- healing ----------------------------------
 
