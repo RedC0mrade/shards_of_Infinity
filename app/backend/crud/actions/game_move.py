@@ -23,7 +23,6 @@ from app.backend.core.models.card import (
 )
 
 
-
 class MoveServices(BaseService):
 
     async def pre_make_move(

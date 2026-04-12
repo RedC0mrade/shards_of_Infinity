@@ -213,12 +213,14 @@ class EffectExecutor:
         self.logger.info(
             "Начало работы функции do_attack_conditional_plus_value_for_each_homodeus_champion_in_game"
         )
-        instance = await self.services.card_instance.get_card_type_and_faction_in_zone(
-            game_id=self.game.id,
-            player_state_id=self.player_state.id,
-            zone=list(CardZone.IN_PLAY),
-            card_type=CardType.CHAMPION,
-            faction=CardFaction.HOMODEUS,
+        instance = (
+            await self.services.card_instance.get_card_type_and_faction_in_zone(
+                game_id=self.game.id,
+                player_state_id=self.player_state.id,
+                zone=list(CardZone.IN_PLAY),
+                card_type=CardType.CHAMPION,
+                faction=CardFaction.HOMODEUS,
+            )
         )
         if not instance:
             self.logger.info("нет чемпионов в игре")
@@ -317,7 +319,8 @@ class EffectExecutor:
         self.logger.critical(
             "Необходимо понять на данный момент в какой зоне находиться карта"
         )
-# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+    # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     # ------------------------------- take_mercenary ---------------------------
 
     async def do_take_mercenary_from_reset_base_none(
@@ -327,11 +330,13 @@ class EffectExecutor:
     ):
         """Добираем в руку наемника из сброса."""
         self.logger.info(" функция - do_take_mercenary_from_reset_base_none")
-        instance = self.services.card_instance.get_card_type_and_faction_in_zone(
-            game_id=self.game.id,
-            player_state_id=self.player_state.id,
-            zone=[CardZone.DISCARD],
-            card_type=CardType.MERCENARY,
+        instance = (
+            self.services.card_instance.get_card_type_and_faction_in_zone(
+                game_id=self.game.id,
+                player_state_id=self.player_state.id,
+                zone=[CardZone.DISCARD],
+                card_type=CardType.MERCENARY,
+            )
         )
         if instance:
             self.logger.info("Получаем карты - %s", instance)
@@ -391,12 +396,14 @@ class EffectExecutor:
         self.logger.info(
             "Начало работы do_champion_destroy_conditional_wilds_on_table"
         )
-        instance = self.services.card_instance.get_card_type_and_faction_in_zone(
-            game_id=self.game.id,
-            player_state_id=self.player_state.id,
-            zone=[CardZone.ON_BOARD],
-            card_type=[CardType.MERCENARY, CardType.ALLY],
-            faction=CardFaction.WILDS,
+        instance = (
+            self.services.card_instance.get_card_type_and_faction_in_zone(
+                game_id=self.game.id,
+                player_state_id=self.player_state.id,
+                zone=[CardZone.ON_BOARD],
+                card_type=[CardType.MERCENARY, CardType.ALLY],
+                faction=CardFaction.WILDS,
+            )
         )
         if instance:
             champions: list[PlayerCardInstance] = (
