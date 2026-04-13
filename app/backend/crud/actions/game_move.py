@@ -115,10 +115,6 @@ class MoveServices(BaseService):
             game=game,
             services=Services,
         )
-        # play_state_executor = PlayStateExecutor(
-        #     session=self.session,
-        #     player_state=player_state,
-        # )
 
         for effect in card.effects:
             self.logger.info(
