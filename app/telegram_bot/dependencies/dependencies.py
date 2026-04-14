@@ -8,6 +8,7 @@ from app.backend.crud.actions.buy_move import BuyServices
 from app.backend.crud.actions.champion_move import ChampionServices
 from app.backend.crud.actions.defeat_move import DefeatService
 from app.backend.crud.actions.destroy_card_move import DestroyCardServices
+
 # from app.backend.crud.actions.game_move import MoveServices
 from app.backend.crud.card_crud import CardServices
 from app.backend.crud.card_instance_crud import CardInstanceServices
@@ -40,10 +41,11 @@ class Services:
         self.defeat = DefeatService(session, self.user)
 
 
-
 class DatabaseMiddleware(BaseMiddleware):
 
-    async def __call__(self, handler: Callable, event, data: Dict[str, Any]) -> Any:
+    async def __call__(
+        self, handler: Callable, event, data: Dict[str, Any]
+    ) -> Any:
 
         async with db_helper.session_context() as session:
             data["services"] = Services(session)
