@@ -35,7 +35,6 @@ class Services:
         self.buy = BuyServices(session)
         self.destroy = DestroyCardServices(session)
         self.user = UserServices(session)
-
         # self.move = MoveServices(session, self.card_instance, self.card)
         self.attack = AttackServices(session, self.card_instance)
         self.defeat = DefeatService(session, self.user)
