@@ -1,6 +1,5 @@
 from typing import Annotated, Any, Callable, Dict
 from aiogram import BaseMiddleware
-from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.backend.crud.actions.attack_move import AttackServices
