@@ -5,7 +5,6 @@ from app.backend.core.models.player_state import PlayerState
 from app.backend.crud.base_service import BaseService
 from app.backend.crud.card_instance_crud import CardInstanceServices
 from app.backend.crud.executors.effects_executor import EffectExecutor
-from app.backend.crud.executors.ps_count_executor import PlayStateExecutor
 from app.backend.crud.hand_crud import HandServices
 from app.telegram_bot.dependencies.dependencies import Services
 from app.utils.exceptions.exceptions import (
