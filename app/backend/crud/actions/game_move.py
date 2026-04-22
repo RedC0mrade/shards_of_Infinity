@@ -49,18 +49,18 @@ class MoveServices(BaseService):
         player_state.crystals = 0
         player_state.concentration = False
 
-        stmt = (
-            select(Card.faction, func.count())
-            .join(PlayerCardInstance, PlayerCardInstance.card_id == Card.id)
-            .where(
-                PlayerCardInstance.zone == CardZone.IN_PLAY,
-                PlayerCardInstance.game_id == game.id,
-                PlayerCardInstance.player_state_id == player_state.id,
-                Card.card_type == CardType.CHAMPION,
-            )
-            .group_by(Card.faction)
-        )
-        result: Result = await self.session.execute(stmt)
+        # stmt = (
+        #     select(Card.faction, func.count())
+        #     .join(PlayerCardInstance, PlayerCardInstance.card_id == Card.id)
+        #     .where(
+        #         PlayerCardInstance.zone == CardZone.IN_PLAY,
+        #         PlayerCardInstance.game_id == game.id,
+        #         PlayerCardInstance.player_state_id == player_state.id,
+        #         Card.card_type == CardType.CHAMPION,
+        #     )
+        #     .group_by(Card.faction)
+        # )
+        # result: Result = await self.session.execute(stmt)
 
         self.logger.info(
             "Состояние player_state на конец функции,\n +++power - %s,\n +++shild - %s,\n +++crystals - %s,\n +++nconcentration -%s",
