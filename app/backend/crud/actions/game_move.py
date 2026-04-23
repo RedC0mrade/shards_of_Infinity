@@ -28,6 +28,7 @@ class MoveServices(BaseService):
         self,
         player_state: PlayerState,
         game: Game,
+        services: Services,
     ):
         # Что необходимо сделать перед ходом
         # 1) Обнулить все показатели. Атаки, защиты, щита
@@ -71,7 +72,7 @@ class MoveServices(BaseService):
         )
 
         cards_in_action: list[PlayerCardInstance] = (
-            await self.card_instance.get_player_cards_in_hand_in_play(
+            await services.card_instance.get_player_cards_in_hand_in_play(
                 player_state=player_state
             )
         )
