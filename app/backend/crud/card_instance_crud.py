@@ -126,7 +126,7 @@ class CardInstanceServices(BaseService):
                 PlayerCardInstance.player_state_id == player_state.id,
                 or_(
                     PlayerCardInstance.zone == CardZone.HAND,
-                    PlayerCardInstance.zone == CardZone.IN_PLAY,
+                    PlayerCardInstance.zone == CardZone.IN_ACTION,
                 ),
             )
         )
