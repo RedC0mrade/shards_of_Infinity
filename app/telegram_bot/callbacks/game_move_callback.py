@@ -70,7 +70,7 @@ async def handle_play_card(
         callback_data.id,
         player_state.game_id,
     )
-    
+
     card_instance: PlayerCardInstance = (
         await services.card_instance.get_card_instance_for_id(
             card_instanse_id=callback_data.id
