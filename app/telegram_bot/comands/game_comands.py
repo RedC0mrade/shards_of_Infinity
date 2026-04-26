@@ -9,7 +9,6 @@ from app.backend.core.models.play_card_instance import (
 )
 from app.backend.core.models.player_state import PlayerState
 
-
 from app.telegram_bot.dependencies.dependencies import Services
 from app.telegram_bot.keyboards.dmcc_keyboard import KeyboardFactory
 from app.telegram_bot.keyboards.game_move_keyboard import (
