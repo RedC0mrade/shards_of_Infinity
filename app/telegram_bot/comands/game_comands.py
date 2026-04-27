@@ -17,6 +17,7 @@ from app.telegram_bot.keyboards.game_move_keyboard import (
     non_play_card_keyboard,
 )
 
+
 from app.utils.exceptions.exceptions import GameError
 from app.utils.logger import get_logger
 
