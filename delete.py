@@ -38,3 +38,5 @@
 
 # # python /d/Dev/telegramm/shards_of_Infinity/main.py http://127.0.0.1:8000/docs
 # # uvicorn main:app --reload
+
+# Shift + Alt + F Black Formatter
