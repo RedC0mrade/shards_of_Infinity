@@ -6,8 +6,6 @@
 # # alembic revision --autogenerate -m "Create tables"
 
 
-
-
 # # python scripts/seed_cards.py
 
 
@@ -23,7 +21,7 @@
 # # SET user_role = 'super_user'
 # # WHERE id = 1;
 
-# # UPDATE games 
+# # UPDATE games
 # # SET status = 'FINISHED'::gamestatus
 # # WHERE id = 1;
 
