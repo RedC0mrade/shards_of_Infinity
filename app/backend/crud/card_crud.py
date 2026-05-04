@@ -1,5 +1,4 @@
 from sqlalchemy import Result, distinct, func, select
-from typing import TYPE_CHECKING
 
 from app.backend.core.models.card import Card, CardEffect, CardFaction
 from app.backend.core.models.play_card_instance import (
