@@ -1,5 +1,4 @@
 from random import sample
-from typing import TYPE_CHECKING
 from sqlalchemy import Result, or_, select
 from sqlalchemy.orm import joinedload
 from sqlalchemy.ext.asyncio import AsyncSession
