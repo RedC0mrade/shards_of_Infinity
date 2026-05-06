@@ -1,6 +1,5 @@
 from random import sample
 from sqlalchemy import Result, or_, select
-from sqlalchemy.orm import joinedload
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.backend.core.models.card import (
