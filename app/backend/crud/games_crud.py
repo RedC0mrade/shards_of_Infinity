@@ -1,5 +1,4 @@
 from random import choice
-from fastapi import HTTPException, status
 from sqlalchemy import Result, delete, or_, select
 
 from app.backend.core.models.game import Game, GameStatus
