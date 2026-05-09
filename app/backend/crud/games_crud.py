@@ -2,7 +2,6 @@ from random import choice
 from sqlalchemy import Result, delete, or_, select
 
 from app.backend.core.models.game import Game, GameStatus
-from app.backend.core.models.user import TelegramUser
 from app.backend.crud.base_service import BaseService
 from app.backend.schemas.games import CreateGameSchema, InvateGameSchema
 from app.utils.exceptions.exceptions import (
