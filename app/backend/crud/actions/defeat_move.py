@@ -1,5 +1,4 @@
 from app.backend.crud.base_service import BaseService
-from app.backend.crud.users_crud import UserServices
 
 from app.backend.core.models.game import Game, GameStatus
 from app.backend.core.models.user import TelegramUser
