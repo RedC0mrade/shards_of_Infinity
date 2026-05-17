@@ -1,6 +1,4 @@
 from sqlalchemy import Result, select
-from typing import TYPE_CHECKING
-
 
 from app.backend.crud.base_service import BaseService
 
