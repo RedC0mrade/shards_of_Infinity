@@ -1,5 +1,4 @@
 from sqlalchemy import Result, select
-
 from app.backend.crud.base_service import BaseService
 
 from app.backend.core.models.card import Card
