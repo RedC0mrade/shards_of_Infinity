@@ -1,6 +1,5 @@
 from random import choice, sample
 from sqlalchemy import Result, delete, or_, select
-from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.backend.core.models.play_card_instance import (
     CardZone,
