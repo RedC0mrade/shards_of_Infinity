@@ -1,5 +1,5 @@
 from random import choice, sample
-from sqlalchemy import Result, delete, or_, select
+from sqlalchemy import Result, delete, select
 
 from app.backend.core.models.play_card_instance import (
     CardZone,
