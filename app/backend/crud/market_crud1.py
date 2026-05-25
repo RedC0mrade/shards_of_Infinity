@@ -1,6 +1,5 @@
 from random import sample
 from sqlalchemy import Result, select
-from sqlalchemy.orm import selectinload
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.backend.core.models.card import Card
