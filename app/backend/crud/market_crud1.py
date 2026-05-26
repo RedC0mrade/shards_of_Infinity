@@ -1,4 +1,3 @@
-from random import sample
 from sqlalchemy import Result, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
