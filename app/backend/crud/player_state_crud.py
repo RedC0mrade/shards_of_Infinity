@@ -10,11 +10,9 @@ from app.backend.core.models.play_card_instance import (
 )
 from app.backend.core.models.player_state import PlayerState
 from app.backend.crud.base_service import BaseService
+from app.backend.core.models.game import Game
 from app.backend.schemas.play_state import CreatePlayStateSchema
 from app.utils.exceptions.exceptions import ActiveGameError, NotYourTurn
-
-if TYPE_CHECKING:
-    from app.backend.core.models.game import Game
 
 
 class PlayerStateServices(BaseService):
