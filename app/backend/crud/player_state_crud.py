@@ -1,4 +1,3 @@
-from typing import TYPE_CHECKING
 from sqlalchemy import Result, select
 from sqlalchemy.orm import joinedload
 
