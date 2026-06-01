@@ -22,7 +22,7 @@ class PlayerStateServices(BaseService):
         game_id: int,
         player: StartCardPlayer,
     ) -> list[PlayerState]:
-        """Создаем состояние игры для играков"""
+        """Создаем состояние игры для играков."""
 
         self.logger.info("Создание play_state для игрокa: %s", play_data)
 
