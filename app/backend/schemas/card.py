@@ -1,5 +1,4 @@
 from pydantic import BaseModel, NonNegativeInt
-from typing import List
 from app.backend.core.models.card import (
     CardAction,
     CardFaction,
