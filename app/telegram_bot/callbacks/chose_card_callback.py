@@ -26,7 +26,7 @@ async def handle_choose_card(
     services: Services,
 ):
     """Обработка карты портальный монах"""
-    logger.info("Обрабатываем коллбэк портального монаха.")
+    logger.info("Обрабатываем коллбэк портального монаха")
 
     await callback.message.edit_reply_markup(reply_markup=None)
 
