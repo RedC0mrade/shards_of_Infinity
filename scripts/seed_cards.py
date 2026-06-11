@@ -42,7 +42,8 @@ async def seed_all_cards():
 
             if existing_cards:
                 logger.info(
-                    "В базе уже есть %s карт. Пропускаем заполнение.", len(existing_cards)
+                    "В базе уже есть %s карт. Пропускаем заполнение.",
+                    len(existing_cards),
                 )
                 return
 
@@ -104,15 +105,20 @@ async def seed_all_cards():
                     faction = card_data["faction"]
                     card_type = card_data["card_type"]
                     logger.debug(
-                        "[%s/%s] Добавлена: %s (%s - %s)", 
-                        i, total_cards, card_data['name'], faction, card_type
+                        "[%s/%s] Добавлена: %s (%s - %s)",
+                        i,
+                        total_cards,
+                        card_data["name"],
+                        faction,
+                        card_type,
                     )
 
                 except Exception as e:
                     logger.error(
                         "Ошибка при создании карты %s: %s",
-                        card_data['name'], e,
-                        exc_info=True
+                        card_data["name"],
+                        e,
+                        exc_info=True,
                     )
                     continue
 
