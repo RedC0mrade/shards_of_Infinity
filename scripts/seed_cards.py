@@ -1,6 +1,7 @@
 import asyncio
 import sys
 from pathlib import Path
+from sqlalchemy import select, func
 
 project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
@@ -32,7 +33,6 @@ async def seed_all_cards():
 
     try:
         async with db_helper.session_context() as session:
-            from sqlalchemy import select
 
             logger.info("Проверяем существующие карты в базе...")
 
@@ -145,7 +145,7 @@ async def check_existing_cards():
 
     try:
         async with db_helper.session_context() as session:
-            from sqlalchemy import select, func
+            
 
             # Получаем общее количество карт
             result = await session.execute(select(func.count(Card.id)))
