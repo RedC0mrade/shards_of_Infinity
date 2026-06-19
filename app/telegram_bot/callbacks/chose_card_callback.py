@@ -13,7 +13,6 @@ from app.telegram_bot.keyboards.dmcc_keyboard import ChooseCardCallback
 from app.utils.exceptions.exceptions import GameError
 from app.utils.logger import get_logger
 
-
 router = Router(name=__name__)
 logger = get_logger(__name__)
 media_dir = Path(__file__).parent.parent.parent.parent / "media"
